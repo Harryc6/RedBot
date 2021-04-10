@@ -1,6 +1,7 @@
 package com.nco;
 
 import com.nco.events.*;
+import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -17,9 +18,9 @@ public class MessageListener extends ListenerAdapter {
         String messageEvent = message.getContentRaw().split(" ")[0];
 
         if (!author.isBot() && messageEvent.startsWith(RedBot.PREFIX)) {
-            String[] messageArgs = parseArgsString(message.getContentRaw().substring(messageEvent.length()).trim());
+            String[] messageArgs = StringUtils.parseArgsString(message.getContentRaw().substring(messageEvent.length()).trim());
 
-            EventType eventType = getEnumFromString(EventType.class, messageEvent.substring(1));
+            EventType eventType = StringUtils.getEnumFromString(EventType.class, messageEvent.substring(1));
             if (eventType == null) {
                 eventType = EventType.UNKNOWN;
             }
@@ -27,7 +28,7 @@ public class MessageListener extends ListenerAdapter {
                 case ADDICTION:
                     break;
                 case BANK:
-                    BankEvent.bank();
+                    BankEvent.bank(messageArgs, author, channel);
                     break;
                 case BUYARMOR:
                     break;
@@ -94,32 +95,4 @@ public class MessageListener extends ListenerAdapter {
             }
         }
     }
-
-    private String[] parseArgsString(String s) {
-        String builtS = "";
-        boolean isBetweenQuotationMarks = false;
-        for (char c : s.toCharArray()) {
-            if (c == '"') {
-                isBetweenQuotationMarks = !isBetweenQuotationMarks;
-            }
-            if (c == ' ' && !isBetweenQuotationMarks) {
-                c = '~';
-            }
-            if (c != '"') {
-                builtS += c;
-            }
-        }
-        return builtS.split("~");
-    }
-
-    public static <T extends Enum<T>> T getEnumFromString(Class<T> c, String string) {
-        if( c != null && string != null ) {
-            try {
-                return Enum.valueOf(c, string.trim().toUpperCase());
-            } catch(IllegalArgumentException ignored) {
-            }
-        }
-        return null;
-    }
-
 }

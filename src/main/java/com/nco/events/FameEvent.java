@@ -2,6 +2,7 @@ package com.nco.events;
 
 import com.nco.utils.DBUtils;
 import com.nco.RedBot;
+import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -23,7 +24,6 @@ public class FameEvent {
         } else {
             returnHelp(channel);
         }
-
     }
 
     private static void fameByUser(String[] messageArg, MessageChannel channel, User author) {
@@ -34,7 +34,7 @@ public class FameEvent {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.red);
                 if (rs.next()) {
-                    String[] updatesArg = {rs.getString("CharacterName"), messageArg[0], messageArg[1]};
+                    String[] updatesArg = StringUtils.prefixArray(rs.getString("CharacterName"), messageArg);
                     updateFameAndRespond(conn, rs, updatesArg, builder);
                 } else {
                     builder.setTitle("No Character Found");
@@ -62,8 +62,8 @@ public class FameEvent {
             builder.addField("New Fame", String.valueOf(newFame), true);
 
             if (oldReputation != newReputation) {
-                builder.addField("Old Reputaion", rs.getString("Reputation"), true);
-                builder.addField("New Reputaion", String.valueOf(newReputation), true);
+                builder.addField("Old Reputation", rs.getString("Reputation"), true);
+                builder.addField("New Reputation", String.valueOf(newReputation), true);
             }
         } else {
             builder.setTitle("ERROR: Fame Update Or Insert Failure");

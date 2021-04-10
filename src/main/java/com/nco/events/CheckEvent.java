@@ -58,7 +58,7 @@ public class CheckEvent {
         builder.addField("Humanity", currentHum + "/" +
                 rs.getString("MaxHumanity"), true);
         builder.addField("Monthly", rs.getString("PayDues"), true);
-        builder.addField("Down Time", rs.getString("Downtime"), true);
+        builder.addField("Down Time", rs.getString("DownTime"), true);
         builder.addField("IP", rs.getString("InfluencePoints"), true);
         builder.addField("Reputation", rs.getString("Reputation"), true);
         builder.addField("Weekly Games", rs.getString("WeeklyGames"), true);
