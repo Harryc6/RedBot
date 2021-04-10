@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class ConfigVar {
 
-    private static final String PROPERTIES_URL = "config.properties";
+    private static final String PROPERTIES_URL = "config/config.properties";
 
     public static String getDBUser() {
         return getProperties().getProperty("DBUser");
