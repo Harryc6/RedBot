@@ -2,6 +2,7 @@ package com.nco.events;
 
 import com.nco.RedBot;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,8 +24,8 @@ public class ImproveEvent extends AbstractEvent {
 
 
     @Override
-    protected void processUpdateAndRespond(Connection conn, ResultSet rs, String[] messageArgs, EmbedBuilder builder) throws SQLException {
-        if (updateImprove(messageArgs, rs, conn) && insertImprove(messageArgs, conn)) {
+    protected void processUpdateAndRespond(Connection conn, ResultSet rs, String[] messageArgs, EmbedBuilder builder, User author) throws SQLException {
+        if (updateImprove(messageArgs, rs, conn) && insertImprove(messageArgs, conn, author)) {
             int changeIP = Integer.parseInt(messageArgs[2]);
             int oldIP = rs.getInt("InfluencePoints");
             int newIP = oldIP - (changeIP < 0 ? -changeIP : changeIP);
@@ -55,12 +56,13 @@ public class ImproveEvent extends AbstractEvent {
         }
     }
 
-    private static boolean insertImprove(String[] messageArg, Connection conn) throws SQLException {
-        String sql  = "INSERT INTO NCO_IMPROVE (CharacterName, Reason, InfluencePoints) VALUES (?,?,?)";
+    private static boolean insertImprove(String[] messageArg, Connection conn, User author) throws SQLException {
+        String sql  = "INSERT INTO NCO_IMPROVE (CharacterName, Reason, InfluencePoints, CreatedBy) VALUES (?,?,?,?)";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArg[0]);
             stat.setString(2, messageArg[1]);
             stat.setString(3, messageArg[2]);
+            stat.setString(4, author.getAsTag());
             return stat.executeUpdate() == 1;
         }
     }

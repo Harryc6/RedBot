@@ -19,7 +19,7 @@ public abstract class AbstractEvent {
         if (canProcessByUser(messageArgs)) {
             processByUser(messageArgs, channel, author);
         } else if (canProcessByName(messageArgs)) {
-            processByName(messageArgs, channel);
+            processByName(messageArgs, channel, author);
         } else {
             returnHelp(channel);
         }
@@ -42,7 +42,7 @@ public abstract class AbstractEvent {
                 builder.setColor(Color.red);
                 if (rs.next()) {
                     String[] updatesArgs = StringUtils.prefixArray(rs.getString("CharacterName"), messageArgs);
-                    processUpdateAndRespond(conn, rs, updatesArgs, builder);
+                    processUpdateAndRespond(conn, rs, updatesArgs, builder, author);
                 } else {
                     builder.setTitle("No Character Found");
                     builder.setDescription("No active character was found tied to the user " + author.getAsTag());
@@ -55,7 +55,7 @@ public abstract class AbstractEvent {
         }
     }
 
-    private void processByName(String[] messageArgs, MessageChannel channel) {
+    private void processByName(String[] messageArgs, MessageChannel channel, User author) {
         String sql = "Select * From NCO_PC where CharacterName = ?";
         try(Connection conn = DBUtils.getConnection(); PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);
@@ -63,7 +63,7 @@ public abstract class AbstractEvent {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.red);
                 if (rs.next()) {
-                    processUpdateAndRespond(conn, rs, messageArgs, builder);
+                    processUpdateAndRespond(conn, rs, messageArgs, builder, author);
                 } else {
                     builder.setTitle("No Character Found");
                     builder.setDescription("No character information was found where the character is called  " + messageArgs[0]);
@@ -76,7 +76,7 @@ public abstract class AbstractEvent {
         }
     }
 
-    protected void processUpdateAndRespond(Connection conn, ResultSet rs, String[] messageArgs, EmbedBuilder builder) throws SQLException {
+    protected void processUpdateAndRespond(Connection conn, ResultSet rs, String[] messageArgs, EmbedBuilder builder, User author) throws SQLException {
 
     }
 

@@ -1,12 +1,9 @@
 package com.nco.events;
 
-import com.nco.utils.DBUtils;
 import com.nco.RedBot;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 
-import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,7 +22,7 @@ public class CheckEvent extends AbstractEvent {
     }
 
     @Override
-    protected void processUpdateAndRespond(Connection conn, ResultSet rs, String[] messageArgs, EmbedBuilder builder) throws SQLException {
+    protected void processUpdateAndRespond(Connection conn, ResultSet rs, String[] messageArgs, EmbedBuilder builder, User author) throws SQLException {
         String characterName = rs.getString("CharacterName");
         int currentHum = rs.getInt("Humanity");
 

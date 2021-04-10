@@ -1,13 +1,9 @@
 package com.nco.events;
 
-import com.nco.utils.DBUtils;
 import com.nco.RedBot;
-import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 
-import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,8 +22,8 @@ public class FameEvent extends AbstractEvent {
     }
 
     @Override
-    protected void processUpdateAndRespond(Connection conn, ResultSet rs, String[] messageArgs, EmbedBuilder builder) throws SQLException {
-        if (updateFame(messageArgs, rs.getInt("Fame"), conn) && insertFame(messageArgs, conn)) {
+    protected void processUpdateAndRespond(Connection conn, ResultSet rs, String[] messageArgs, EmbedBuilder builder, User author) throws SQLException {
+        if (updateFame(messageArgs, rs.getInt("Fame"), conn) && insertFame(messageArgs, conn, author)) {
             int oldFame = rs.getInt("Fame");
             int newFame = oldFame + Integer.parseInt(messageArgs[2]);
             int oldReputation = rs.getInt("Reputation");
@@ -61,12 +57,13 @@ public class FameEvent extends AbstractEvent {
         }
     }
 
-    private static boolean insertFame(String[] messageArgs, Connection conn) throws SQLException {
-        String sql = "INSERT INTO NCO_FAME (CharacterName, Reason, Fame) VALUES (?,?,?)";
+    private static boolean insertFame(String[] messageArgs, Connection conn, User author) throws SQLException {
+        String sql = "INSERT INTO NCO_FAME (CharacterName, Reason, Fame, CreatedBy) VALUES (?,?,?,?)";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);
             stat.setString(2, messageArgs[1]);
             stat.setString(3, messageArgs[2]);
+            stat.setString(4, author.getAsTag());
             return stat.executeUpdate() == 1;
         }
     }

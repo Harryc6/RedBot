@@ -1,13 +1,10 @@
 package com.nco.events;
 
 import com.nco.RedBot;
-import com.nco.utils.DBUtils;
 import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 
-import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,8 +23,8 @@ public class BankEvent extends AbstractEvent {
     }
 
     @Override
-    protected void processUpdateAndRespond(Connection conn, ResultSet rs, String[] messageArgs, EmbedBuilder builder) throws SQLException {
-        if (updateBank(messageArgs, rs, conn) && insertBank(messageArgs, conn)) {
+    protected void processUpdateAndRespond(Connection conn, ResultSet rs, String[] messageArgs, EmbedBuilder builder, User author) throws SQLException {
+        if (updateBank(messageArgs, rs, conn) && insertBank(messageArgs, conn, author)) {
             int oldBank = rs.getInt("Bank");
             int newBank = oldBank + Integer.parseInt(messageArgs[2]);
             builder.setTitle(messageArgs[0] + "'s Bank Balance Updated");
@@ -68,20 +65,21 @@ public class BankEvent extends AbstractEvent {
         }
     }
 
-    private static boolean insertBank(String[] messageArgs, Connection conn) throws SQLException {
+    private static boolean insertBank(String[] messageArgs, Connection conn, User author) throws SQLException {
         String sql;
         if (messageArgs.length == 4) {
-            sql = "INSERT INTO NCO_BANK (CharacterName, Reason, Amount, DownTime) VALUES (?,?,?,?)";
+            sql = "INSERT INTO NCO_BANK (CharacterName, Reason, Amount, CreatedBy, DownTime) VALUES (?,?,?,?,?)";
         } else {
-            sql = "INSERT INTO NCO_BANK (CharacterName, Reason, Amount) VALUES (?,?,?)";
+            sql = "INSERT INTO NCO_BANK (CharacterName, Reason, Amount, CreatedBy) VALUES (?,?,?,?)";
         }
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);
             stat.setString(2, messageArgs[1]);
             stat.setString(3, messageArgs[2]);
+            stat.setString(4, author.getAsTag());
             if (messageArgs.length == 4) {
                 int changeDT = Integer.parseInt(messageArgs[3]);
-                stat.setInt(4, (changeDT < 0 ? -changeDT : changeDT));
+                stat.setInt(5, (changeDT < 0 ? -changeDT : changeDT));
             }
             return stat.executeUpdate() == 1;
         }
