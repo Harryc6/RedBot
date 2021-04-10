@@ -28,17 +28,20 @@ public class MessageListener extends ListenerAdapter {
                 case ADDICTION:
                     break;
                 case BANK:
-                    BankEvent.bank(messageArgs, author, channel);
+                    BankEvent bankEvent = new BankEvent();
+                    bankEvent.process(messageArgs, author, channel);
                     break;
                 case BUYARMOR:
                     break;
                 case CHECK:
-                    CheckEvent.check(messageArgs, author, channel);
+                    CheckEvent checkEvent = new CheckEvent();
+                    checkEvent.process(messageArgs, author, channel);
                     break;
                 case COVERAGE:
                     break;
                 case FAME:
-                    FameEvent.fame(messageArgs, author, channel);
+                    FameEvent fameEvent = new FameEvent();
+                    fameEvent.process(messageArgs, author, channel);
                     break;
                 case FIXER:
                     break;
@@ -53,9 +56,12 @@ public class MessageListener extends ListenerAdapter {
                 case HUSTLE:
                     break;
                 case IMPROVE:
+                    ImproveEvent improveEvent = new ImproveEvent();
+                    improveEvent.process(messageArgs, author, channel);
                     break;
                 case INFO:
-                    InfoEvent.info(channel);
+                    InfoEvent infoEvent = new InfoEvent();
+                    infoEvent.process(messageArgs, author, channel);
                     break;
                 case INSTALL:
                     break;

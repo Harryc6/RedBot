@@ -12,42 +12,20 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class CheckEvent {
+public class CheckEvent extends AbstractEvent {
 
-    public static void check(String[] messageArgs, User author, MessageChannel channel) {
-        channel.sendTyping().queue();
-        if (messageArgs[0].isEmpty()) {
-            checkByUser(author, channel);
-        } else if (messageArgs.length == 1) {
-            checkByName(messageArgs[0], channel);
-        } else {
-            returnHelp(channel);
-        }
+    @Override
+    protected boolean canProcessByUser(String[] messageArgs) {
+        return messageArgs[0].isEmpty();
     }
 
-    public static void checkByUser(User author, MessageChannel channel) {
-        String sql = "Select * From NCO_PC where DiscordName = ? AND RetiredYN = 'N'";
-        try(Connection conn = DBUtils.getConnection(); PreparedStatement stat = conn.prepareStatement(sql)) {
-            stat.setString(1, author.getAsTag());
-
-            try (ResultSet rs = stat.executeQuery()) {
-                EmbedBuilder builder = new EmbedBuilder();
-                builder.setColor(Color.red);
-                if (rs.next()) {
-                    buildCharacterEmbed(rs, builder, conn);
-                } else {
-                    builder.setTitle("No Character Found");
-                    builder.setDescription("No active character was found tied to the user " + author.getAsTag());
-                }
-                channel.sendMessage(builder.build()).queue();
-                builder.clear();
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+    @Override
+    protected boolean canProcessByName(String[] messageArgs) {
+        return messageArgs.length == 1;
     }
 
-    private static void buildCharacterEmbed(ResultSet rs, EmbedBuilder builder, Connection conn) throws SQLException {
+    @Override
+    protected void processUpdateAndRespond(Connection conn, ResultSet rs, String[] messageArgs, EmbedBuilder builder) throws SQLException {
         String characterName = rs.getString("CharacterName");
         int currentHum = rs.getInt("Humanity");
 
@@ -106,33 +84,15 @@ public class CheckEvent {
         }
     }
 
-    public static void checkByName(String characterName, MessageChannel channel) {
-        String sql = "Select * From NCO_PC where CharacterName = ?";
-        try(Connection conn = DBUtils.getConnection(); PreparedStatement stat = conn.prepareStatement(sql)) {
-            stat.setString(1, characterName);
-            try (ResultSet rs = stat.executeQuery()) {
-                EmbedBuilder builder = new EmbedBuilder();
-                builder.setColor(Color.red);
-                if (rs.next()) {
-                    buildCharacterEmbed(rs, builder, conn);
-                } else {
-                    builder.setTitle("No Character Found");
-                    builder.setDescription("No character information was found where the character is called  " + characterName);
-                }
-                channel.sendMessage(builder.build()).queue();
-                builder.clear();
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+    @Override
+    protected String getHelpTitle() {
+        return "Incorrect Check Formatting";
     }
 
-    public static void returnHelp(MessageChannel channel) {
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setColor(Color.red);
-        builder.setTitle("Incorrect Check Formatting");
-        builder.setDescription("Please use the commands below to see information on characters \n" + RedBot.PREFIX + "check \"Specific PC Name\" \nor \n" + RedBot.PREFIX + "check");
-        channel.sendMessage(builder.build()).queue();
-        builder.clear();
+    @Override
+    protected String getHelpDescription() {
+        return "Please use the commands below to see information on characters \n" + RedBot.PREFIX +
+                "check \"PC Name\" \nor \n" + RedBot.PREFIX + "check";
     }
+
 }

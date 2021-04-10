@@ -5,11 +5,10 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 
 import java.awt.*;
 
-public class InfoEvent {
+public class InfoEvent extends AbstractEvent {
 
-    public static void info(MessageChannel channel) {
-        channel.sendTyping().queue();
-
+    @Override
+    protected void returnHelp(MessageChannel channel) {
         EmbedBuilder info = new EmbedBuilder();
         info.setTitle("RedBot v2");
         info.setDescription("This is based off of the previous iteration RedBot by Blaze.");
