@@ -55,7 +55,7 @@ public class RPGDice {
     }
 
     public static RPGDice parse(String str) {
-        str = str.toLowerCase();
+        str = str.toLowerCase().replace(" ", "");
         Matcher matcher = DICE_PATTERN.matcher(str);
         if(matcher.matches()) {
             int rolls = getInt(matcher, "A", 1);
@@ -68,30 +68,6 @@ public class RPGDice {
         }
         return null;
 
-    }
-
-    public static void main(String[] args) {
-        System.out.println(RPGDice.parse("d6"));
-        System.out.println(RPGDice.parse("d6*"));
-        System.out.println(RPGDice.parse("33d6*10"));
-        System.out.println(RPGDice.parse("336*10"));
-        System.out.println(RPGDice.parse("d6/"));
-        System.out.println(RPGDice.parse("d6/5"));
-        System.out.println(RPGDice.parse("d6/5+2"));
-        System.out.println(RPGDice.parse("2d6/5-32"));
-        System.out.println(RPGDice.parse("2d6/5+-32"));
-        System.out.println(RPGDice.parse("2D6/2"));
-
-        System.out.println(RPGDice.roll("d6"));
-        System.out.println(RPGDice.roll("d6*"));
-        System.out.println(RPGDice.roll("33d6*10"));
-        System.out.println(RPGDice.roll("336*10"));
-        System.out.println(RPGDice.roll("d6/"));
-        System.out.println(RPGDice.roll("d6/5"));
-        System.out.println(RPGDice.roll("d6/5+2"));
-        System.out.println(RPGDice.roll("2d6/5-32"));
-        System.out.println(RPGDice.roll("2d6/5+-32"));
-        System.out.println(RPGDice.roll("2D6/2"));
     }
 
     public static String roll(String str) {
@@ -113,13 +89,5 @@ public class RPGDice {
         total += rpgDice.getAdditive();
         return String.valueOf((int) total);
     }
-//
-//    public static int rollDice(int dice, int diceSize, boolean half) {
-//        double d = diceSize;
-//        if (half) {
-//            diceSize = (int) Math.ceil(d / 2);
-//        }
-////        return getRandomNumber(dice , dice * diceSize);
-//    }
 
 }

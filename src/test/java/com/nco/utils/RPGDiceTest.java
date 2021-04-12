@@ -18,6 +18,7 @@ class RPGDiceTest {
         assertEquals("{\"rolls\": 2, \"faces\": 6, \"multiplier\": -5, \"additive\": -32}", RPGDice.parse("2d6/5-32").toString());
         assertNull(RPGDice.parse("2d6/5+-32"));
         assertEquals("{\"rolls\": 2, \"faces\": 6, \"multiplier\": -2, \"additive\": 0}", RPGDice.parse("2D6/2").toString());
+        assertEquals("{\"rolls\": 2, \"faces\": 6, \"multiplier\": -2, \"additive\": 1}", RPGDice.parse("2D6 / 2 + 1").toString());
     }
 
     @Test
@@ -37,6 +38,8 @@ class RPGDiceTest {
         assertTrue(-32 <= roll && roll <= -29);
         assertNull(RPGDice.parse("2d6/5+-32"));
         roll = Integer.parseInt(RPGDice.roll("2D6"));
+        assertTrue(2 <= roll && roll <= 12);
+        roll = Integer.parseInt(RPGDice.roll("2D6 / 2 + 1"));
         assertTrue(2 <= roll && roll <= 12);
     }
 
