@@ -21,18 +21,6 @@ public class StringUtils {
         return builtS.split("~");
     }
 
-    public static boolean isNumeric(String strNum) {
-        if (strNum == null) {
-            return false;
-        }
-        try {
-            double d = Double.parseDouble(strNum);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-        return true;
-    }
-
     public static String[] prefixArray(String prefix, String[] array) {
         String[] newArray = new String[array.length + 1];
         newArray[0] = prefix;

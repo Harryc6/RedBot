@@ -64,6 +64,8 @@ public class MessageListener extends ListenerAdapter {
                     infoEvent.process(messageArgs, author, channel);
                     break;
                 case INSTALL:
+                    InstallEvent installEvent = new InstallEvent();
+                    installEvent.process(messageArgs, author, channel);
                     break;
                 case LIFESTYLE:
                     break;

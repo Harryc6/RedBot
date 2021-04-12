@@ -1,7 +1,7 @@
 package com.nco.events;
 
 import com.nco.RedBot;
-import com.nco.utils.StringUtils;
+import com.nco.utils.NumberUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 
@@ -14,12 +14,12 @@ public class BankEvent extends AbstractEvent {
 
     @Override
     protected boolean canProcessByUser(String[] messageArgs) {
-        return messageArgs.length >= 2 && StringUtils.isNumeric(messageArgs[1]);
+        return messageArgs.length >= 2 && NumberUtils.isNumeric(messageArgs[1]);
     }
 
     @Override
     protected boolean canProcessByName(String[] messageArgs) {
-        return messageArgs.length >= 3 && StringUtils.isNumeric(messageArgs[2]);
+        return messageArgs.length >= 3 && NumberUtils.isNumeric(messageArgs[2]);
     }
 
     @Override
