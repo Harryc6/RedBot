@@ -1,6 +1,6 @@
 package com.nco;
 
-import com.nco.events.*;
+import com.nco.commands.*;
 import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -20,28 +20,28 @@ public class MessageListener extends ListenerAdapter {
         if (!author.isBot() && messageEvent.startsWith(RedBot.PREFIX)) {
             String[] messageArgs = StringUtils.parseArgsString(message.getContentRaw().substring(messageEvent.length()).trim());
 
-            EventType eventType = StringUtils.getEnumFromString(EventType.class, messageEvent.substring(1));
+            Commands eventType = StringUtils.getEnumFromString(Commands.class, messageEvent.substring(1));
             if (eventType == null) {
-                eventType = EventType.UNKNOWN;
+                eventType = Commands.UNKNOWN;
             }
             switch (eventType) {
                 case ADDICTION:
                     break;
                 case BANK:
-                    BankEvent bankEvent = new BankEvent();
-                    bankEvent.process(messageArgs, author, channel);
+                    BankCommand bankCommand = new BankCommand();
+                    bankCommand.process(messageArgs, author, channel);
                     break;
                 case BUYARMOR:
                     break;
                 case CHECK:
-                    CheckEvent checkEvent = new CheckEvent();
-                    checkEvent.process(messageArgs, author, channel);
+                    CheckCommand checkCommand = new CheckCommand();
+                    checkCommand.process(messageArgs, author, channel);
                     break;
                 case COVERAGE:
                     break;
                 case FAME:
-                    FameEvent fameEvent = new FameEvent();
-                    fameEvent.process(messageArgs, author, channel);
+                    FameCommand fameCommand = new FameCommand();
+                    fameCommand.process(messageArgs, author, channel);
                     break;
                 case FIXER:
                     break;
@@ -56,16 +56,16 @@ public class MessageListener extends ListenerAdapter {
                 case HUSTLE:
                     break;
                 case IMPROVE:
-                    ImproveEvent improveEvent = new ImproveEvent();
-                    improveEvent.process(messageArgs, author, channel);
+                    ImproveCommand improveCommand = new ImproveCommand();
+                    improveCommand.process(messageArgs, author, channel);
                     break;
                 case INFO:
-                    InfoEvent infoEvent = new InfoEvent();
-                    infoEvent.process(messageArgs, author, channel);
+                    InfoCommand infoCommand = new InfoCommand();
+                    infoCommand.process(messageArgs, author, channel);
                     break;
                 case INSTALL:
-                    InstallEvent installEvent = new InstallEvent();
-                    installEvent.process(messageArgs, author, channel);
+                    InstallCommand installCommand = new InstallCommand();
+                    installCommand.process(messageArgs, author, channel);
                     break;
                 case LIFESTYLE:
                     break;

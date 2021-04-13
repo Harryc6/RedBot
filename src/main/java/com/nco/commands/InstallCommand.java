@@ -1,4 +1,4 @@
-package com.nco.events;
+package com.nco.commands;
 
 import com.nco.RedBot;
 import com.nco.utils.NumberUtils;
@@ -11,7 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class InstallEvent extends AbstractEvent {
+public class InstallCommand extends AbstractCommand {
 
     @Override
     protected boolean canProcessByUser(String[] messageArgs) {

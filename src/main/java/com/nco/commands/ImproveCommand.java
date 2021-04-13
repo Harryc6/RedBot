@@ -1,4 +1,4 @@
-package com.nco.events;
+package com.nco.commands;
 
 import com.nco.RedBot;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ImproveEvent extends AbstractEvent {
+public class ImproveCommand extends AbstractCommand {
 
     @Override
     protected boolean canProcessByUser(String[] messageArgs) {

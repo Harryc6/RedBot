@@ -1,4 +1,4 @@
-package com.nco.events;
+package com.nco.commands;
 
 import com.nco.utils.DBUtils;
 import com.nco.utils.StringUtils;
@@ -12,7 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public abstract class AbstractEvent {
+public abstract class AbstractCommand {
 
     public void process(String[] messageArgs, User author, MessageChannel channel) {
         channel.sendTyping().queue();

@@ -1,11 +1,11 @@
-package com.nco.events;
+package com.nco.commands;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 
 import java.awt.*;
 
-public class InfoEvent extends AbstractEvent {
+public class InfoCommand extends AbstractCommand {
 
     @Override
     protected void returnHelp(MessageChannel channel) {

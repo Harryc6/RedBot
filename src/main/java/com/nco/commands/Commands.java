@@ -1,6 +1,6 @@
-package com.nco.events;
+package com.nco.commands;
 
-public enum EventType {
+public enum Commands {
     ADDICTION,
     BANK,
     BUYARMOR,

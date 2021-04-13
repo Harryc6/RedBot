@@ -1,4 +1,4 @@
-package com.nco.events;
+package com.nco.commands;
 
 import com.nco.RedBot;
 import com.nco.utils.NumberUtils;
@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class BankEvent extends AbstractEvent {
+public class BankCommand extends AbstractCommand {
 
     @Override
     protected boolean canProcessByUser(String[] messageArgs) {
