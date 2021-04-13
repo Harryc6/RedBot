@@ -2,6 +2,7 @@ package com.nco.commands;
 
 import com.nco.RedBot;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 
 import java.sql.Connection;
@@ -11,19 +12,23 @@ import java.sql.SQLException;
 
 public class FameCommand extends AbstractCommand {
 
+    public FameCommand(String[] messageArgs, User author, MessageChannel channel) {
+        super(messageArgs, author, channel);
+    }
+
     @Override
-    protected boolean canProcessByUser(String[] messageArgs) {
+    protected boolean canProcessByUser() {
         return messageArgs.length == 2;
     }
 
     @Override
-    protected boolean canProcessByName(String[] messageArgs) {
+    protected boolean canProcessByName() {
         return messageArgs.length == 3;
     }
 
     @Override
-    protected void processUpdateAndRespond(Connection conn, ResultSet rs, String[] messageArgs, EmbedBuilder builder, User author) throws SQLException {
-        if (updateFame(messageArgs, rs.getInt("Fame"), conn) && insertFame(messageArgs, conn, author)) {
+    protected void processUpdateAndRespond(Connection conn, ResultSet rs, EmbedBuilder builder) throws SQLException {
+        if (updateFame(rs.getInt("Fame"), conn) && insertFame(conn)) {
             int oldFame = rs.getInt("Fame");
             int newFame = oldFame + Integer.parseInt(messageArgs[2]);
             int oldReputation = rs.getInt("Reputation");
@@ -45,7 +50,7 @@ public class FameCommand extends AbstractCommand {
         }
     }
 
-    private static boolean updateFame(String[] messageArgs, int currentFame, Connection conn) throws SQLException {
+    private boolean updateFame(int currentFame, Connection conn) throws SQLException {
         int newFameTotal = currentFame + Integer.parseInt(messageArgs[2]);
         int newReputation = newFameTotal / 20;
         String sql = "UPDATE NCO_PC set Fame = ?, Reputation = ? Where CharacterName = ?";
@@ -57,7 +62,7 @@ public class FameCommand extends AbstractCommand {
         }
     }
 
-    private static boolean insertFame(String[] messageArgs, Connection conn, User author) throws SQLException {
+    private boolean insertFame(Connection conn) throws SQLException {
         String sql = "INSERT INTO NCO_FAME (CharacterName, Reason, Fame, CreatedBy) VALUES (?,?,?,?)";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);

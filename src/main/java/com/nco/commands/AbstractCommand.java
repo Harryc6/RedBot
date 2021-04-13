@@ -14,26 +14,36 @@ import java.sql.SQLException;
 
 public abstract class AbstractCommand {
 
-    public void process(String[] messageArgs, User author, MessageChannel channel) {
+    String[] messageArgs;
+    User author;
+    MessageChannel channel;
+
+    public AbstractCommand(String[] messageArgs, User author, MessageChannel channel) {
+        this.messageArgs = messageArgs;
+        this.author = author;
+        this.channel = channel;
+    }
+
+    public void process() {
         channel.sendTyping().queue();
-        if (canProcessByUser(messageArgs)) {
-            processByUser(messageArgs, channel, author);
-        } else if (canProcessByName(messageArgs)) {
-            processByName(messageArgs, channel, author);
+        if (canProcessByUser()) {
+            processByUser();
+        } else if (canProcessByName()) {
+            processByName();
         } else {
-            returnHelp(channel);
+            returnHelp();
         }
     }
 
-    protected boolean canProcessByUser(String[] messageArgs) {
+    protected boolean canProcessByUser() {
         return false;
     }
 
-    protected boolean canProcessByName(String[] messageArgs) {
+    protected boolean canProcessByName() {
         return false;
     }
 
-    private void processByUser(String[] messageArgs, MessageChannel channel, User author) {
+    private void processByUser() {
         String sql = "Select * From NCO_PC where DiscordName = ? AND RetiredYN = 'N'";
         try(Connection conn = DBUtils.getConnection(); PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, author.getAsTag());
@@ -41,8 +51,8 @@ public abstract class AbstractCommand {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.red);
                 if (rs.next()) {
-                    String[] updatesArgs = StringUtils.prefixArray(rs.getString("CharacterName"), messageArgs);
-                    processUpdateAndRespond(conn, rs, updatesArgs, builder, author);
+                    messageArgs = StringUtils.prefixArray(rs.getString("CharacterName"), messageArgs);
+                    processUpdateAndRespond(conn, rs, builder);
                 } else {
                     builder.setTitle("No Character Found");
                     builder.setDescription("No active character was found tied to the user " + author.getAsTag());
@@ -55,7 +65,7 @@ public abstract class AbstractCommand {
         }
     }
 
-    private void processByName(String[] messageArgs, MessageChannel channel, User author) {
+    private void processByName() {
         String sql = "Select * From NCO_PC where CharacterName = ?";
         try(Connection conn = DBUtils.getConnection(); PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);
@@ -63,7 +73,7 @@ public abstract class AbstractCommand {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.red);
                 if (rs.next()) {
-                    processUpdateAndRespond(conn, rs, messageArgs, builder, author);
+                    processUpdateAndRespond(conn, rs, builder);
                 } else {
                     builder.setTitle("No Character Found");
                     builder.setDescription("No character information was found where the character is called  " + messageArgs[0]);
@@ -76,11 +86,11 @@ public abstract class AbstractCommand {
         }
     }
 
-    protected void processUpdateAndRespond(Connection conn, ResultSet rs, String[] messageArgs, EmbedBuilder builder, User author) throws SQLException {
+    protected void processUpdateAndRespond(Connection conn, ResultSet rs, EmbedBuilder builder) throws SQLException {
 
     }
 
-    protected void returnHelp(MessageChannel channel) {
+    protected void returnHelp() {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(Color.red);
         builder.setTitle(getHelpTitle());

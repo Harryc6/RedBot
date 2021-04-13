@@ -28,20 +28,17 @@ public class MessageListener extends ListenerAdapter {
                 case ADDICTION:
                     break;
                 case BANK:
-                    BankCommand bankCommand = new BankCommand();
-                    bankCommand.process(messageArgs, author, channel);
+                    new BankCommand(messageArgs, author, channel).process();
                     break;
                 case BUYARMOR:
                     break;
                 case CHECK:
-                    CheckCommand checkCommand = new CheckCommand();
-                    checkCommand.process(messageArgs, author, channel);
+                     new CheckCommand(messageArgs, author, channel).process();
                     break;
                 case COVERAGE:
                     break;
                 case FAME:
-                    FameCommand fameCommand = new FameCommand();
-                    fameCommand.process(messageArgs, author, channel);
+                    new FameCommand(messageArgs, author, channel).process();
                     break;
                 case FIXER:
                     break;
@@ -56,16 +53,13 @@ public class MessageListener extends ListenerAdapter {
                 case HUSTLE:
                     break;
                 case IMPROVE:
-                    ImproveCommand improveCommand = new ImproveCommand();
-                    improveCommand.process(messageArgs, author, channel);
+                    new ImproveCommand(messageArgs, author, channel).process();
                     break;
                 case INFO:
-                    InfoCommand infoCommand = new InfoCommand();
-                    infoCommand.process(messageArgs, author, channel);
+                    new InfoCommand(messageArgs, author, channel).process();
                     break;
                 case INSTALL:
-                    InstallCommand installCommand = new InstallCommand();
-                    installCommand.process(messageArgs, author, channel);
+                    new InstallCommand(messageArgs, author, channel).process();
                     break;
                 case LIFESTYLE:
                     break;
@@ -99,6 +93,7 @@ public class MessageListener extends ListenerAdapter {
                     channel.sendMessage(messageEvent + " Is An Unrecognised Command").queue();
                     break;
                 case UPDATEBODYHP:
+                    new UpdateBodyHpCommand(messageArgs, author, channel).process();
                     break;
             }
         }

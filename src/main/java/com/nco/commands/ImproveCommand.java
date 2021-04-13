@@ -2,6 +2,7 @@ package com.nco.commands;
 
 import com.nco.RedBot;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 
 import java.sql.Connection;
@@ -11,21 +12,25 @@ import java.sql.SQLException;
 
 public class ImproveCommand extends AbstractCommand {
 
+    public ImproveCommand(String[] messageArgs, User author, MessageChannel channel) {
+        super(messageArgs, author, channel);
+    }
+
     @Override
-    protected boolean canProcessByUser(String[] messageArgs) {
+    protected boolean canProcessByUser() {
         return messageArgs.length == 2;
     }
 
     @Override
-    protected boolean canProcessByName(String[] messageArgs) {
+    protected boolean canProcessByName() {
         return messageArgs.length == 3;
     }
 
 
 
     @Override
-    protected void processUpdateAndRespond(Connection conn, ResultSet rs, String[] messageArgs, EmbedBuilder builder, User author) throws SQLException {
-        if (updateImprove(messageArgs, rs, conn) && insertImprove(messageArgs, conn, author)) {
+    protected void processUpdateAndRespond(Connection conn, ResultSet rs, EmbedBuilder builder) throws SQLException {
+        if (updateImprove(rs, conn) && insertImprove(conn)) {
             int changeIP = Integer.parseInt(messageArgs[2]);
             int oldIP = rs.getInt("InfluencePoints");
             int newIP = oldIP - (changeIP < 0 ? -changeIP : changeIP);
@@ -42,8 +47,8 @@ public class ImproveCommand extends AbstractCommand {
         }
     }
 
-    private static boolean updateImprove(String[] messageArg, ResultSet rs, Connection conn) throws SQLException {
-        int changeIP = Integer.parseInt(messageArg[2]);
+    private boolean updateImprove(ResultSet rs, Connection conn) throws SQLException {
+        int changeIP = Integer.parseInt(messageArgs[2]);
         int oldIP = rs.getInt("InfluencePoints");
         int newIP = oldIP - (changeIP < 0 ? -changeIP : changeIP);
 
@@ -51,17 +56,17 @@ public class ImproveCommand extends AbstractCommand {
 
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, newIP);
-            stat.setString(2, messageArg[0]);
+            stat.setString(2, messageArgs[0]);
             return stat.executeUpdate() == 1;
         }
     }
 
-    private static boolean insertImprove(String[] messageArg, Connection conn, User author) throws SQLException {
+    private boolean insertImprove(Connection conn) throws SQLException {
         String sql  = "INSERT INTO NCO_IMPROVE (CharacterName, Reason, InfluencePoints, CreatedBy) VALUES (?,?,?,?)";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
-            stat.setString(1, messageArg[0]);
-            stat.setString(2, messageArg[1]);
-            stat.setString(3, messageArg[2]);
+            stat.setString(1, messageArgs[0]);
+            stat.setString(2, messageArgs[1]);
+            stat.setString(3, messageArgs[2]);
             stat.setString(4, author.getAsTag());
             return stat.executeUpdate() == 1;
         }

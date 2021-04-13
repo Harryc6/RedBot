@@ -4,6 +4,7 @@ import com.nco.RedBot;
 import com.nco.utils.NumberUtils;
 import com.nco.utils.RPGDice;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 
 import java.sql.Connection;
@@ -13,25 +14,29 @@ import java.sql.SQLException;
 
 public class InstallCommand extends AbstractCommand {
 
+    public InstallCommand(String[] messageArgs, User author, MessageChannel channel) {
+        super(messageArgs, author, channel);
+    }
+
     @Override
-    protected boolean canProcessByUser(String[] messageArgs) {
+    protected boolean canProcessByUser() {
         return messageArgs.length >= 4;
     }
 
     @Override
-    protected boolean canProcessByName(String[] messageArgs) {
+    protected boolean canProcessByName() {
         return messageArgs.length >= 5;
     }
 
     @Override
-    protected void processUpdateAndRespond(Connection conn, ResultSet rs, String[] messageArgs, EmbedBuilder builder, User author) throws SQLException {
+    protected void processUpdateAndRespond(Connection conn, ResultSet rs, EmbedBuilder builder) throws SQLException {
         String valueRolled = RPGDice.roll(messageArgs[2]);
-        if (validateArgs(valueRolled, messageArgs)) {
+        if (validateArgs(valueRolled)) {
             builder.setTitle(getHelpTitle());
             builder.setDescription(getHelpDescription());
             return;
         }
-        if (updateInstall(valueRolled, messageArgs, rs, conn) && insertInstall(valueRolled ,messageArgs, conn, author)) {
+        if (updateInstall(valueRolled, rs, conn) && insertInstall(valueRolled, conn)) {
 
             builder.setTitle(messageArgs[0] + "'s Installs Updated");
             builder.setDescription("Installing \"" + messageArgs[1] + "\"");
@@ -51,16 +56,6 @@ public class InstallCommand extends AbstractCommand {
             builder.addField("Roll: " + messageArgs[2],  valueRolled, true);
             builder.addField("New Humanity", (rs.getInt("Humanity") - Integer.parseInt(valueRolled)) + "/" +
                     (rs.getInt("MaxHumanity") - (messageArgs[4].equalsIgnoreCase("cyberware") ? 2 : 4)), true);
-
-//            if (messageArgs.length == 4) {
-//                int oldDownTime = rs.getInt("DownTime");
-//                int changeDT = Integer.parseInt(messageArgs[3]);
-//                int newDownTime = oldDownTime - (changeDT < 0 ? -changeDT : changeDT);
-//
-//                builder.addField("Old DT", String.valueOf(oldDownTime), true);
-//                builder.addBlankField(true);
-//                builder.addField("New DT", String.valueOf(newDownTime), true);
-//            }
         } else {
             builder.setTitle("ERROR: Install Update Or Insert Failure");
             builder.setDescription("Please contact an administrator to get this resolved");
@@ -69,13 +64,13 @@ public class InstallCommand extends AbstractCommand {
 
     }
 
-    private boolean validateArgs(String valueRolled, String[] messageArgs) {
+    private boolean validateArgs(String valueRolled) {
         return valueRolled == null && (NumberUtils.isNumeric(messageArgs[3]) || messageArgs[3].equalsIgnoreCase("paid"))
                 && (messageArgs[4].equalsIgnoreCase("cyberware") || messageArgs[4].equalsIgnoreCase("borgware"));
     }
 
 
-    private boolean updateInstall(String valueRolled, String[] messageArgs, ResultSet rs, Connection conn) throws SQLException {
+    private boolean updateInstall(String valueRolled, ResultSet rs, Connection conn) throws SQLException {
         int newHumanity = rs.getInt("Humanity") - Integer.parseInt(valueRolled);
         int newMaxHumanity = rs.getInt("MaxHumanity") - (messageArgs[4].equalsIgnoreCase("cyberware") ? 2 : 4);
         int newBank = rs.getInt("Bank");
@@ -94,7 +89,7 @@ public class InstallCommand extends AbstractCommand {
         }
     }
 
-    private boolean insertInstall(String valueRolled, String[] messageArgs, Connection conn, User author) throws SQLException {
+    private boolean insertInstall(String valueRolled, Connection conn) throws SQLException {
         String sql = "INSERT INTO NCO_INSTALL (CharacterName, Product, Dice, HumanityLoss, Amount, CyberOrBorg, CreatedBy) VALUES (?,?,?,?,?,?,?)";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);

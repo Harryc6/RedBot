@@ -2,6 +2,7 @@ package com.nco.commands;
 
 import com.nco.RedBot;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 
 import java.sql.Connection;
@@ -11,18 +12,22 @@ import java.sql.SQLException;
 
 public class CheckCommand extends AbstractCommand {
 
+    public CheckCommand(String[] messageArgs, User author, MessageChannel channel) {
+        super(messageArgs, author, channel);
+    }
+
     @Override
-    protected boolean canProcessByUser(String[] messageArgs) {
+    protected boolean canProcessByUser() {
         return messageArgs[0].isEmpty();
     }
 
     @Override
-    protected boolean canProcessByName(String[] messageArgs) {
+    protected boolean canProcessByName() {
         return messageArgs.length == 1;
     }
 
     @Override
-    protected void processUpdateAndRespond(Connection conn, ResultSet rs, String[] messageArgs, EmbedBuilder builder, User author) throws SQLException {
+    protected void processUpdateAndRespond(Connection conn, ResultSet rs, EmbedBuilder builder) throws SQLException {
         String characterName = rs.getString("CharacterName");
         int currentHum = rs.getInt("Humanity");
 
@@ -41,7 +46,7 @@ public class CheckCommand extends AbstractCommand {
         buildDescription(builder, currentHum, characterName, conn);
     }
 
-    private static void buildDescription(EmbedBuilder builder, int currentHum, String characterName, Connection conn) throws SQLException {
+    private void buildDescription(EmbedBuilder builder, int currentHum, String characterName, Connection conn) throws SQLException {
         buildDescriptionForInjury(builder, characterName, conn);
         buildDescriptionForPsychosis(builder, currentHum);
     }

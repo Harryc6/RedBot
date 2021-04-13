@@ -3,6 +3,7 @@ package com.nco.commands;
 import com.nco.RedBot;
 import com.nco.utils.NumberUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 
 import java.sql.Connection;
@@ -12,19 +13,23 @@ import java.sql.SQLException;
 
 public class BankCommand extends AbstractCommand {
 
+    public BankCommand(String[] messageArgs, User author, MessageChannel channel) {
+        super(messageArgs, author, channel);
+    }
+
     @Override
-    protected boolean canProcessByUser(String[] messageArgs) {
+    protected boolean canProcessByUser() {
         return messageArgs.length >= 2 && NumberUtils.isNumeric(messageArgs[1]);
     }
 
     @Override
-    protected boolean canProcessByName(String[] messageArgs) {
+    protected boolean canProcessByName() {
         return messageArgs.length >= 3 && NumberUtils.isNumeric(messageArgs[2]);
     }
 
     @Override
-    protected void processUpdateAndRespond(Connection conn, ResultSet rs, String[] messageArgs, EmbedBuilder builder, User author) throws SQLException {
-        if (updateBank(messageArgs, rs, conn) && insertBank(messageArgs, conn, author)) {
+    protected void processUpdateAndRespond(Connection conn, ResultSet rs, EmbedBuilder builder) throws SQLException {
+        if (updateBank(rs, conn) && insertBank(conn)) {
             int oldBank = rs.getInt("Bank");
             int newBank = oldBank + Integer.parseInt(messageArgs[2]);
             builder.setTitle(messageArgs[0] + "'s Bank Balance Updated");
@@ -48,7 +53,7 @@ public class BankCommand extends AbstractCommand {
     }
 
 
-    private static boolean updateBank(String[] messageArgs, ResultSet rs, Connection conn) throws SQLException {
+    private boolean updateBank(ResultSet rs, Connection conn) throws SQLException {
         int newBalance = rs.getInt("Bank") + Integer.parseInt(messageArgs[2]);
         int newDownTime = rs.getInt("DownTime");
         if (messageArgs.length == 4) {
@@ -65,7 +70,7 @@ public class BankCommand extends AbstractCommand {
         }
     }
 
-    private static boolean insertBank(String[] messageArgs, Connection conn, User author) throws SQLException {
+    private boolean insertBank(Connection conn) throws SQLException {
         String sql;
         if (messageArgs.length == 4) {
             sql = "INSERT INTO NCO_BANK (CharacterName, Reason, Amount, CreatedBy, DownTime) VALUES (?,?,?,?,?)";
