@@ -20,12 +20,23 @@ public class InstallCommand extends AbstractCommand {
 
     @Override
     protected boolean canProcessByUser() {
-        return messageArgs.length >= 4;
+        return messageArgs.length >= 4 && (isPaid() || doesBankChange());
+    }
+
+    private boolean isPaid() {
+        return messageArgs[messageArgs.length - 2].equalsIgnoreCase("paid") ||
+                (NumberUtils.isNumeric(messageArgs[messageArgs.length - 2]) &&
+                        NumberUtils.asPositive(messageArgs[messageArgs.length - 2]) == 0);
+    }
+
+    private boolean doesBankChange() {
+        return NumberUtils.isNumeric(messageArgs[messageArgs.length - 2]) &&
+                NumberUtils.asPositive(messageArgs[messageArgs.length - 2]) != 0;
     }
 
     @Override
     protected boolean canProcessByName() {
-        return messageArgs.length >= 5;
+        return messageArgs.length >= 5 && (isPaid() || doesBankChange());
     }
 
     @Override
@@ -34,14 +45,16 @@ public class InstallCommand extends AbstractCommand {
         if (validateArgs(valueRolled)) {
             builder.setTitle(getHelpTitle());
             builder.setDescription(getHelpDescription());
-            return;
-        }
-        if (updateInstall(valueRolled, rs, conn) && insertInstall(valueRolled, conn)) {
+        } else if (!isPaid() && doesBankChange() && NumberUtils.asPositive(messageArgs[3]) > rs.getInt("Bank")) {
+                builder.setTitle("ERROR: Not Enough Eurobucks");
+                builder.setDescription(messageArgs[0] + " has only " + rs.getString("Bank") + "eb available " +
+                        "where " + NumberUtils.asPositive(messageArgs[messageArgs.length - 1]) + "eb is being spent.");
+        } else if (updateInstall(valueRolled, rs, conn) && insertInstall(valueRolled, conn)) {
 
             builder.setTitle(messageArgs[0] + "'s Installs Updated");
             builder.setDescription("Installing \"" + messageArgs[1] + "\"");
 
-            if (NumberUtils.isNumeric(messageArgs[3])) {
+            if (doesBankChange()) {
                 int oldBank = rs.getInt("Bank");
                 int newBank = oldBank;
                 int cost = Integer.parseInt(messageArgs[3]);

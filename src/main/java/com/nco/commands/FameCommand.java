@@ -81,6 +81,6 @@ public class FameCommand extends AbstractCommand {
     @Override
     protected String getHelpDescription() {
         return "Please use the commands below to add fame onto a characters \n" + RedBot.PREFIX +
-                "fame \"PC Name\" \"Reason\" \"Amount\" \nor \n" + RedBot.PREFIX + "fame \"Reason\" \"Amount\"";
+                "fame \"PC Name(Optional)\" \"Reason\" \"Amount\"";
     }
 }

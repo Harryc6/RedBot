@@ -31,6 +31,7 @@ public class MessageListener extends ListenerAdapter {
                     new BankCommand(messageArgs, author, channel).process();
                     break;
                 case BUYARMOR:
+                    new BuyArmorCommand(messageArgs, author, channel).process();
                     break;
                 case CHECK:
                      new CheckCommand(messageArgs, author, channel).process();

@@ -14,7 +14,7 @@ public class StringUtils {
             if (c == ' ' && !isBetweenQuotationMarks) {
                 c = '~';
             }
-            if (c != '"') {
+            if (c != '"' && (c != '~' || builtS.charAt(builtS.length() - 1) != '~')) {
                 builtS += c;
             }
         }

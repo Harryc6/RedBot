@@ -6,14 +6,6 @@ public class NumberUtils {
         return (int) ((Math.random() * (max - min)) + min);
     }
 
-    public static int rollDice(int dice, int diceSize, boolean half) {
-        double d = diceSize;
-        if (half) {
-            diceSize = (int) Math.ceil(d / 2);
-        }
-        return getRandomNumber(dice , dice * diceSize);
-    }
-
     public static boolean isNumeric(String strNum) {
         if (strNum == null) {
             return false;
@@ -26,4 +18,8 @@ public class NumberUtils {
         return true;
     }
 
+    public static int asPositive(String str) {
+        int i = Integer.parseInt(str);
+        return (i < 0 ? i * -1 : i);
+    }
 }

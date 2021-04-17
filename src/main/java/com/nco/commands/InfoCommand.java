@@ -16,7 +16,7 @@ public class InfoCommand extends AbstractCommand {
     protected void returnHelp() {
         EmbedBuilder info = new EmbedBuilder();
         info.setTitle("RedBot v2");
-        info.setDescription("This is based off of the previous iteration RedBot by Blaze.");
+        info.setDescription("This is based off of the previous iteration RedBot by Kookie & Blaze.");
         info.addField("Version", "Pre-Alpha", true);
         info.addField("Creator", "Harry Carr", true);
         info.setColor(Color.red);

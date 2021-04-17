@@ -19,17 +19,28 @@ public class BankCommand extends AbstractCommand {
 
     @Override
     protected boolean canProcessByUser() {
-        return messageArgs.length >= 2 && NumberUtils.isNumeric(messageArgs[1]);
+        return (messageArgs.length == 2 || (messageArgs.length == 3 && NumberUtils.isNumeric(messageArgs[2])))
+                && NumberUtils.isNumeric(messageArgs[1]);
     }
 
     @Override
     protected boolean canProcessByName() {
-        return messageArgs.length >= 3 && NumberUtils.isNumeric(messageArgs[2]);
+        return (messageArgs.length == 3 || (messageArgs.length == 4 && NumberUtils.isNumeric(messageArgs[3])))
+                && NumberUtils.isNumeric(messageArgs[2]);
     }
 
     @Override
     protected void processUpdateAndRespond(Connection conn, ResultSet rs, EmbedBuilder builder) throws SQLException {
-        if (updateBank(rs, conn) && insertBank(conn)) {
+        if (messageArgs.length == 4  && NumberUtils.asPositive(messageArgs[3]) > rs.getInt("DownTime")) {
+            builder.setTitle("ERROR: Not Enough DT");
+            builder.setDescription(messageArgs[0] + " has only " + rs.getString("DownTime") + " available DT " +
+                    "where " + NumberUtils.asPositive(messageArgs[3]) + " DT was requested.");
+        } else if (Integer.parseInt(messageArgs[2]) < 0 && NumberUtils.asPositive(messageArgs[2]) > rs.getInt("Bank")) {
+            builder.setTitle("ERROR: Not Enough Eurobucks");
+            builder.setDescription(messageArgs[0] + " has only " + rs.getString("Bank") + "eb available " +
+                    "where " + NumberUtils.asPositive(messageArgs[2]) + "eb is being spent.");
+
+        } else if (updateBank(rs, conn) && insertBank(conn)) {
             int oldBank = rs.getInt("Bank");
             int newBank = oldBank + Integer.parseInt(messageArgs[2]);
             builder.setTitle(messageArgs[0] + "'s Bank Balance Updated");
@@ -98,8 +109,7 @@ public class BankCommand extends AbstractCommand {
     @Override
     protected String getHelpDescription() {
         return "Please use the commands below to manage a characters bank\n" + RedBot.PREFIX +
-                "bank \"PC Name\" \"Reason\" \"Amount\" \"DT(Optional)\" \nor \n" + RedBot.PREFIX +
-                "bank \"Reason\" \"Amount\" \"DT(Optional)\"";
+                "bank \"PC Name(Optional)\" \"Reason\" \"Amount\" \"DT(Optional)\"";
     }
 
 }

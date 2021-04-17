@@ -78,7 +78,7 @@ public class UpdateBodyHpCommand extends AbstractCommand {
 
     @Override
     protected String getHelpDescription() {
-        return "Please use the commands below to manage a characters bank\n" + RedBot.PREFIX +
+        return "Please use the commands below to manage a characters body & max HP\n" + RedBot.PREFIX +
                 "updatebodyhp \"PC Name(Optional)\" \"New Body Score\" \"New HP Score\" \"Reason\"";
     }
 }

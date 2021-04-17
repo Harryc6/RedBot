@@ -94,7 +94,7 @@ public class CheckCommand extends AbstractCommand {
     @Override
     protected String getHelpDescription() {
         return "Please use the commands below to see information on characters \n" + RedBot.PREFIX +
-                "check \"PC Name\" \nor \n" + RedBot.PREFIX + "check";
+                "check \"PC Name(Optional)\"";
     }
 
 }

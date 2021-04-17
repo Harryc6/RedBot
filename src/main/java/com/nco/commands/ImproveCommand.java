@@ -80,8 +80,7 @@ public class ImproveCommand extends AbstractCommand {
     @Override
     protected String getHelpDescription() {
         return "Please use the commands below to improve a characters bank\n" + RedBot.PREFIX +
-                "improve \"PC Name\" \"Skill Name, Current Skill Level, New Skill Level\" \"Amount\" \nor \n"
-                + RedBot.PREFIX + "improve \"Skill Name, Current Skill Level, New Skill Level\" \"Amount\"";
+                "improve \"PC Name(Optional)\" \"Skill Name, Current Skill Level, New Skill Level\" \"Amount\"";
     }
 
 }
