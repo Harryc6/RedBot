@@ -5,6 +5,8 @@ import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.sql.Connection;
@@ -14,6 +16,7 @@ import java.sql.SQLException;
 
 public abstract class AbstractCommand {
 
+    Logger logger = LoggerFactory.getLogger(this.getClass());
     String[] messageArgs;
     User author;
     MessageChannel channel;
