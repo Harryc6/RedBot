@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.nco.entities.NcoFameEntity" table="NCO_FAME" schema="sql4404136">
+        <id name="id"/>
+        <property name="characterName" column="CharacterName"/>
+        <property name="fame" column="Fame"/>
+        <property name="reason" column="Reason"/>
+        <property name="createdOn" column="CreatedOn"/>
+        <property name="createdBy" column="CreatedBy"/>
+    </class>
+</hibernate-mapping>

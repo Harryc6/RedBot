@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.nco.entities.NcoBuyArmorEntity" table="NCO_BUY_ARMOR" schema="sql4404136">
+        <id name="id"/>
+        <property name="characterName" column="CharacterName"/>
+        <property name="headArmorType" column="HeadArmorType"/>
+        <property name="headSp" column="HeadSP"/>
+        <property name="bodyArmorType" column="BodyArmorType"/>
+        <property name="bodySp" column="BodySP"/>
+        <property name="amount" column="Amount"/>
+        <property name="creationOn" column="CreationOn"/>
+        <property name="createdBy" column="CreatedBy"/>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.nco.entities.NcoBodyHpUpdateEntity" table="NCO_BODY_HP_UPDATE" schema="sql4404136">
+        <id name="id"/>
+        <property name="characterName" column="CharacterName"/>
+        <property name="oldBody" column="OldBody"/>
+        <property name="newBody" column="NewBody"/>
+        <property name="oldMaxHp" column="OldMaxHP"/>
+        <property name="newMaxHp" column="NewMaxHP"/>
+        <property name="reason" column="Reason"/>
+        <property name="createdOn" column="CreatedOn"/>
+        <property name="createdBy" column="CreatedBy"/>
+    </class>
+</hibernate-mapping>

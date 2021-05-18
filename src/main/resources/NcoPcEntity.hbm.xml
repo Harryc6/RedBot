@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.nco.entities.NcoPcEntity" table="NCO_PC" schema="sql4404136">
+        <id name="characterName" column="CharacterName"/>
+        <property name="discordName" column="DiscordName"/>
+        <property name="role" column="Role"/>
+        <property name="streetCred" column="StreetCred"/>
+        <property name="rank" column="Rank"/>
+        <property name="bodyScore" column="BodyScore"/>
+        <property name="willScore" column="WillScore"/>
+        <property name="maxHp" column="MaxHP"/>
+        <property name="currentHp" column="CurrentHP"/>
+        <property name="headSp" column="HeadSP"/>
+        <property name="bodySp" column="BodySP"/>
+        <property name="maxHumanity" column="MaxHumanity"/>
+        <property name="humanity" column="Humanity"/>
+        <property name="bank" column="Bank"/>
+        <property name="influencePoints" column="InfluencePoints"/>
+        <property name="reputation" column="Reputation"/>
+        <property name="fame" column="Fame"/>
+        <property name="vault" column="Vault"/>
+        <property name="downTime" column="DownTime"/>
+        <property name="lifestyle" column="Lifestyle"/>
+        <property name="rent" column="Rent"/>
+        <property name="payDues" column="PayDues"/>
+        <property name="addicted" column="Addicted"/>
+        <property name="hospitalDebt" column="HospitalDebt"/>
+        <property name="ttCoverage" column="TTCoverage"/>
+        <property name="ttcLevel" column="TTCLevel"/>
+        <property name="salvagedEuros" column="SalvagedEuros"/>
+        <property name="gamesOverall" column="GamesOverall"/>
+        <property name="weeklyGames" column="WeeklyGames"/>
+        <property name="jobBanUntil" column="JobBanUntil"/>
+        <property name="createdOn" column="CreatedOn"/>
+        <property name="createdBy" column="CreatedBy"/>
+        <property name="retiredYn" column="RetiredYN"/>
+    </class>
+
+</hibernate-mapping>
