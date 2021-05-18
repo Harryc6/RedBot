@@ -1,25 +1,22 @@
 package com.nco.utils;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
-
 public class ConfigVar {
 
     public static String getDBUser() {
-        return System.getenv().get("DBUser");
+        return System.getenv().get("DB_USERNAME");
     }
 
     public static String getDBPassword() {
-        return System.getenv().get("DBPassword");
+        return System.getenv().get("DB_PASSWORD");
     }
 
     public static String getDBUrl() {
-        return System.getenv().get("DBUrl");
+        return "jdbc:" + System.getenv("DB_CONNECTION") + "://" + System.getenv().get("DB_HOST") + ":"
+                + System.getenv().get("DB_PORT") + "/" + System.getenv().get("DB_DATABASE");
     }
 
     public static String getDiscordToken() {
-        return System.getenv().get("DiscordToken");
+        return System.getenv().get("DISCORD_TOKEN");
     }
 
 }

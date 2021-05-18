@@ -49,7 +49,9 @@ public class DBUtils {
         try(Connection conn = DBUtils.getConnection(); PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, arg);
             try (ResultSet rs = stat.executeQuery()) {
-                return new PlayerCharacter(rs);
+                if (rs.next()) {
+                    return new PlayerCharacter(rs);
+                }
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
