@@ -6,33 +6,20 @@ import java.util.Properties;
 
 public class ConfigVar {
 
-    private static final String PROPERTIES_URL = "config.properties";
-
     public static String getDBUser() {
-        return getProperties().getProperty("DBUser");
+        return System.getenv().get("DBUser");
     }
 
     public static String getDBPassword() {
-        return getProperties().getProperty("DBPassword");
+        return System.getenv().get("DBPassword");
     }
 
     public static String getDBUrl() {
-        return getProperties().getProperty("DBUrl");
+        return System.getenv().get("DBUrl");
     }
 
     public static String getDiscordToken() {
-        return getProperties().getProperty("DiscordToken");
-    }
-
-    private static Properties getProperties() {
-        Properties prop = new Properties();
-        try {
-            FileInputStream ip = new FileInputStream(PROPERTIES_URL);
-            prop.load(ip);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return prop;
+        return System.getenv().get("DiscordToken");
     }
 
 }
