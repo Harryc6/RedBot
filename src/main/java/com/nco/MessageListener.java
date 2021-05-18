@@ -87,6 +87,7 @@ public class MessageListener extends ListenerAdapter {
                 case TIMEZONE:
                     break;
                 case TRADE:
+                    new TradeCommand(messageArgs, author, channel).process();
                     break;
                 case TRAUMADEBT:
                     break;

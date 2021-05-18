@@ -1,6 +1,7 @@
 package com.nco.commands;
 
 import com.nco.RedBot;
+import com.nco.pojos.PlayerCharacter;
 import com.nco.utils.NumberUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -8,7 +9,6 @@ import net.dv8tion.jda.api.entities.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class BuyArmorCommand extends AbstractCommand {
@@ -65,36 +65,36 @@ public class BuyArmorCommand extends AbstractCommand {
     }
 
     @Override
-    protected void processUpdateAndRespond(Connection conn, ResultSet rs, EmbedBuilder builder) throws SQLException {
-        if (!isArmorPaid() && doesBankChange() && NumberUtils.asPositive(messageArgs[messageArgs.length - 1]) > rs.getInt("Bank")) {
+    protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
+        if (!isArmorPaid() && doesBankChange() && NumberUtils.asPositive(messageArgs[messageArgs.length - 1]) > pc.getBank()) {
             builder.setTitle("ERROR: Not Enough Eurobucks");
-            builder.setDescription(messageArgs[0] + " has only " + rs.getString("Bank") + "eb available " +
+            builder.setDescription(messageArgs[0] + " has only " + pc.getBank() + "eb available " +
                     "where " + NumberUtils.asPositive(messageArgs[messageArgs.length - 1]) + "eb is being spent.");
-        } else if (updateArmor(conn, rs) && insertBuyArmor(conn)) {
+        } else if (updateArmor(conn, pc) && insertBuyArmor(conn)) {
             builder.setTitle(messageArgs[0] + "'s Armor Updated");
             if (isMultiLocation()) {
-                builder.addField("Old Head SP", rs.getString("HeadSP"), true);
+                builder.addField("Old Head SP", String.valueOf(pc.getHeadSP()), true);
                 builder.addBlankField(true);
                 builder.addField("New Head SP", (isHead(2) ? messageArgs[3] : messageArgs[6]), true);
-                builder.addField("Old Body SP", rs.getString("BodySP"), true);
+                builder.addField("Old Body SP", String.valueOf(pc.getBodySP()), true);
                 builder.addBlankField(true);
                 builder.addField("New Body SP", (isBody(2) ? messageArgs[3] : messageArgs[6]), true);
             } else {
                 if (isHead(2)) {
-                    builder.addField("Old Head SP", rs.getString("HeadSP"), true);
+                    builder.addField("Old Head SP", String.valueOf(pc.getHeadSP()), true);
                     builder.addBlankField(true);
                     builder.addField("New Head SP", messageArgs[3], true);
                 } else {
-                    builder.addField("Old Body SP", rs.getString("BodySP"), true);
+                    builder.addField("Old Body SP", String.valueOf(pc.getBodySP()), true);
                     builder.addBlankField(true);
                     builder.addField("New Body SP", messageArgs[3], true);
                 }
             }
             if (!isArmorPaid() && doesBankChange()) {
-                int newBank = rs.getInt("Bank");
+                int newBank = pc.getBank();
                 int changeBank = Integer.parseInt(messageArgs[messageArgs.length - 1]);
                 newBank -= (changeBank < 0 ? -changeBank : changeBank);
-                builder.addField("Old Bank", rs.getInt("Bank") + "eb", true);
+                builder.addField("Old Bank", pc.getBank() + "eb", true);
                 builder.addBlankField(true);
                 builder.addField("New Bank", newBank + "eb", true);
             }
@@ -104,8 +104,8 @@ public class BuyArmorCommand extends AbstractCommand {
         }
     }
 
-    private boolean updateArmor(Connection conn, ResultSet rs) throws SQLException {
-        int newBank = rs.getInt("Bank");
+    private boolean updateArmor(Connection conn, PlayerCharacter pc) throws SQLException {
+        int newBank = pc.getBank();
         if (!isArmorPaid() && doesBankChange()) {
             int changeBank = Integer.parseInt(messageArgs[messageArgs.length - 1]);
             newBank -= (changeBank < 0 ? -changeBank : changeBank);

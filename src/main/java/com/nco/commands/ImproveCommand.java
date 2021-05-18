@@ -1,13 +1,13 @@
 package com.nco.commands;
 
 import com.nco.RedBot;
+import com.nco.pojos.PlayerCharacter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ImproveCommand extends AbstractCommand {
@@ -29,10 +29,10 @@ public class ImproveCommand extends AbstractCommand {
 
 
     @Override
-    protected void processUpdateAndRespond(Connection conn, ResultSet rs, EmbedBuilder builder) throws SQLException {
-        if (updateImprove(rs, conn) && insertImprove(conn)) {
+    protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
+        if (updateImprove(pc, conn) && insertImprove(conn)) {
             int changeIP = Integer.parseInt(messageArgs[2]);
-            int oldIP = rs.getInt("InfluencePoints");
+            int oldIP = pc.getInfluencePoints();
             int newIP = oldIP - (changeIP < 0 ? -changeIP : changeIP);
 
             builder.setTitle(messageArgs[0] + "'s IP Updated");
@@ -47,9 +47,9 @@ public class ImproveCommand extends AbstractCommand {
         }
     }
 
-    private boolean updateImprove(ResultSet rs, Connection conn) throws SQLException {
+    private boolean updateImprove(PlayerCharacter pc, Connection conn) throws SQLException {
         int changeIP = Integer.parseInt(messageArgs[2]);
-        int oldIP = rs.getInt("InfluencePoints");
+        int oldIP = pc.getInfluencePoints();
         int newIP = oldIP - (changeIP < 0 ? -changeIP : changeIP);
 
         String sql = "UPDATE NCO_PC set InfluencePoints = ? Where CharacterName = ?";

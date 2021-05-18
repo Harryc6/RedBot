@@ -22,4 +22,9 @@ public class NumberUtils {
         int i = Integer.parseInt(str);
         return (i < 0 ? i * -1 : i);
     }
+
+    public static int asNegative(String str) {
+        int i = Integer.parseInt(str);
+        return (i < 0 ? i : i * -1);
+    }
 }

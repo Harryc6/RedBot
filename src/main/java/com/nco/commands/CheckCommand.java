@@ -1,6 +1,7 @@
 package com.nco.commands;
 
 import com.nco.RedBot;
+import com.nco.pojos.PlayerCharacter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -27,21 +28,21 @@ public class CheckCommand extends AbstractCommand {
     }
 
     @Override
-    protected void processUpdateAndRespond(Connection conn, ResultSet rs, EmbedBuilder builder) throws SQLException {
-        String characterName = rs.getString("CharacterName");
-        int currentHum = rs.getInt("Humanity");
+    protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
+        String characterName = pc.getCharacterName();
+        int currentHum = pc.getHumanity();
 
         builder.setTitle(characterName);
-        builder.addField("Bank", rs.getString("Bank"), true);
-        builder.addField("HP", rs.getString("CurrentHP") + "/" +
-                rs.getString("MaxHP"), true);
+        builder.addField("Bank", String.valueOf(pc.getBank()), true);
+        builder.addField("HP", pc.getCurrentHP() + "/" +
+                pc.getMaxHP(), true);
         builder.addField("Humanity", currentHum + "/" +
-                rs.getString("MaxHumanity"), true);
-        builder.addField("Monthly", rs.getString("PayDues"), true);
-        builder.addField("Down Time", rs.getString("DownTime"), true);
-        builder.addField("IP", rs.getString("InfluencePoints"), true);
-        builder.addField("Reputation", rs.getString("Reputation"), true);
-        builder.addField("Weekly Games", rs.getString("WeeklyGames"), true);
+                pc.getMaxHumanity(), true);
+        builder.addField("Monthly", pc.getPayDues(), true);
+        builder.addField("Down Time", String.valueOf(pc.getDownTime()), true);
+        builder.addField("IP", String.valueOf(pc.getInfluencePoints()), true);
+        builder.addField("Reputation", String.valueOf(pc.getReputation()), true);
+        builder.addField("Weekly Games", String.valueOf(pc.getWeeklyGames()), true);
 
         buildDescription(builder, currentHum, characterName, conn);
     }

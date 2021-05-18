@@ -1,6 +1,7 @@
 package com.nco.commands;
 
 import com.nco.RedBot;
+import com.nco.pojos.PlayerCharacter;
 import com.nco.utils.NumberUtils;
 import com.nco.utils.RPGDice;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -9,7 +10,6 @@ import net.dv8tion.jda.api.entities.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class InstallCommand extends AbstractCommand {
@@ -40,22 +40,22 @@ public class InstallCommand extends AbstractCommand {
     }
 
     @Override
-    protected void processUpdateAndRespond(Connection conn, ResultSet rs, EmbedBuilder builder) throws SQLException {
+    protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
         String valueRolled = RPGDice.roll(messageArgs[2]);
         if (validateArgs(valueRolled)) {
             builder.setTitle(getHelpTitle());
             builder.setDescription(getHelpDescription());
-        } else if (!isPaid() && doesBankChange() && NumberUtils.asPositive(messageArgs[3]) > rs.getInt("Bank")) {
+        } else if (!isPaid() && doesBankChange() && NumberUtils.asPositive(messageArgs[3]) > pc.getBank()) {
                 builder.setTitle("ERROR: Not Enough Eurobucks");
-                builder.setDescription(messageArgs[0] + " has only " + rs.getString("Bank") + "eb available " +
+                builder.setDescription(messageArgs[0] + " has only " + pc.getBank() + "eb available " +
                         "where " + NumberUtils.asPositive(messageArgs[messageArgs.length - 1]) + "eb is being spent.");
-        } else if (updateInstall(valueRolled, rs, conn) && insertInstall(valueRolled, conn)) {
+        } else if (updateInstall(valueRolled, pc, conn) && insertInstall(valueRolled, conn)) {
 
             builder.setTitle(messageArgs[0] + "'s Installs Updated");
             builder.setDescription("Installing \"" + messageArgs[1] + "\"");
 
             if (doesBankChange()) {
-                int oldBank = rs.getInt("Bank");
+                int oldBank = pc.getBank();
                 int newBank = oldBank;
                 int cost = Integer.parseInt(messageArgs[3]);
                 newBank -= (0 > cost ? cost * -1 : cost);
@@ -64,11 +64,11 @@ public class InstallCommand extends AbstractCommand {
                 builder.addField("New Balance", newBank + "eb", true);
             }
 
-            builder.addField("Old Humanity", rs.getString("Humanity") + "/" +
-                    rs.getString("MaxHumanity"), true);
+            builder.addField("Old Humanity", pc.getHumanity() + "/" +
+                    pc.getMaxHumanity(), true);
             builder.addField("Roll: " + messageArgs[2],  valueRolled, true);
-            builder.addField("New Humanity", (rs.getInt("Humanity") - Integer.parseInt(valueRolled)) + "/" +
-                    (rs.getInt("MaxHumanity") - (messageArgs[4].equalsIgnoreCase("cyberware") ? 2 : 4)), true);
+            builder.addField("New Humanity", (pc.getHumanity() - Integer.parseInt(valueRolled)) + "/" +
+                    (pc.getMaxHumanity() - (messageArgs[4].equalsIgnoreCase("cyberware") ? 2 : 4)), true);
         } else {
             builder.setTitle("ERROR: Install Update Or Insert Failure");
             builder.setDescription("Please contact an administrator to get this resolved");
@@ -83,10 +83,10 @@ public class InstallCommand extends AbstractCommand {
     }
 
 
-    private boolean updateInstall(String valueRolled, ResultSet rs, Connection conn) throws SQLException {
-        int newHumanity = rs.getInt("Humanity") - Integer.parseInt(valueRolled);
-        int newMaxHumanity = rs.getInt("MaxHumanity") - (messageArgs[4].equalsIgnoreCase("cyberware") ? 2 : 4);
-        int newBank = rs.getInt("Bank");
+    private boolean updateInstall(String valueRolled, PlayerCharacter pc, Connection conn) throws SQLException {
+        int newHumanity = pc.getHumanity() - Integer.parseInt(valueRolled);
+        int newMaxHumanity = pc.getMaxHumanity() - (messageArgs[4].equalsIgnoreCase("cyberware") ? 2 : 4);
+        int newBank = pc.getBank();
         if (NumberUtils.isNumeric(messageArgs[3])) {
             int cost = Integer.parseInt(messageArgs[3]);
             newBank -= (0 > cost ? cost * -1 : cost);

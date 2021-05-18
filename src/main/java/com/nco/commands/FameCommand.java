@@ -1,13 +1,13 @@
 package com.nco.commands;
 
 import com.nco.RedBot;
+import com.nco.pojos.PlayerCharacter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class FameCommand extends AbstractCommand {
@@ -27,11 +27,11 @@ public class FameCommand extends AbstractCommand {
     }
 
     @Override
-    protected void processUpdateAndRespond(Connection conn, ResultSet rs, EmbedBuilder builder) throws SQLException {
-        if (updateFame(rs.getInt("Fame"), conn) && insertFame(conn)) {
-            int oldFame = rs.getInt("Fame");
+    protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
+        if (updateFame(pc.getFame(), conn) && insertFame(conn)) {
+            int oldFame = pc.getFame();
             int newFame = oldFame + Integer.parseInt(messageArgs[2]);
-            int oldReputation = rs.getInt("Reputation");
+            int oldReputation = pc.getReputation();
             int newReputation = newFame / 20;
 
             builder.setTitle(messageArgs[0] + "'s Fame Updated");
@@ -41,7 +41,7 @@ public class FameCommand extends AbstractCommand {
             builder.addField("New Fame", String.valueOf(newFame), true);
 
             if (oldReputation != newReputation) {
-                builder.addField("Old Reputation", rs.getString("Reputation"), true);
+                builder.addField("Old Reputation", String.valueOf(pc.getReputation()), true);
                 builder.addField("New Reputation", String.valueOf(newReputation), true);
             }
         } else {

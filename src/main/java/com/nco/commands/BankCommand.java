@@ -1,6 +1,7 @@
 package com.nco.commands;
 
 import com.nco.RedBot;
+import com.nco.pojos.PlayerCharacter;
 import com.nco.utils.NumberUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -30,18 +31,18 @@ public class BankCommand extends AbstractCommand {
     }
 
     @Override
-    protected void processUpdateAndRespond(Connection conn, ResultSet rs, EmbedBuilder builder) throws SQLException {
-        if (messageArgs.length == 4  && NumberUtils.asPositive(messageArgs[3]) > rs.getInt("DownTime")) {
+    protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
+        if (messageArgs.length == 4  && NumberUtils.asPositive(messageArgs[3]) > pc.getDownTime()) {
             builder.setTitle("ERROR: Not Enough DT");
-            builder.setDescription(messageArgs[0] + " has only " + rs.getString("DownTime") + " available DT " +
+            builder.setDescription(messageArgs[0] + " has only " + pc.getDownTime() + " available DT " +
                     "where " + NumberUtils.asPositive(messageArgs[3]) + " DT was requested.");
-        } else if (Integer.parseInt(messageArgs[2]) < 0 && NumberUtils.asPositive(messageArgs[2]) > rs.getInt("Bank")) {
+        } else if (Integer.parseInt(messageArgs[2]) < 0 && NumberUtils.asPositive(messageArgs[2]) > pc.getBank()) {
             builder.setTitle("ERROR: Not Enough Eurobucks");
-            builder.setDescription(messageArgs[0] + " has only " + rs.getString("Bank") + "eb available " +
+            builder.setDescription(messageArgs[0] + " has only " + pc.getBank() + "eb available " +
                     "where " + NumberUtils.asPositive(messageArgs[2]) + "eb is being spent.");
 
-        } else if (updateBank(rs, conn) && insertBank(conn)) {
-            int oldBank = rs.getInt("Bank");
+        } else if (updateBank(pc, conn) && insertBank(conn)) {
+            int oldBank = pc.getBank();
             int newBank = oldBank + Integer.parseInt(messageArgs[2]);
             builder.setTitle(messageArgs[0] + "'s Bank Balance Updated");
             builder.setDescription("For \"" + messageArgs[1] + "\"");
@@ -49,7 +50,7 @@ public class BankCommand extends AbstractCommand {
             builder.addBlankField(true);
             builder.addField("New Balance", newBank + "eb", true);
             if (messageArgs.length == 4) {
-                int oldDownTime = rs.getInt("DownTime");
+                int oldDownTime = pc.getDownTime();
                 int changeDT = Integer.parseInt(messageArgs[3]);
                 int newDownTime = oldDownTime - (changeDT < 0 ? -changeDT : changeDT);
 
@@ -64,9 +65,9 @@ public class BankCommand extends AbstractCommand {
     }
 
 
-    private boolean updateBank(ResultSet rs, Connection conn) throws SQLException {
-        int newBalance = rs.getInt("Bank") + Integer.parseInt(messageArgs[2]);
-        int newDownTime = rs.getInt("DownTime");
+    private boolean updateBank(PlayerCharacter pc, Connection conn) throws SQLException {
+        int newBalance = pc.getBank() + Integer.parseInt(messageArgs[2]);
+        int newDownTime = pc.getDownTime();
         if (messageArgs.length == 4) {
             int changeDT = Integer.parseInt(messageArgs[3]);
             newDownTime -= (changeDT < 0 ? -changeDT : changeDT);
