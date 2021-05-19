@@ -11,6 +11,7 @@ public class ConfigVar {
     }
 
     public static String getDBUrl() {
+//        return "jdbc:" + System.getenv("DATABASE_URL");
         return "jdbc:" + System.getenv("DB_CONNECTION") + "://" + System.getenv().get("DB_HOST") + ":"
                 + System.getenv().get("DB_PORT") + "/" + System.getenv().get("DB_DATABASE");
     }

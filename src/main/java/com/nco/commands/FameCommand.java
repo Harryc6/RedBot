@@ -53,7 +53,7 @@ public class FameCommand extends AbstractCommand {
     private boolean updateFame(int currentFame, Connection conn) throws SQLException {
         int newFameTotal = currentFame + Integer.parseInt(messageArgs[2]);
         int newReputation = newFameTotal / 20;
-        String sql = "UPDATE NCO_PC set Fame = ?, Reputation = ? Where CharacterName = ?";
+        String sql = "UPDATE NCO_PC set fame = ?, reputation = ? Where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, newFameTotal);
             stat.setInt(2, newReputation);
@@ -63,7 +63,7 @@ public class FameCommand extends AbstractCommand {
     }
 
     private boolean insertFame(Connection conn) throws SQLException {
-        String sql = "INSERT INTO NCO_FAME (CharacterName, Reason, Fame, CreatedBy) VALUES (?,?,?,?)";
+        String sql = "INSERT INTO NCO_FAME (character_name, reason, fame, created_by) VALUES (?,?,?,?)";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);
             stat.setString(2, messageArgs[1]);

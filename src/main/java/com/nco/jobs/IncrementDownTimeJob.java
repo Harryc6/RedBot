@@ -17,19 +17,19 @@ public class IncrementDownTimeJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         logger.info("Started running IncrementDownTimeJob");
         int updateCount = 0;
-        String sql = "Select * from NCO_PC where RetiredYN = 'N'";
-        String sql2 = "UPDATE NCO_PC set DownTime = ? where CharacterName = ?";
+        String sql = "Select * from NCO_PC where retired_yn = 'N'";
+        String sql2 = "UPDATE NCO_PC set DownTime = ? where character_name = ?";
 
         try(Connection conn = DBUtils.getConnection(); ResultSet rs = conn.prepareStatement(sql).executeQuery()) {
             conn.setAutoCommit(false);
             while (rs.next()) {
                 try(PreparedStatement stat = conn.prepareStatement(sql2)) {
                     stat.setString(1, String.valueOf(rs.getInt("DownTime") + 1));
-                    stat.setString(2, rs.getString("CharacterName"));
+                    stat.setString(2, rs.getString("character_name"));
                     if (stat.executeUpdate() == 1) {
                         updateCount++;
                     } else {
-                        logger.error("Failed up increment DT for " + rs.getString("CharacterName"));
+                        logger.error("Failed up increment DT for " + rs.getString("character_name"));
                     }
                 }
             }

@@ -32,9 +32,9 @@ public class TradeCommand extends AbstractCommand {
 
     @Override
     protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
-        if (messageArgs.length == 5  && NumberUtils.asPositive(messageArgs[4]) > pc.getDownTime()) {
+        if (messageArgs.length == 5  && NumberUtils.asPositive(messageArgs[4]) > pc.getDowntime()) {
             builder.setTitle("ERROR: Not Enough DT");
-            builder.setDescription(messageArgs[0] + " has only " + pc.getDownTime() + " available DT " +
+            builder.setDescription(messageArgs[0] + " has only " + pc.getDowntime() + " available DT " +
                     "where " + NumberUtils.asPositive(messageArgs[4]) + " DT was requested.");
         } else if (pc.getBank() < NumberUtils.asPositive(messageArgs[2])) {
             builder.setTitle("ERROR: Not Enough Eurobucks");
@@ -50,7 +50,7 @@ public class TradeCommand extends AbstractCommand {
             builder.addBlankField(true);
             builder.addField("New Balance", newBank + "eb", true);
             if (messageArgs.length == 5) {
-                int oldDownTime = pc.getDownTime();
+                int oldDownTime = pc.getDowntime();
                 int changeDT = Integer.parseInt(messageArgs[4]);
                 int newDownTime = oldDownTime - (changeDT < 0 ? -changeDT : changeDT);
 
@@ -66,12 +66,12 @@ public class TradeCommand extends AbstractCommand {
 
     private boolean updateSenderTrade(PlayerCharacter pc, Connection conn) throws SQLException {
         int newBalance = pc.getBank() - NumberUtils.asPositive(messageArgs[2]);
-        int newDownTime = pc.getDownTime();
+        int newDownTime = pc.getDowntime();
         if (messageArgs.length == 5) {
             int changeDT = Integer.parseInt(messageArgs[4]);
             newDownTime -= (changeDT < 0 ? -changeDT : changeDT);
         }
-        String sql = "UPDATE NCO_PC set Bank = ?, DownTime = ? Where CharacterName = ?";
+        String sql = "UPDATE NCO_PC set bank = ?, downtime = ? Where character_name = ?";
 
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, newBalance);
@@ -85,7 +85,7 @@ public class TradeCommand extends AbstractCommand {
         PlayerCharacter pc = DBUtils.getCharacter(messageArgs[3]);
         if (pc != null) {
             int newBalance = pc.getBank() + NumberUtils.asPositive(messageArgs[2]);
-            String sql = "UPDATE NCO_PC set Bank = ? Where CharacterName = ?";
+            String sql = "UPDATE NCO_PC set Bank = ? Where character_name = ?";
             try (PreparedStatement stat = conn.prepareStatement(sql)) {
                 stat.setInt(1, newBalance);
                 stat.setString(2, messageArgs[3]);
@@ -104,9 +104,9 @@ public class TradeCommand extends AbstractCommand {
     private boolean insertSenderTrade(Connection conn) throws SQLException {
         String sql;
         if (messageArgs.length == 5) {
-            sql = "INSERT INTO NCO_BANK (CharacterName, Reason, Amount, CreatedBy, DownTime) VALUES (?,?,?,?,?)";
+            sql = "INSERT INTO NCO_BANK (character_name, reason, amount, created_by, downtime) VALUES (?,?,?,?,?)";
         } else {
-            sql = "INSERT INTO NCO_BANK (CharacterName, Reason, Amount, CreatedBy) VALUES (?,?,?,?)";
+            sql = "INSERT INTO NCO_BANK (character_name, reason, amount, created_by) VALUES (?,?,?,?)";
         }
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);
@@ -121,7 +121,7 @@ public class TradeCommand extends AbstractCommand {
     }
 
     private boolean insertReceiverTrade(Connection conn) throws SQLException {
-        String sql = "INSERT INTO NCO_BANK (CharacterName, Reason, Amount, CreatedBy) VALUES (?,?,?,?)";
+        String sql = "INSERT INTO NCO_BANK (character_name, reason, amount, created_by) VALUES (?,?,?,?)";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[3]);
             stat.setString(2, "Receiver: " + messageArgs[1]);

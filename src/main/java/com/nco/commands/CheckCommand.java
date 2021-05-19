@@ -39,7 +39,7 @@ public class CheckCommand extends AbstractCommand {
         builder.addField("Humanity", currentHum + "/" +
                 pc.getMaxHumanity(), true);
         builder.addField("Monthly", pc.getPayDues(), true);
-        builder.addField("Down Time", String.valueOf(pc.getDownTime()), true);
+        builder.addField("Down Time", String.valueOf(pc.getDowntime()), true);
         builder.addField("IP", String.valueOf(pc.getInfluencePoints()), true);
         builder.addField("Reputation", String.valueOf(pc.getReputation()), true);
         builder.addField("Weekly Games", String.valueOf(pc.getWeeklyGames()), true);
@@ -53,7 +53,7 @@ public class CheckCommand extends AbstractCommand {
     }
 
     private static void buildDescriptionForInjury(EmbedBuilder builder, String characterName, Connection conn) throws SQLException {
-        String sql = "SELECT * FROM NCO_CRITICAL_INJURIES WHERE CharacterName = ?";
+        String sql = "SELECT * FROM NCO_CRITICAL_INJURIES WHERE character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, characterName);
             try (ResultSet rs = stat.executeQuery()) {

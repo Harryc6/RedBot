@@ -91,7 +91,7 @@ public class InstallCommand extends AbstractCommand {
             int cost = Integer.parseInt(messageArgs[3]);
             newBank -= (0 > cost ? cost * -1 : cost);
         }
-        String sql = "UPDATE NCO_PC set Humanity = ?, MaxHumanity = ?, Bank = ? Where CharacterName = ?";
+        String sql = "UPDATE NCO_PC set humanity = ?, max_humanity = ?, bank = ? Where character_name = ?";
 
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, newHumanity);
@@ -103,7 +103,7 @@ public class InstallCommand extends AbstractCommand {
     }
 
     private boolean insertInstall(String valueRolled, Connection conn) throws SQLException {
-        String sql = "INSERT INTO NCO_INSTALL (CharacterName, Product, Dice, HumanityLoss, Amount, CyberOrBorg, CreatedBy) VALUES (?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO NCO_INSTALL (character_name, product, dice, humanity_loss, amount, cyber_or_borg, created_by) VALUES (?,?,?,?,?,?,?)";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);
             stat.setString(2, messageArgs[1]);
