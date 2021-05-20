@@ -52,7 +52,7 @@ public class ImproveCommand extends AbstractCommand {
         int oldIP = pc.getInfluencePoints();
         int newIP = oldIP - (changeIP < 0 ? -changeIP : changeIP);
 
-        String sql = "UPDATE NCO_PC set InfluencePoints = ? Where CharacterName = ?";
+        String sql = "UPDATE NCO_PC set influence_points = ? Where character_name = ?";
 
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, newIP);
@@ -62,7 +62,7 @@ public class ImproveCommand extends AbstractCommand {
     }
 
     private boolean insertImprove(Connection conn) throws SQLException {
-        String sql  = "INSERT INTO NCO_IMPROVE (CharacterName, Reason, InfluencePoints, CreatedBy) VALUES (?,?,?,?)";
+        String sql  = "INSERT INTO NCO_IMPROVE (character_name, reason, influence_points, created_by) VALUES (?,?,?,?)";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);
             stat.setString(2, messageArgs[1]);

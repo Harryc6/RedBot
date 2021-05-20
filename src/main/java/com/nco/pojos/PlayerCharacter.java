@@ -6,338 +6,338 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 public class PlayerCharacter {
-    private String DiscordName;
-    private String CharacterName;
-    private String Role;
-    private int StreetCred;
-    private String Rank;
-    private int BodyScore;
-    private int WillScore;
-    private int MaxHP;
-    private int CurrentHP;
-    private int HeadSP;
-    private int BodySP;
-    private int MaxHumanity;
-    private int Humanity;
-    private int Bank;
-    private int InfluencePoints;
-    private int Reputation;
-    private int Fame;
-    private int Vault;
-    private int DownTime;
-    private String Lifestyle;
-    private String Rent;
-    private String PayDues;
-    private String Addicted;
-    private int HospitalDebt;
-    private String TTCoverage;
-    private String TTCLevel;
-    private int SalvagedEuros;
-    private int GamesOverall;
-    private int WeeklyGames;
-    private Date JobBanUntil;
-    private Timestamp CreatedOn;
-    private String CreatedBy;
-    private String RetiredYN;
+    private String discordName;
+    private String characterName;
+    private String role;
+    private int streetCred;
+    private String rank;
+    private int bodyScore;
+    private int willScore;
+    private int maxHP;
+    private int currentHP;
+    private int headSP;
+    private int bodySP;
+    private int maxHumanity;
+    private int humanity;
+    private int bank;
+    private int influencePoints;
+    private int reputation;
+    private int fame;
+    private int vault;
+    private int downtime;
+    private String lifestyle;
+    private String rent;
+    private String payDues;
+    private String addicted;
+    private int hospitalDebt;
+    private String ttCoverage;
+    private String ttcLevel;
+    private int salvagedEuros;
+    private int gamesOverall;
+    private int weeklyGames;
+    private Date jobBanUntil;
+    private Timestamp createdOn;
+    private String createdBy;
+    private String retiredYN;
 
     public PlayerCharacter(ResultSet rs) throws SQLException {
-        DiscordName = rs.getString("discordName");
-        CharacterName = rs.getString("characterName");
-        Role = rs.getString("role");
-        StreetCred = rs.getInt("streetCred");
-        Rank = rs.getString("rank");
-        BodyScore = rs.getInt("bodyScore");
-        WillScore = rs.getInt("willScore");
-        MaxHP = rs.getInt("maxHP");
-        CurrentHP = rs.getInt("currentHP");
-        HeadSP = rs.getInt("headSP");
-        BodySP = rs.getInt("bodySP");
-        MaxHumanity = rs.getInt("maxHumanity");
-        Humanity = rs.getInt("humanity");
-        Bank = rs.getInt("bank");
-        InfluencePoints = rs.getInt("influencePoints");
-        Reputation = rs.getInt("reputation");
-        Fame = rs.getInt("fame");
-        Vault = rs.getInt("vault");
-        DownTime = rs.getInt("downTime");
-        Lifestyle = rs.getString("lifestyle");
-        Rent = rs.getString("rent");
-        PayDues = rs.getString("payDues");
-        Addicted = rs.getString("addicted");
-        HospitalDebt = rs.getInt("hospitalDebt");
-        TTCoverage = rs.getString("TTCoverage");
-        TTCLevel = rs.getString("TTCLevel");
-        SalvagedEuros = rs.getInt("salvagedEuros");
-        GamesOverall = rs.getInt("gamesOverall");
-        WeeklyGames = rs.getInt("weeklyGames");
-        JobBanUntil = rs.getDate("jobBanUntil");
-        CreatedOn = rs.getTimestamp("createdOn");
-        CreatedBy = rs.getString("createdBy");
-        RetiredYN = rs.getString("retiredYN");
+        discordName = rs.getString("discord_name");
+        characterName = rs.getString("character_name");
+        role = rs.getString("role");
+        streetCred = rs.getInt("street_cred");
+        rank = rs.getString("rank");
+        bodyScore = rs.getInt("body_score");
+        willScore = rs.getInt("will_score");
+        maxHP = rs.getInt("max_hp");
+        currentHP = rs.getInt("current_hp");
+        headSP = rs.getInt("head_sp");
+        bodySP = rs.getInt("body_sp");
+        maxHumanity = rs.getInt("max_humanity");
+        humanity = rs.getInt("humanity");
+        bank = rs.getInt("bank");
+        influencePoints = rs.getInt("influence_points");
+        reputation = rs.getInt("reputation");
+        fame = rs.getInt("fame");
+        vault = rs.getInt("vault");
+        downtime = rs.getInt("downtime");
+        lifestyle = rs.getString("lifestyle");
+        rent = rs.getString("rent");
+        payDues = rs.getString("pay_dues");
+        addicted = rs.getString("addicted");
+        hospitalDebt = rs.getInt("hospital_debt");
+        ttCoverage = rs.getString("tt_coverage");
+        ttcLevel = rs.getString("ttc_level");
+        salvagedEuros = rs.getInt("salvaged_euros");
+        gamesOverall = rs.getInt("games_overall");
+        weeklyGames = rs.getInt("weekly_games");
+        jobBanUntil = rs.getDate("job_ban_until");
+        createdOn = rs.getTimestamp("created_on");
+        createdBy = rs.getString("created_by");
+        retiredYN = rs.getString("retired_yn");
     }
 
     public String getDiscordName() {
-        return DiscordName;
+        return discordName;
     }
 
     public void setDiscordName(String discordName) {
-        DiscordName = discordName;
+        this.discordName = discordName;
     }
 
     public String getCharacterName() {
-        return CharacterName;
+        return characterName;
     }
 
     public void setCharacterName(String characterName) {
-        CharacterName = characterName;
+        this.characterName = characterName;
     }
 
     public String getRole() {
-        return Role;
+        return role;
     }
 
     public void setRole(String role) {
-        Role = role;
+        this.role = role;
     }
 
     public int getStreetCred() {
-        return StreetCred;
+        return streetCred;
     }
 
     public void setStreetCred(int streetCred) {
-        StreetCred = streetCred;
+        this.streetCred = streetCred;
     }
 
     public String getRank() {
-        return Rank;
+        return rank;
     }
 
     public void setRank(String rank) {
-        Rank = rank;
+        this.rank = rank;
     }
 
     public int getBodyScore() {
-        return BodyScore;
+        return bodyScore;
     }
 
     public void setBodyScore(int bodyScore) {
-        BodyScore = bodyScore;
+        this.bodyScore = bodyScore;
     }
 
     public int getWillScore() {
-        return WillScore;
+        return willScore;
     }
 
     public void setWillScore(int willScore) {
-        WillScore = willScore;
+        this.willScore = willScore;
     }
 
     public int getMaxHP() {
-        return MaxHP;
+        return maxHP;
     }
 
     public void setMaxHP(int maxHP) {
-        MaxHP = maxHP;
+        this.maxHP = maxHP;
     }
 
     public int getCurrentHP() {
-        return CurrentHP;
+        return currentHP;
     }
 
     public void setCurrentHP(int currentHP) {
-        CurrentHP = currentHP;
+        this.currentHP = currentHP;
     }
 
     public int getHeadSP() {
-        return HeadSP;
+        return headSP;
     }
 
     public void setHeadSP(int headSP) {
-        HeadSP = headSP;
+        this.headSP = headSP;
     }
 
     public int getBodySP() {
-        return BodySP;
+        return bodySP;
     }
 
     public void setBodySP(int bodySP) {
-        BodySP = bodySP;
+        this.bodySP = bodySP;
     }
 
     public int getMaxHumanity() {
-        return MaxHumanity;
+        return maxHumanity;
     }
 
     public void setMaxHumanity(int maxHumanity) {
-        MaxHumanity = maxHumanity;
+        this.maxHumanity = maxHumanity;
     }
 
     public int getHumanity() {
-        return Humanity;
+        return humanity;
     }
 
     public void setHumanity(int humanity) {
-        Humanity = humanity;
+        this.humanity = humanity;
     }
 
     public int getBank() {
-        return Bank;
+        return bank;
     }
 
     public void setBank(int bank) {
-        Bank = bank;
+        this.bank = bank;
     }
 
     public int getInfluencePoints() {
-        return InfluencePoints;
+        return influencePoints;
     }
 
     public void setInfluencePoints(int influencePoints) {
-        InfluencePoints = influencePoints;
+        this.influencePoints = influencePoints;
     }
 
     public int getReputation() {
-        return Reputation;
+        return reputation;
     }
 
     public void setReputation(int reputation) {
-        Reputation = reputation;
+        this.reputation = reputation;
     }
 
     public int getFame() {
-        return Fame;
+        return fame;
     }
 
     public void setFame(int fame) {
-        Fame = fame;
+        this.fame = fame;
     }
 
     public int getVault() {
-        return Vault;
+        return vault;
     }
 
     public void setVault(int vault) {
-        Vault = vault;
+        this.vault = vault;
     }
 
-    public int getDownTime() {
-        return DownTime;
+    public int getDowntime() {
+        return downtime;
     }
 
-    public void setDownTime(int downTime) {
-        DownTime = downTime;
+    public void setDowntime(int downtime) {
+        this.downtime = downtime;
     }
 
     public String getLifestyle() {
-        return Lifestyle;
+        return lifestyle;
     }
 
     public void setLifestyle(String lifestyle) {
-        Lifestyle = lifestyle;
+        this.lifestyle = lifestyle;
     }
 
     public String getRent() {
-        return Rent;
+        return rent;
     }
 
     public void setRent(String rent) {
-        Rent = rent;
+        this.rent = rent;
     }
 
     public String getPayDues() {
-        return PayDues;
+        return payDues;
     }
 
     public void setPayDues(String payDues) {
-        PayDues = payDues;
+        this.payDues = payDues;
     }
 
     public String getAddicted() {
-        return Addicted;
+        return addicted;
     }
 
     public void setAddicted(String addicted) {
-        Addicted = addicted;
+        this.addicted = addicted;
     }
 
     public int getHospitalDebt() {
-        return HospitalDebt;
+        return hospitalDebt;
     }
 
     public void setHospitalDebt(int hospitalDebt) {
-        HospitalDebt = hospitalDebt;
+        this.hospitalDebt = hospitalDebt;
     }
 
-    public String getTTCoverage() {
-        return TTCoverage;
+    public String getTtCoverage() {
+        return ttCoverage;
     }
 
-    public void setTTCoverage(String TTCoverage) {
-        this.TTCoverage = TTCoverage;
+    public void setTtCoverage(String ttCoverage) {
+        this.ttCoverage = ttCoverage;
     }
 
-    public String getTTCLevel() {
-        return TTCLevel;
+    public String getTtcLevel() {
+        return ttcLevel;
     }
 
-    public void setTTCLevel(String TTCLevel) {
-        this.TTCLevel = TTCLevel;
+    public void setTtcLevel(String ttcLevel) {
+        this.ttcLevel = ttcLevel;
     }
 
     public int getSalvagedEuros() {
-        return SalvagedEuros;
+        return salvagedEuros;
     }
 
     public void setSalvagedEuros(int salvagedEuros) {
-        SalvagedEuros = salvagedEuros;
+        this.salvagedEuros = salvagedEuros;
     }
 
     public int getGamesOverall() {
-        return GamesOverall;
+        return gamesOverall;
     }
 
     public void setGamesOverall(int gamesOverall) {
-        GamesOverall = gamesOverall;
+        this.gamesOverall = gamesOverall;
     }
 
     public int getWeeklyGames() {
-        return WeeklyGames;
+        return weeklyGames;
     }
 
     public void setWeeklyGames(int weeklyGames) {
-        WeeklyGames = weeklyGames;
+        this.weeklyGames = weeklyGames;
     }
 
     public Date getJobBanUntil() {
-        return JobBanUntil;
+        return jobBanUntil;
     }
 
     public void setJobBanUntil(Date jobBanUntil) {
-        JobBanUntil = jobBanUntil;
+        this.jobBanUntil = jobBanUntil;
     }
 
     public Timestamp getCreatedOn() {
-        return CreatedOn;
+        return createdOn;
     }
 
     public void setCreatedOn(Timestamp createdOn) {
-        CreatedOn = createdOn;
+        this.createdOn = createdOn;
     }
 
     public String getCreatedBy() {
-        return CreatedBy;
+        return createdBy;
     }
 
     public void setCreatedBy(String createdBy) {
-        CreatedBy = createdBy;
+        this.createdBy = createdBy;
     }
 
     public String getRetiredYN() {
-        return RetiredYN;
+        return retiredYN;
     }
 
     public void setRetiredYN(String retiredYN) {
-        RetiredYN = retiredYN;
+        this.retiredYN = retiredYN;
     }
 
 }

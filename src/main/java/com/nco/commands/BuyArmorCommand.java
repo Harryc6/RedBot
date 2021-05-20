@@ -112,9 +112,9 @@ public class BuyArmorCommand extends AbstractCommand {
         }
         String sql = "UPDATE NCO_PC set Bank = ?, ";
         if (isMultiLocation()) {
-            sql += "BodySP = ?, HeadSP = ? Where CharacterName = ?";
+            sql += "body_sp = ?, head_sp = ? Where character_name = ?";
         } else {
-            sql += ((isBody(2)) ? "BodySP = ?" : "HeadSP = ?") + " Where CharacterName = ?";
+            sql += ((isBody(2)) ? "body_sp = ?" : "head_sp = ?") + " Where character_name = ?";
         }
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, newBank);
@@ -131,8 +131,8 @@ public class BuyArmorCommand extends AbstractCommand {
     }
 
     private boolean insertBuyArmor(Connection conn) throws SQLException {
-        String sql  = "INSERT INTO NCO_BUY_ARMOR (CharacterName, Amount, HeadArmorType, HeadSP," +
-                " BodyArmorType, BodySP, CreatedBy) VALUES (?,?,?,?,?,?,?)";
+        String sql  = "INSERT INTO NCO_BUY_ARMOR (character_name, amount, head_armor_type, head_sp," +
+                " body_armor_type, body_sp, created_by) VALUES (?,?,?,?,?,?,?)";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);
             if (!isArmorPaid() && doesBankChange()) {

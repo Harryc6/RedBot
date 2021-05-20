@@ -47,7 +47,7 @@ public class UpdateBodyHpCommand extends AbstractCommand {
     }
 
     private boolean updateBodyHp(Connection conn) throws SQLException {
-        String sql = "UPDATE NCO_PC set BodyScore = ?, MaxHP = ? Where CharacterName = ?";
+        String sql = "UPDATE NCO_PC set body_score = ?, max_hp = ? Where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[1]);
             stat.setString(2, messageArgs[2]);
@@ -57,7 +57,7 @@ public class UpdateBodyHpCommand extends AbstractCommand {
     }
 
     private boolean insertBodyHp(Connection conn, PlayerCharacter pc) throws SQLException {
-        String sql  = "INSERT INTO NCO_BODY_HP_UPDATE (CharacterName, OldBody, NewBody, OldMaxHP, NewMaxHP, Reason, CreatedBy) VALUES (?,?,?,?,?,?,?)";
+        String sql  = "INSERT INTO NCO_BODY_HP_UPDATE (character_name, old_body, new_body, old_max_hp, new_max_hp, reason, created_by) VALUES (?,?,?,?,?,?,?)";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);
             stat.setInt(2, pc.getBodyScore());

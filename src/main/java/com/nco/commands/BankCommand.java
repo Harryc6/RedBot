@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.entities.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class BankCommand extends AbstractCommand {
@@ -32,9 +31,9 @@ public class BankCommand extends AbstractCommand {
 
     @Override
     protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
-        if (messageArgs.length == 4  && NumberUtils.asPositive(messageArgs[3]) > pc.getDownTime()) {
+        if (messageArgs.length == 4  && NumberUtils.asPositive(messageArgs[3]) > pc.getDowntime()) {
             builder.setTitle("ERROR: Not Enough DT");
-            builder.setDescription(messageArgs[0] + " has only " + pc.getDownTime() + " available DT " +
+            builder.setDescription(messageArgs[0] + " has only " + pc.getDowntime() + " available DT " +
                     "where " + NumberUtils.asPositive(messageArgs[3]) + " DT was requested.");
         } else if (Integer.parseInt(messageArgs[2]) < 0 && NumberUtils.asPositive(messageArgs[2]) > pc.getBank()) {
             builder.setTitle("ERROR: Not Enough Eurobucks");
@@ -50,7 +49,7 @@ public class BankCommand extends AbstractCommand {
             builder.addBlankField(true);
             builder.addField("New Balance", newBank + "eb", true);
             if (messageArgs.length == 4) {
-                int oldDownTime = pc.getDownTime();
+                int oldDownTime = pc.getDowntime();
                 int changeDT = Integer.parseInt(messageArgs[3]);
                 int newDownTime = oldDownTime - (changeDT < 0 ? -changeDT : changeDT);
 
@@ -67,12 +66,12 @@ public class BankCommand extends AbstractCommand {
 
     private boolean updateBank(PlayerCharacter pc, Connection conn) throws SQLException {
         int newBalance = pc.getBank() + Integer.parseInt(messageArgs[2]);
-        int newDownTime = pc.getDownTime();
+        int newDownTime = pc.getDowntime();
         if (messageArgs.length == 4) {
             int changeDT = Integer.parseInt(messageArgs[3]);
             newDownTime -= (changeDT < 0 ? -changeDT : changeDT);
         }
-        String sql = "UPDATE NCO_PC set Bank = ?, DownTime = ? Where CharacterName = ?";
+        String sql = "UPDATE NCO_PC set Bank = ?, DownTime = ? Where character_name = ?";
 
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, newBalance);
@@ -85,9 +84,9 @@ public class BankCommand extends AbstractCommand {
     private boolean insertBank(Connection conn) throws SQLException {
         String sql;
         if (messageArgs.length == 4) {
-            sql = "INSERT INTO NCO_BANK (CharacterName, Reason, Amount, CreatedBy, DownTime) VALUES (?,?,?,?,?)";
+            sql = "INSERT INTO NCO_BANK (character_name, reason, amount, created_by, downtime) VALUES (?,?,?,?,?)";
         } else {
-            sql = "INSERT INTO NCO_BANK (CharacterName, Reason, Amount, CreatedBy) VALUES (?,?,?,?)";
+            sql = "INSERT INTO NCO_BANK (character_name, reason, amount, created_by) VALUES (?,?,?,?)";
         }
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);
