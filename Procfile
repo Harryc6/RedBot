@@ -1,1 +1,1 @@
-worker: java -jar target/RedBot-2-jar-with-dependencies.jar
+worker: java -jar target/RedBot-2.jar
