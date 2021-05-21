@@ -119,11 +119,11 @@ public class BuyArmorCommand extends AbstractCommand {
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, newBank);
             if (isMultiLocation()) {
-                stat.setString(2, (isBody(2) ? messageArgs[3] : messageArgs[6]));
-                stat.setString(3, (isHead(2) ? messageArgs[3] : messageArgs[6]));
+                stat.setInt(2, Integer.parseInt((isBody(2) ? messageArgs[3] : messageArgs[6])));
+                stat.setInt(3, Integer.parseInt((isHead(2) ? messageArgs[3] : messageArgs[6])));
                 stat.setString(4, messageArgs[0]);
             } else {
-                stat.setString(2, messageArgs[3]);
+                stat.setInt(2, Integer.parseInt(messageArgs[3]));
                 stat.setString(3, messageArgs[0]);
             }
             return stat.executeUpdate() == 1;
@@ -139,18 +139,18 @@ public class BuyArmorCommand extends AbstractCommand {
                 int changeBank = Integer.parseInt(messageArgs[messageArgs.length - 1]);
                 stat.setInt(2, changeBank < 0 ? -changeBank : changeBank);
             } else {
-                stat.setString(2, messageArgs[messageArgs.length - 1]);
+                stat.setInt(2, Integer.parseInt(messageArgs[messageArgs.length - 1]));
             }
             if (isMultiLocation()) {
                 stat.setString(3, (isHead(2) ? messageArgs[1] : messageArgs[4]));
-                stat.setString(4, (isHead(2) ? messageArgs[3] : messageArgs[6]));
+                stat.setInt(4, Integer.parseInt((isHead(2) ? messageArgs[3] : messageArgs[6])));
                 stat.setString(5, (isBody(2)) ? messageArgs[1] : messageArgs[4]);
-                stat.setString(6, (isBody(2)) ? messageArgs[3] : messageArgs[6]);
+                stat.setInt(6, Integer.parseInt((isBody(2)) ? messageArgs[3] : messageArgs[6]));
             } else {
                 stat.setString(3, (isHead(2) ? messageArgs[1] : ""));
-                stat.setString(4, (isHead(2) ? messageArgs[3] : ""));
+                stat.setInt(4, Integer.parseInt((isHead(2) ? messageArgs[3] : "")));
                 stat.setString(5, (isBody(2)) ? messageArgs[1] : "");
-                stat.setString(6, (isBody(2)) ? messageArgs[3] : "");
+                stat.setInt(6, Integer.parseInt((isBody(2)) ? messageArgs[3] : ""));
             }
             stat.setString(7, author.getAsTag());
             return stat.executeUpdate() == 1;
@@ -165,9 +165,9 @@ public class BuyArmorCommand extends AbstractCommand {
     @Override
     protected String getHelpDescription() {
         return "Please use the commands below to manage a characters armor\n" + RedBot.PREFIX +
-                "updatebodyhp \"PC Name(Optional)\" \"Armor Type\" \"Body\" \"SP Value\" \"Amount\" \nor\n" +
-                RedBot.PREFIX + "updatebodyhp \"PC Name(Optional)\" \"Armor Type\" \"Head\" \"SP Value\" \"Amount\" \nor\n" +
-                RedBot.PREFIX + "updatebodyhp \"PC Name(Optional)\" \"Armor Type\" \"Body\" \"SP Value\" " +
+                "buyarmor \"PC Name(Optional)\" \"Armor Type\" \"Body\" \"SP Value\" \"Amount\" \nor\n" +
+                RedBot.PREFIX + "buyarmor \"PC Name(Optional)\" \"Armor Type\" \"Head\" \"SP Value\" \"Amount\" \nor\n" +
+                RedBot.PREFIX + "buyarmor \"PC Name(Optional)\" \"Armor Type\" \"Body\" \"SP Value\" " +
                 "\"Armor Type\" \"Head\" \"SP Value\" \"Amount\"";
     }
 }

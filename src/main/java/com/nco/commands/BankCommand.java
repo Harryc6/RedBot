@@ -91,7 +91,7 @@ public class BankCommand extends AbstractCommand {
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);
             stat.setString(2, messageArgs[1]);
-            stat.setString(3, messageArgs[2]);
+            stat.setInt(3, Integer.parseInt(messageArgs[2]));
             stat.setString(4, author.getAsTag());
             if (messageArgs.length == 4) {
                 int changeDT = Integer.parseInt(messageArgs[3]);

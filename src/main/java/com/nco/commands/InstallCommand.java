@@ -108,7 +108,7 @@ public class InstallCommand extends AbstractCommand {
             stat.setString(1, messageArgs[0]);
             stat.setString(2, messageArgs[1]);
             stat.setString(3, messageArgs[2]);
-            stat.setString(4, valueRolled);
+            stat.setInt(4, Integer.parseInt(valueRolled));
             stat.setString(5, messageArgs[3]);
             stat.setString(6, messageArgs[4]);
             stat.setString(7, author.getAsTag());

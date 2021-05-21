@@ -2,6 +2,8 @@ package com.nco.utils;
 
 public class NumberUtils {
 
+//    private static String[] fameReputation = {}
+
     public static int getRandomNumber(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
     }
@@ -27,4 +29,8 @@ public class NumberUtils {
         int i = Integer.parseInt(str);
         return (i < 0 ? i : i * -1);
     }
+
+//    public  static int reputationFromFame() {
+//
+//    }
 }
