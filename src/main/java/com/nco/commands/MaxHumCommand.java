@@ -18,12 +18,17 @@ public class MaxHumCommand extends AbstractCommand {
 
     @Override
     protected boolean canProcessByUser() {
-        return messageArgs.length == 1;
+        return messageArgs.length == 1 && containsCyberBorg();
     }
 
     @Override
     protected boolean canProcessByName() {
-        return messageArgs.length == 2;
+        return messageArgs.length == 2 && containsCyberBorg();
+    }
+
+    private boolean containsCyberBorg() {
+        return messageArgs[messageArgs.length - 1].equalsIgnoreCase("cyberware") ||
+                messageArgs[messageArgs.length - 1].equalsIgnoreCase("borgware");
     }
 
     @Override
