@@ -65,6 +65,7 @@ public class MessageListener extends ListenerAdapter {
                 case LIFESTYLE:
                     break;
                 case MAXHUM:
+                    new MaxHumCommand(messageArgs, author, channel).process();
                     break;
                 case MEDTECH:
                     break;
