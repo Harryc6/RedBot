@@ -39,4 +39,8 @@ public class StringUtils {
         }
         return null;
     }
+
+    public static String checkNull(String string) {
+        return string == null ? "" : string;
+    }
 }

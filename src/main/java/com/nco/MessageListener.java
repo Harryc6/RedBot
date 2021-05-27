@@ -81,6 +81,9 @@ public class MessageListener extends ListenerAdapter {
                     break;
                 case SALVAGETRADE:
                     break;
+                case SELECT:
+                    new SelectCommand(messageArgs, author, channel).process();
+                    break;
                 case TEAM:
                     break;
                 case TECHIE:

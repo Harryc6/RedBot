@@ -25,6 +25,7 @@ public enum Commands {
     PROPERTY,
     RENT,
     SALVAGETRADE,
+    SELECT,
     TEAM,
     TECHIE,
     TIMEZONE,
