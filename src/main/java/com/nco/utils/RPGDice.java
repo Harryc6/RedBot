@@ -35,7 +35,6 @@ public class RPGDice {
         return additive;
     }
 
-    @Override
     public String toString() {
         return String.format("{\"rolls\": %s, \"faces\": %s, \"multiplier\": %s, \"additive\": %s}", rolls, faces, multiplier, additive);
     }
