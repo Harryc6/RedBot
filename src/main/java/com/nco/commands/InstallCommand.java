@@ -20,7 +20,7 @@ public class InstallCommand extends AbstractCommand {
 
     @Override
     protected boolean canProcessByUser() {
-        return messageArgs.length >= 4 && (isPaid() || doesBankChange());
+        return messageArgs.length == 4 && (isPaid() || doesBankChange());
     }
 
     private boolean isPaid() {
@@ -36,7 +36,7 @@ public class InstallCommand extends AbstractCommand {
 
     @Override
     protected boolean canProcessByName() {
-        return messageArgs.length >= 5 && (isPaid() || doesBankChange());
+        return messageArgs.length == 5 && (isPaid() || doesBankChange());
     }
 
     @Override
