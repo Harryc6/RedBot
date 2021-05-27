@@ -61,5 +61,6 @@ public class SelectCommand extends AbstractCommand {
     @Override
     protected String getHelpDescription() {
         return "Please use the commands below to select the data directly from the NCO_PC table in the database. \n" + RedBot.PREFIX +
-                "select \"PC Name(Optional)\"";    }
+                "select \"PC Name(Optional)\"";
+    }
 }
