@@ -1,5 +1,6 @@
 package com.nco.commands;
 
+import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
 import com.nco.utils.DBUtils;
 import com.nco.utils.StringUtils;
@@ -54,11 +55,11 @@ public class SelectCommand extends AbstractCommand {
 
     @Override
     protected String getHelpTitle() {
-        return super.getHelpTitle();
+        return "Incorrect Select Formatting";
     }
 
     @Override
     protected String getHelpDescription() {
-        return super.getHelpDescription();
-    }
+        return "Please use the commands below to select the data directly from the NCO_PC table in the database. \n" + RedBot.PREFIX +
+                "select \"PC Name(Optional)\"";    }
 }
