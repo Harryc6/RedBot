@@ -17,10 +17,14 @@ public class MaxHumCommand extends AbstractCommand {
     }
 
     @Override
-    protected boolean canProcessByUser() { return messageArgs.length == 1; }
+    protected boolean canProcessByUser() {
+        return messageArgs.length == 1;
+    }
 
     @Override
-    protected boolean canProcessByName() { return messageArgs.length == 2; }
+    protected boolean canProcessByName() {
+        return messageArgs.length == 2;
+    }
 
     @Override
     protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
