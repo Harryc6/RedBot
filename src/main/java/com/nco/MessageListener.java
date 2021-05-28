@@ -101,6 +101,9 @@ public class MessageListener extends ListenerAdapter {
                 case UPDATEBODYHP:
                     new UpdateBodyHpCommand(messageArgs, author, channel).process();
                     break;
+                case GOAT:
+                    new GoatCommand(messageArgs, author, channel).process();
+                    break;
             }
         }
     }

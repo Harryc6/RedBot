@@ -18,6 +18,7 @@ public enum Commands {
     INSTALL,
     LIFESTYLE,
     MAXHUM,
+    GOAT,
     MEDTECH,
     MONTHLY,
     MOTO,
