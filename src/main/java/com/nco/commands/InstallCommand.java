@@ -79,7 +79,7 @@ public class InstallCommand extends AbstractCommand {
     }
 
     private boolean validateArgs(String valueRolled) {
-        return valueRolled == null && (NumberUtils.isNumeric(messageArgs[3]) || messageArgs[3].equalsIgnoreCase("paid"))
+        return valueRolled == null || (NumberUtils.isNumeric(messageArgs[3]) || messageArgs[3].equalsIgnoreCase("paid"))
                 && (messageArgs[4].equalsIgnoreCase("cyberware") || messageArgs[4].equalsIgnoreCase("borgware"));
     }
 
