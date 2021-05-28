@@ -5,6 +5,7 @@ import com.nco.pojos.PlayerCharacter;
 import com.nco.utils.NumberUtils;
 import com.nco.utils.RPGDice;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 
@@ -14,8 +15,8 @@ import java.sql.SQLException;
 
 public class InstallCommand extends AbstractCommand {
 
-    public InstallCommand(String[] messageArgs, User author, MessageChannel channel) {
-        super(messageArgs, author, channel);
+    public InstallCommand(String[] messageArgs, User author, MessageChannel channel, Member member) {
+        super(messageArgs, author, channel, member);
     }
 
     @Override

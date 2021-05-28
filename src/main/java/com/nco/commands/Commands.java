@@ -31,6 +31,7 @@ public enum Commands {
     TIMEZONE,
     TRADE,
     TRAUMADEBT,
+    UPDATE,
     UNKNOWN,
     UPDATEBODYHP
 }

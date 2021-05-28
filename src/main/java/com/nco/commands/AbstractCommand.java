@@ -2,8 +2,10 @@ package com.nco.commands;
 
 import com.nco.pojos.PlayerCharacter;
 import com.nco.utils.DBUtils;
+import com.nco.utils.JDAUtils;
 import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.slf4j.Logger;
@@ -19,22 +21,40 @@ public abstract class AbstractCommand {
     String[] messageArgs;
     User author;
     MessageChannel channel;
+    Member member;
 
-    public AbstractCommand(String[] messageArgs, User author, MessageChannel channel) {
+    public AbstractCommand(String[] messageArgs, User author, MessageChannel channel, Member member) {
         this.messageArgs = messageArgs;
         this.author = author;
         this.channel = channel;
+        this.member = member;
     }
 
     public void process() {
         channel.sendTyping().queue();
-        if (canProcessByUser()) {
-            processByUser();
-        } else if (canProcessByName()) {
-            processByName();
+        if (userHasPermission()) {
+            if (canProcessByUser()) {
+                processByUser();
+            } else if (canProcessByName()) {
+                processByName();
+            } else {
+                returnHelp();
+            }
         } else {
-            returnHelp();
+            invalidPermissions();
         }
+    }
+
+    private boolean userHasPermission() {
+        if (getRoleRequiredForCommand().isEmpty()) {
+            return true;
+        } else {
+            return JDAUtils.hasRole(member, getRoleRequiredForCommand());
+        }
+    }
+
+    protected String getRoleRequiredForCommand() {
+        return "";
     }
 
     protected boolean canProcessByUser() {
@@ -82,11 +102,9 @@ public abstract class AbstractCommand {
         }
     }
 
-    protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
+    protected abstract void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException;
 
-    }
-
-    protected void returnHelp() {
+    private void returnHelp() {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(Color.red);
         builder.setTitle(getHelpTitle());
@@ -96,12 +114,17 @@ public abstract class AbstractCommand {
     }
 
 
-    protected String getHelpTitle() {
-        return "";
-    }
+    protected abstract String getHelpTitle();
 
-    protected String getHelpDescription() {
-        return "";
+    protected abstract String getHelpDescription();
+
+    private void invalidPermissions() {
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setColor(Color.red);
+        builder.setTitle("Invalid Permissions");
+        builder.setDescription("You do not have the required role to use this command");
+        channel.sendMessage(builder.build()).queue();
+        builder.clear();
     }
 
 }

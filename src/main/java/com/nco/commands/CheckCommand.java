@@ -3,6 +3,7 @@ package com.nco.commands;
 import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 
@@ -13,8 +14,8 @@ import java.sql.SQLException;
 
 public class CheckCommand extends AbstractCommand {
 
-    public CheckCommand(String[] messageArgs, User author, MessageChannel channel) {
-        super(messageArgs, author, channel);
+    public CheckCommand(String[] messageArgs, User author, MessageChannel channel, Member member) {
+        super(messageArgs, author, channel, member);
     }
 
     @Override

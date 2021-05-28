@@ -2,9 +2,10 @@ package com.nco.commands;
 
 import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
-import com.nco.utils.DBUtils;
+import com.nco.utils.JDAUtils;
 import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 
@@ -13,8 +14,13 @@ import java.sql.*;
 
 public class SelectCommand extends AbstractCommand {
 
-    public SelectCommand(String[] messageArgs, User author, MessageChannel channel) {
-        super(messageArgs, author, channel);
+    public SelectCommand(String[] messageArgs, User author, MessageChannel channel, Member member) {
+        super(messageArgs, author, channel, member);
+    }
+
+    @Override
+    protected String getRoleRequiredForCommand() {
+        return "Tech-Support";
     }
 
     @Override
@@ -32,7 +38,7 @@ public class SelectCommand extends AbstractCommand {
         builder.setTitle("Select of " + messageArgs[0]);
 
         String sql = "Select * From NCO_PC where character_name = ?";
-        try(PreparedStatement stat = conn.prepareStatement(sql)) {
+        try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);
             try (ResultSet rs = stat.executeQuery()) {
                 ResultSetMetaData rsmd = rs.getMetaData();

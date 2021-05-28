@@ -2,6 +2,7 @@ package com.nco;
 
 import com.nco.commands.*;
 import com.nco.utils.StringUtils;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -13,6 +14,7 @@ public class MessageListener extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         User author = event.getAuthor();
+        Member member = event.getMember();
         Message message = event.getMessage();
         MessageChannel channel = event.getChannel();
         String messageEvent = message.getContentRaw().split(" ")[0];
@@ -28,18 +30,18 @@ public class MessageListener extends ListenerAdapter {
                 case ADDICTION:
                     break;
                 case BANK:
-                    new BankCommand(messageArgs, author, channel).process();
+                    new BankCommand(messageArgs, author, channel, member).process();
                     break;
                 case BUYARMOR:
-                    new BuyArmorCommand(messageArgs, author, channel).process();
+                    new BuyArmorCommand(messageArgs, author, channel, member).process();
                     break;
                 case CHECK:
-                     new CheckCommand(messageArgs, author, channel).process();
+                     new CheckCommand(messageArgs, author, channel, member).process();
                     break;
                 case COVERAGE:
                     break;
                 case FAME:
-                    new FameCommand(messageArgs, author, channel).process();
+                    new FameCommand(messageArgs, author, channel, member).process();
                     break;
                 case FIXER:
                     break;
@@ -54,18 +56,18 @@ public class MessageListener extends ListenerAdapter {
                 case HUSTLE:
                     break;
                 case IMPROVE:
-                    new ImproveCommand(messageArgs, author, channel).process();
+                    new ImproveCommand(messageArgs, author, channel, member).process();
                     break;
                 case INFO:
-                    new InfoCommand(messageArgs, author, channel).process();
+                    new InfoCommand(messageArgs, author, channel, member).process();
                     break;
                 case INSTALL:
-                    new InstallCommand(messageArgs, author, channel).process();
+                    new InstallCommand(messageArgs, author, channel, member).process();
                     break;
                 case LIFESTYLE:
                     break;
                 case MAXHUM:
-                    new MaxHumCommand(messageArgs, author, channel).process();
+                    new MaxHumCommand(messageArgs, author, channel, member).process();
                     break;
                 case MEDTECH:
                     break;
@@ -82,7 +84,7 @@ public class MessageListener extends ListenerAdapter {
                 case SALVAGETRADE:
                     break;
                 case SELECT:
-                    new SelectCommand(messageArgs, author, channel).process();
+                    new SelectCommand(messageArgs, author, channel, member).process();
                     break;
                 case TEAM:
                     break;
@@ -91,15 +93,18 @@ public class MessageListener extends ListenerAdapter {
                 case TIMEZONE:
                     break;
                 case TRADE:
-                    new TradeCommand(messageArgs, author, channel).process();
+                    new TradeCommand(messageArgs, author, channel, member).process();
                     break;
                 case TRAUMADEBT:
+                    break;
+                case UPDATE:
+                    new UpdateCommand(messageArgs, author, channel, member).process();
                     break;
                 case UNKNOWN:
                     channel.sendMessage(messageEvent + " Is An Unrecognised Command").queue();
                     break;
                 case UPDATEBODYHP:
-                    new UpdateBodyHpCommand(messageArgs, author, channel).process();
+                    new UpdateBodyHpCommand(messageArgs, author, channel, member).process();
                     break;
             }
         }
