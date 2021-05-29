@@ -42,7 +42,7 @@ public class InstallCommand extends AbstractCommand {
 
     @Override
     protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
-        String valueRolled = RPGDice.roll(messageArgs[2]);
+        int valueRolled = RPGDice.roll(messageArgs[2]);
         if (validateArgs(valueRolled)) {
             builder.setTitle(getHelpTitle());
             builder.setDescription(getHelpDescription());
@@ -67,8 +67,8 @@ public class InstallCommand extends AbstractCommand {
 
             builder.addField("Old Humanity", pc.getHumanity() + "/" +
                     pc.getMaxHumanity(), true);
-            builder.addField("Roll: " + messageArgs[2],  valueRolled, true);
-            builder.addField("New Humanity", (pc.getHumanity() - Integer.parseInt(valueRolled)) + "/" +
+            builder.addField("Roll: " + messageArgs[2], String.valueOf(valueRolled), true);
+            builder.addField("New Humanity", (pc.getHumanity() - valueRolled) + "/" +
                     (pc.getMaxHumanity() - (messageArgs[4].equalsIgnoreCase("cyberware") ? 2 : 4)), true);
         } else {
             builder.setTitle("ERROR: Install Update Or Insert Failure");
@@ -78,14 +78,14 @@ public class InstallCommand extends AbstractCommand {
 
     }
 
-    private boolean validateArgs(String valueRolled) {
-        return valueRolled == null || (NumberUtils.isNumeric(messageArgs[3]) || messageArgs[3].equalsIgnoreCase("paid"))
+    private boolean validateArgs(int valueRolled) {
+        return valueRolled == 0 || (NumberUtils.isNumeric(messageArgs[3]) || messageArgs[3].equalsIgnoreCase("paid"))
                 && (messageArgs[4].equalsIgnoreCase("cyberware") || messageArgs[4].equalsIgnoreCase("borgware"));
     }
 
 
-    private boolean updateInstall(String valueRolled, PlayerCharacter pc, Connection conn) throws SQLException {
-        int newHumanity = pc.getHumanity() - Integer.parseInt(valueRolled);
+    private boolean updateInstall(int valueRolled, PlayerCharacter pc, Connection conn) throws SQLException {
+        int newHumanity = pc.getHumanity() - valueRolled;
         int newMaxHumanity = pc.getMaxHumanity() - (messageArgs[4].equalsIgnoreCase("cyberware") ? 2 : 4);
         int newBank = pc.getBank();
         if (NumberUtils.isNumeric(messageArgs[3])) {
@@ -103,13 +103,13 @@ public class InstallCommand extends AbstractCommand {
         }
     }
 
-    private boolean insertInstall(String valueRolled, Connection conn) throws SQLException {
+    private boolean insertInstall(int valueRolled, Connection conn) throws SQLException {
         String sql = "INSERT INTO NCO_INSTALL (character_name, product, dice, humanity_loss, amount, cyber_or_borg, created_by) VALUES (?,?,?,?,?,?,?)";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);
             stat.setString(2, messageArgs[1]);
             stat.setString(3, messageArgs[2]);
-            stat.setInt(4, Integer.parseInt(valueRolled));
+            stat.setInt(4, valueRolled);
             stat.setString(5, messageArgs[3]);
             stat.setString(6, messageArgs[4]);
             stat.setString(7, author.getAsTag());

@@ -66,13 +66,12 @@ public class RPGDice {
             return new RPGDice(rolls, faces, multiplier * multiplierSign, additive * additiveSign);
         }
         return null;
-
     }
 
-    public static String roll(String str) {
+    public static int roll(String str) {
         RPGDice rpgDice = RPGDice.parse(str);
         if (rpgDice == null) {
-            return null;
+            return 0;
         }
         double total = 0.0;
         for (int i = 0; i < rpgDice.getRolls(); i++) {
@@ -83,10 +82,10 @@ public class RPGDice {
         } else if (rpgDice.getMultiplier() < 0) {
             total = Math.ceil(total / (rpgDice.getMultiplier() * -1));
         } else {
-            return null;
+            return 0;
         }
         total += rpgDice.getAdditive();
-        return String.valueOf((int) total);
+        return ((int) total);
     }
 
 }

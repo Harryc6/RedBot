@@ -23,23 +23,23 @@ class RPGDiceTest {
 
     @Test
     void roll() {
-        int roll = Integer.parseInt(RPGDice.roll("d6"));
+        int roll = RPGDice.roll("d6");
         assertTrue(1 <= roll && roll <= 7);
         assertNull(RPGDice.parse("d6*"));
-        roll = Integer.parseInt(RPGDice.roll("33d6*10"));
+        roll = RPGDice.roll("33d6*10");
         assertTrue(330 <= roll && roll <= 1980);
         assertNull(RPGDice.parse("336*10"));
         assertNull(RPGDice.parse("d6/"));
-        roll = Integer.parseInt(RPGDice.roll("d6/5"));
+        roll = RPGDice.roll("d6/5");
         assertTrue(1 <= roll && roll <= 2);
-        roll = Integer.parseInt(RPGDice.roll("d6/5+2"));
+        roll = RPGDice.roll("d6/5+2");
         assertTrue(3 <= roll && roll <= 4);
-        roll = Integer.parseInt(RPGDice.roll("2d6/5-32"));
+        roll = RPGDice.roll("2d6/5-32");
         assertTrue(-32 <= roll && roll <= -29);
         assertNull(RPGDice.parse("2d6/5+-32"));
-        roll = Integer.parseInt(RPGDice.roll("2D6"));
+        roll = RPGDice.roll("2D6");
         assertTrue(2 <= roll && roll <= 12);
-        roll = Integer.parseInt(RPGDice.roll("2D6 / 2 + 1"));
+        roll = RPGDice.roll("2D6 / 2 + 1");
         assertTrue(2 <= roll && roll <= 12);
     }
 
