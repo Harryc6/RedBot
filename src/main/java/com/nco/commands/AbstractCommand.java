@@ -1,6 +1,7 @@
 package com.nco.commands;
 
 import com.nco.pojos.PlayerCharacter;
+import com.nco.utils.ConfigVar;
 import com.nco.utils.DBUtils;
 import com.nco.utils.JDAUtils;
 import com.nco.utils.StringUtils;
@@ -109,6 +110,7 @@ public abstract class AbstractCommand {
         builder.setColor(Color.red);
         builder.setTitle(getHelpTitle());
         builder.setDescription(getHelpDescription());
+        builder.addField("Need more help?", "[Documentation can be found here](" + ConfigVar.getDocumentationURL() + ")", true);
         channel.sendMessage(builder.build()).queue();
         builder.clear();
     }

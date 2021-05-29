@@ -19,4 +19,7 @@ public class ConfigVar {
         return System.getenv().get("DISCORD_TOKEN");
     }
 
+    public static String getDocumentationURL() {
+        return System.getenv().get("DOCUMENTATION_URL");
+    }
 }
