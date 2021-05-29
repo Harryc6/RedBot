@@ -52,6 +52,7 @@ public class MessageListener extends ListenerAdapter {
                 case HP:
                     break;
                 case HUM:
+                    new HumCommand(messageArgs, author, channel, member).process();
                     break;
                 case HUSTLE:
                     break;
