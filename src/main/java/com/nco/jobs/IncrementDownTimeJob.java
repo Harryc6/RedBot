@@ -18,13 +18,13 @@ public class IncrementDownTimeJob implements Job {
         logger.info("Started running IncrementDownTimeJob");
         int updateCount = 0;
         String sql = "Select * from NCO_PC where retired_yn = 'N'";
-        String sql2 = "UPDATE NCO_PC set DownTime = ? where character_name = ?";
+        String sql2 = "UPDATE NCO_PC set downtime = ? where character_name = ?";
 
         try(Connection conn = DBUtils.getConnection(); ResultSet rs = conn.prepareStatement(sql).executeQuery()) {
             conn.setAutoCommit(false);
             while (rs.next()) {
                 try(PreparedStatement stat = conn.prepareStatement(sql2)) {
-                    stat.setString(1, String.valueOf(rs.getInt("DownTime") + 1));
+                    stat.setInt(1, rs.getInt("downtime") + 1);
                     stat.setString(2, rs.getString("character_name"));
                     if (stat.executeUpdate() == 1) {
                         updateCount++;
