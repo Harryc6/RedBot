@@ -115,7 +115,6 @@ public abstract class AbstractCommand {
         builder.clear();
     }
 
-
     protected abstract String getHelpTitle();
 
     protected abstract String getHelpDescription();
