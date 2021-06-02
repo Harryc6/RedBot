@@ -51,7 +51,7 @@ public class RedBot {
             // Trigger the job to run now, and then repeat every 40 seconds
             Trigger trigger = newTrigger()
                     .withIdentity("trigger1", "group1")
-                    .startNow().withSchedule(dailyAtHourAndMinute(19, 0))
+                    .startNow().withSchedule(dailyAtHourAndMinute(13, 40))
                     .build();
 
             // Tell quartz to schedule the job using our trigger
