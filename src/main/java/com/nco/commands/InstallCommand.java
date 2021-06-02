@@ -21,79 +21,48 @@ public class InstallCommand extends AbstractCommand {
 
     @Override
     protected boolean canProcessByUser() {
-        return messageArgs.length == 4 && (isPaid() || doesBankChange());
+        return messageArgs.length == 4 && (isPaid() || doesBankChange()) && containsCyberwareType();
     }
 
     private boolean isPaid() {
         return messageArgs[messageArgs.length - 2].equalsIgnoreCase("paid") ||
-                (NumberUtils.isNumeric(messageArgs[messageArgs.length - 2]) &&
-                        NumberUtils.asPositive(messageArgs[messageArgs.length - 2]) == 0);
+                (NumberUtils.isNumeric(messageArgs[messageArgs.length - 2]));
     }
 
     private boolean doesBankChange() {
-        return NumberUtils.isNumeric(messageArgs[messageArgs.length - 2]) &&
-                NumberUtils.asPositive(messageArgs[messageArgs.length - 2]) != 0;
+        return NumberUtils.isNumeric(messageArgs[messageArgs.length - 2]);
+    }
+
+    private boolean containsCyberwareType() {
+        return messageArgs[messageArgs.length - 1].equalsIgnoreCase("cyberware")
+                || messageArgs[messageArgs.length - 1].equalsIgnoreCase("borgware");
     }
 
     @Override
     protected boolean canProcessByName() {
-        return messageArgs.length == 5 && (isPaid() || doesBankChange());
+        return messageArgs.length == 5 && (isPaid() || doesBankChange()) && containsCyberwareType();
     }
 
     @Override
     protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
         int valueRolled = RPGDice.roll(messageArgs[2]);
-        if (validateArgs(valueRolled)) {
-            builder.setTitle(getHelpTitle());
-            builder.setDescription(getHelpDescription());
-        } else if (!isPaid() && doesBankChange() && NumberUtils.asPositive(messageArgs[3]) > pc.getBank()) {
+        int newHumanity = pc.getHumanity() - valueRolled;
+        int newMaxHumanity = pc.getMaxHumanity() - (messageArgs[4].equalsIgnoreCase("cyberware") ? 2 : 4);
+        int newBank = pc.getBank() - (isPaid() ? 0 : NumberUtils.asPositive(messageArgs[3]));
+        if (!isPaid() && newBank < 0) {
                 builder.setTitle("ERROR: Not Enough Eurobucks");
                 builder.setDescription(messageArgs[0] + " has only " + pc.getBank() + "eb available " +
                         "where " + NumberUtils.asPositive(messageArgs[messageArgs.length - 1]) + "eb is being spent.");
-        } else if (updateInstall(valueRolled, pc, conn) && insertInstall(valueRolled, conn)) {
-
-            builder.setTitle(messageArgs[0] + "'s Installs Updated");
-            builder.setDescription("Installing \"" + messageArgs[1] + "\"");
-
-            if (doesBankChange()) {
-                int oldBank = pc.getBank();
-                int newBank = oldBank;
-                int cost = Integer.parseInt(messageArgs[3]);
-                newBank -= (0 > cost ? cost * -1 : cost);
-                builder.addField("Old Balance", oldBank + "eb", true);
-                builder.addBlankField(true);
-                builder.addField("New Balance", newBank + "eb", true);
-            }
-
-            builder.addField("Old Humanity", pc.getHumanity() + "/" +
-                    pc.getMaxHumanity(), true);
-            builder.addField("Roll: " + messageArgs[2], String.valueOf(valueRolled), true);
-            builder.addField("New Humanity", (pc.getHumanity() - valueRolled) + "/" +
-                    (pc.getMaxHumanity() - (messageArgs[4].equalsIgnoreCase("cyberware") ? 2 : 4)), true);
+        } else if (updateInstall(newHumanity, newMaxHumanity, newBank, conn) && insertInstall(valueRolled, conn)) {
+            buildEmbeddedContent(pc, builder, valueRolled, newHumanity, newMaxHumanity, newBank);
         } else {
             builder.setTitle("ERROR: Install Update Or Insert Failure");
             builder.setDescription("Please contact an administrator to get this resolved");
         }
-
-
     }
 
-    private boolean validateArgs(int valueRolled) {
-        return valueRolled == 0 || (NumberUtils.isNumeric(messageArgs[3]) || messageArgs[3].equalsIgnoreCase("paid"))
-                && (messageArgs[4].equalsIgnoreCase("cyberware") || messageArgs[4].equalsIgnoreCase("borgware"));
-    }
-
-
-    private boolean updateInstall(int valueRolled, PlayerCharacter pc, Connection conn) throws SQLException {
-        int newHumanity = pc.getHumanity() - valueRolled;
-        int newMaxHumanity = pc.getMaxHumanity() - (messageArgs[4].equalsIgnoreCase("cyberware") ? 2 : 4);
-        int newBank = pc.getBank();
-        if (NumberUtils.isNumeric(messageArgs[3])) {
-            int cost = Integer.parseInt(messageArgs[3]);
-            newBank -= (0 > cost ? cost * -1 : cost);
-        }
+    private boolean updateInstall(int newHumanity, int newMaxHumanity, int newBank, Connection conn) throws SQLException {
         String sql = "UPDATE NCO_PC set humanity = ?, max_humanity = ?, bank = ? Where character_name = ?";
-
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, newHumanity);
             stat.setInt(2, newMaxHumanity);
@@ -115,6 +84,21 @@ public class InstallCommand extends AbstractCommand {
             stat.setString(7, author.getAsTag());
             return stat.executeUpdate() == 1;
         }
+    }
+
+    private void buildEmbeddedContent(PlayerCharacter pc, EmbedBuilder builder, int valueRolled, int newHumanity, int newMaxHumanity, int newBank) {
+        builder.setTitle(messageArgs[0] + "'s Installs Updated");
+        builder.setDescription("Installing \"" + messageArgs[1] + "\"");
+
+        if (doesBankChange()) {
+            builder.addField("Old Balance", pc.getBank() + "eb", true);
+            builder.addBlankField(true);
+            builder.addField("New Balance", newBank + "eb", true);
+        }
+
+        builder.addField("Old Humanity", pc.getHumanity() + "/" + pc.getMaxHumanity(), true);
+        builder.addField("Roll: " + messageArgs[2], String.valueOf(valueRolled), true);
+        builder.addField("New Humanity", newHumanity + "/" + newMaxHumanity, true);
     }
 
     @Override
