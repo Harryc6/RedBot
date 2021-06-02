@@ -50,6 +50,7 @@ public class MessageListener extends ListenerAdapter {
                 case HOSPITAL:
                     break;
                 case HP:
+                    new HPCommand(messageArgs, author, channel, member).process();
                     break;
                 case HUM:
                     new HumCommand(messageArgs, author, channel, member).process();
