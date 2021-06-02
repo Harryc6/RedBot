@@ -17,24 +17,33 @@ public class IncrementDownTimeJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         logger.info("Started running IncrementDownTimeJob");
         int updateCount = 0;
+        int maxedCount = 0;
         String sql = "Select * from NCO_PC where retired_yn = 'N'";
         String sql2 = "UPDATE NCO_PC set downtime = ? where character_name = ?";
 
         try(Connection conn = DBUtils.getConnection(); ResultSet rs = conn.prepareStatement(sql).executeQuery()) {
             conn.setAutoCommit(false);
             while (rs.next()) {
-                try(PreparedStatement stat = conn.prepareStatement(sql2)) {
-                    stat.setInt(1, rs.getInt("downtime") + 1);
-                    stat.setString(2, rs.getString("character_name"));
-                    if (stat.executeUpdate() == 1) {
-                        updateCount++;
-                    } else {
-                        logger.error("Failed up increment DT for " + rs.getString("character_name"));
+                if (rs.getInt("dowtime") < 84) {
+                    try(PreparedStatement stat = conn.prepareStatement(sql2)) {
+                        stat.setInt(1, rs.getInt("downtime") + 1);
+                        stat.setString(2, rs.getString("character_name"));
+                        if (stat.executeUpdate() == 1) {
+                            updateCount++;
+                        } else {
+                            logger.error("Failed up increment DT for " + rs.getString("character_name"));
+                        }
                     }
+                } else {
+                    maxedCount++;
                 }
             }
             conn.commit();
-            logger.info("Finished running IncrementDownTimeJob. " + updateCount + " characters updated");
+            String log = "Finished running IncrementDownTimeJob. " + updateCount + " characters updated";
+            if (maxedCount != 0) {
+                log += " & " + maxedCount + " characters skipped";
+            }
+            logger.info(log);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
