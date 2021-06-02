@@ -2,6 +2,7 @@ package com.nco.commands;
 
 import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
+import com.nco.utils.NumberUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -19,28 +20,18 @@ public class UpdateBodyHpCommand extends AbstractCommand {
 
     @Override
     protected boolean canProcessByUser() {
-        return messageArgs.length == 3;
+        return messageArgs.length == 3 && NumberUtils.isNumeric(messageArgs[0]) && NumberUtils.isNumeric(messageArgs[1]);
     }
 
     @Override
     protected boolean canProcessByName() {
-        return messageArgs.length == 4;
+        return messageArgs.length == 4 && NumberUtils.isNumeric(messageArgs[1]) && NumberUtils.isNumeric(messageArgs[2]);
     }
 
     @Override
     protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
         if (updateBodyHp(conn) && insertBodyHp(conn, pc)) {
-
-            builder.setTitle(messageArgs[0] + "'s Body & HP Updated");
-            builder.setDescription("For \"" + messageArgs[3] + "\"");
-            builder.addField("Old Body", String.valueOf(pc.getBodyScore()), true);
-            builder.addBlankField(true);
-            builder.addField("New Body", messageArgs[1], true);
-
-            builder.addField("Old Max HP", String.valueOf(pc.getMaxHP()), true);
-            builder.addBlankField(true);
-            builder.addField("New Max HP", messageArgs[2], true);
-
+            buildEmbeddedContent(pc, builder);
         } else {
             builder.setTitle("ERROR: Improve Update Or Insert Failure");
             builder.setDescription("Please contact an administrator to get this resolved");
@@ -69,6 +60,17 @@ public class UpdateBodyHpCommand extends AbstractCommand {
             stat.setString(7, author.getAsTag());
             return stat.executeUpdate() == 1;
         }
+    }
+
+    private void buildEmbeddedContent(PlayerCharacter pc, EmbedBuilder builder) {
+        builder.setTitle(messageArgs[0] + "'s Body & HP Updated");
+        builder.setDescription("For \"" + messageArgs[3] + "\"");
+        builder.addField("Old Body", String.valueOf(pc.getBodyScore()), true);
+        builder.addBlankField(true);
+        builder.addField("New Body", messageArgs[1], true);
+        builder.addField("Old Max HP", String.valueOf(pc.getMaxHP()), true);
+        builder.addBlankField(true);
+        builder.addField("New Max HP", messageArgs[2], true);
     }
 
     @Override
