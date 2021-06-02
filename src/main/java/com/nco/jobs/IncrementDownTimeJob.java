@@ -1,6 +1,7 @@
 package com.nco.jobs;
 
 import com.nco.utils.DBUtils;
+import com.nco.utils.NumberUtils;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -24,7 +25,7 @@ public class IncrementDownTimeJob implements Job {
         try(Connection conn = DBUtils.getConnection(); ResultSet rs = conn.prepareStatement(sql).executeQuery()) {
             conn.setAutoCommit(false);
             while (rs.next()) {
-                if (rs.getInt("dowtime") < 84) {
+                if (rs.getInt("downtime") < 84) {
                     try(PreparedStatement stat = conn.prepareStatement(sql2)) {
                         stat.setInt(1, rs.getInt("downtime") + 1);
                         stat.setString(2, rs.getString("character_name"));
