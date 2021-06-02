@@ -24,7 +24,6 @@ public enum Commands {
     NANOHP,
     PROPERTY,
     RENT,
-    SALVAGETRADE,
     SELECT,
     TEAM,
     TECHIE,
