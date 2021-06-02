@@ -33,6 +33,7 @@ public abstract class AbstractCommand {
 
     public void process() {
         channel.sendTyping().queue();
+        logger.info("Starting " + getClass().getSimpleName() + " with args: " + StringUtils.parseArray(messageArgs));
         if (userHasPermission()) {
             if (canProcessByUser()) {
                 processByUser();
@@ -44,6 +45,7 @@ public abstract class AbstractCommand {
         } else {
             invalidPermissions();
         }
+        logger.info("Finishing " + getClass().getSimpleName() + " with args: " + StringUtils.parseArray(messageArgs));
     }
 
     private boolean userHasPermission() {

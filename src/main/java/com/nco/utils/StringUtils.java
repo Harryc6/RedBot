@@ -1,6 +1,7 @@
 package com.nco.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class StringUtils {
 
@@ -42,5 +43,19 @@ public class StringUtils {
 
     public static String checkNull(String string) {
         return string == null ? "" : string;
+    }
+
+    public static String parseArray(String[] array) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        for (String s : array) {
+            if (!s.isEmpty()) {
+                sb.append(s + ", ");
+            }
+        }
+        if (sb.length() > 1) {
+            sb.replace(sb.lastIndexOf(", "), sb.lastIndexOf(", ") + 2, "");
+        }
+        return sb.append("]").toString();
     }
 }
