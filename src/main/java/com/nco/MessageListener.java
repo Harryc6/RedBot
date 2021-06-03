@@ -78,6 +78,7 @@ public class MessageListener extends ListenerAdapter {
                 case MOTO:
                     break;
                 case NANOHP:
+                    new NanoHPCommand(messageArgs, author, channel, member).process();
                     break;
                 case PROPERTY:
                     break;
