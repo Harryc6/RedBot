@@ -69,12 +69,18 @@ public class NanoHPCommand extends AbstractCommand {
         int newHP = pc.getCurrentHP();
         int newHeadSP = pc.getHeadSP();
         int newBodySP = pc.getBodySP();
-        while (dtAmount > 0 && newBodySP < Integer.parseInt(messageArgs[2]) || newHeadSP < Integer.parseInt(messageArgs[2])
-                || newHP < pc.getMaxHP()) {
+        while (dtAmount > 0 && (newBodySP < Integer.parseInt(messageArgs[2]) || newHeadSP < Integer.parseInt(messageArgs[2])
+                || newHP < pc.getMaxHP())) {
             newHP += pc.getBodyScore() + getBonuses(pc);
+            if (messageArgs[3].toLowerCase().contains("speedheal")) {
+                newHP += pc.getBodyScore() + pc.getWillScore();
+            }
             newBodySP += 1 + getArmorBonuses(pc);
             newHeadSP += 1 + getArmorBonuses(pc);
             dtAmount--;
+        }
+        if (messageArgs[3].toLowerCase().contains("cryotank")) {
+            newHP *= 2;
         }
         if (newHP > pc.getMaxHP()) {
             newHP = pc.getMaxHP();
@@ -93,9 +99,6 @@ public class NanoHPCommand extends AbstractCommand {
         if (messageArgs.length > 3) {
             if (messageArgs[3].toLowerCase().contains("enhanced")) {
                 bonuses += pc.getBodyScore();
-            }
-            if (messageArgs[3].toLowerCase().contains("speedheal")) {
-                bonuses += pc.getBodyScore() + pc.getWillScore();
             }
             if (messageArgs[3].toLowerCase().contains("antibodies")) {
                 bonuses += 2;
