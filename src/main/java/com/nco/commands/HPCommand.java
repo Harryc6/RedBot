@@ -59,15 +59,13 @@ public class HPCommand extends AbstractCommand {
 
     public int getNewHP(PlayerCharacter pc) {
         int newHP = pc.getCurrentHP();
+        int multiplier = messageArgs[2].toLowerCase().contains("cryotank") ? 2 : 1;
         while (dtAmount > 0 && newHP < pc.getMaxHP()) {
-            newHP += pc.getBodyScore() + getBonuses(pc);
+            newHP += (pc.getBodyScore() + getBonuses(pc)) * multiplier;
             if (messageArgs[2].toLowerCase().contains("speedheal")) {
                 newHP += pc.getBodyScore() + pc.getWillScore();
             }
             dtAmount--;
-        }
-        if (messageArgs[2].toLowerCase().contains("cryotank")) {
-            newHP *= 2;
         }
         if (newHP > pc.getMaxHP()) {
             newHP = pc.getMaxHP();
@@ -77,11 +75,11 @@ public class HPCommand extends AbstractCommand {
 
     private int getBonuses(PlayerCharacter pc) {
         int bonuses = 0;
-        if (messageArgs.length > 2) {
-            if (messageArgs[2].toLowerCase().contains("enhanced")) {
+        if (messageArgs.length > 3) {
+            if (messageArgs[3].toLowerCase().contains("enhanced")) {
                 bonuses += pc.getBodyScore();
             }
-            if (messageArgs[2].toLowerCase().contains("antibodies")) {
+            if (messageArgs[3].toLowerCase().contains("antibodies")) {
                 bonuses += 2;
             }
         }
