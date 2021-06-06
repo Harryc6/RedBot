@@ -93,7 +93,7 @@ public class MessageListener extends ListenerAdapter {
                 case RENT:
                     break;
                 case SELECT:
-                    new SelectCommand(messageArgs, author, channel, member).process();
+                    new SelectCommand(messageArgs, event);
                     break;
                 case TEAM:
                     break;
