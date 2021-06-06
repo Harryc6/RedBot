@@ -56,6 +56,7 @@ public class MessageListener extends ListenerAdapter {
                     new HumCommand(messageArgs, author, channel, member).process();
                     break;
                 case HUSTLE:
+                    new HustleCommand(messageArgs, author, channel, member).process();
                     break;
                 case IMPROVE:
                     new ImproveCommand(messageArgs, author, channel, member).process();
