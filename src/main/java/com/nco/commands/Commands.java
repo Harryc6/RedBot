@@ -25,6 +25,7 @@ public enum Commands {
     PROPERTY,
     RENT,
     SELECT,
+    START,
     TEAM,
     TECHIE,
     TIMEZONE,
@@ -32,5 +33,5 @@ public enum Commands {
     TRAUMADEBT,
     UPDATE,
     UNKNOWN,
-    UPDATEBODYHP
+    UPDATEBODYHP;
 }

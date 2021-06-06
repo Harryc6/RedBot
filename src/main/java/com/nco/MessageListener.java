@@ -2,10 +2,6 @@ package com.nco;
 
 import com.nco.commands.*;
 import com.nco.utils.StringUtils;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -13,14 +9,25 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class MessageListener extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        User author = event.getAuthor();
-        Member member = event.getMember();
-        Message message = event.getMessage();
-        MessageChannel channel = event.getChannel();
-        String messageEvent = message.getContentRaw().split(" ")[0];
-
-        if (!author.isBot() && messageEvent.startsWith(RedBot.PREFIX)) {
-            String[] messageArgs = StringUtils.parseArgsString(message.getContentRaw().substring(messageEvent.length()).trim());
+//        JSONObject jsonObject = null;
+//        List<Message.Attachment> attachments = event.getMessage().getAttachments();
+//        if (!attachments.isEmpty() && attachments.get(0).getFileExtension().equalsIgnoreCase("JSON")) {
+//            CompletableFuture<File> future = attachments.get(0).downloadToFile();
+//            try {
+//                File file = future.get();
+//                FileReader fileReader = new FileReader(file);
+//                jsonObject = (JSONObject) new JSONParser().parse(fileReader);
+//                file.delete();
+//            } catch (InterruptedException | ExecutionException | IOException | ParseException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        assert jsonObject != null;
+//        jsonObject.get("attribs");
+        String messageEvent = event.getMessage().getContentRaw().split(" ")[0];
+        if (!event.getAuthor().isBot() && messageEvent.startsWith(RedBot.PREFIX)) {
+            String[] messageArgs = StringUtils.parseArgsString(event.getMessage().getContentRaw().substring(messageEvent.length()).trim());
 
             Commands eventType = StringUtils.getEnumFromString(Commands.class, messageEvent.substring(1));
             if (eventType == null) {
@@ -30,18 +37,18 @@ public class MessageListener extends ListenerAdapter {
                 case ADDICTION:
                     break;
                 case BANK:
-                    new BankCommand(messageArgs, author, channel, member).process();
+                    new BankCommand(messageArgs, event);
                     break;
                 case BUYARMOR:
-                    new BuyArmorCommand(messageArgs, author, channel, member).process();
+                    new BuyArmorCommand(messageArgs, event);
                     break;
                 case CHECK:
-                     new CheckCommand(messageArgs, author, channel, member).process();
+                     new CheckCommand(messageArgs, event);
                     break;
                 case COVERAGE:
                     break;
                 case FAME:
-                    new FameCommand(messageArgs, author, channel, member).process();
+                    new FameCommand(messageArgs, event);
                     break;
                 case FIXER:
                     break;
@@ -50,27 +57,27 @@ public class MessageListener extends ListenerAdapter {
                 case HOSPITAL:
                     break;
                 case HP:
-                    new HPCommand(messageArgs, author, channel, member).process();
+                    new HPCommand(messageArgs, event);
                     break;
                 case HUM:
-                    new HumCommand(messageArgs, author, channel, member).process();
+                    new HumCommand(messageArgs, event);
                     break;
                 case HUSTLE:
-                    new HustleCommand(messageArgs, author, channel, member).process();
+                    new HustleCommand(messageArgs, event);
                     break;
                 case IMPROVE:
-                    new ImproveCommand(messageArgs, author, channel, member).process();
+                    new ImproveCommand(messageArgs, event);
                     break;
                 case INFO:
-                    new InfoCommand(messageArgs, author, channel, member).process();
+                    new InfoCommand(messageArgs, event);
                     break;
                 case INSTALL:
-                    new InstallCommand(messageArgs, author, channel, member).process();
+                    new InstallCommand(messageArgs, event);
                     break;
                 case LIFESTYLE:
                     break;
                 case MAXHUM:
-                    new MaxHumCommand(messageArgs, author, channel, member).process();
+                    new MaxHumCommand(messageArgs, event);
                     break;
                 case MEDTECH:
                     break;
@@ -79,7 +86,7 @@ public class MessageListener extends ListenerAdapter {
                 case MOTO:
                     break;
                 case NANOHP:
-                    new NanoHPCommand(messageArgs, author, channel, member).process();
+                    new NanoHPCommand(messageArgs, event);
                     break;
                 case PROPERTY:
                     break;
@@ -93,21 +100,21 @@ public class MessageListener extends ListenerAdapter {
                 case TECHIE:
                     break;
                 case TIMEZONE:
-                    new TimeZoneCommand(messageArgs, author, channel, member).process();
+                    new TimeZoneCommand(messageArgs, event);
                     break;
                 case TRADE:
-                    new TradeCommand(messageArgs, author, channel, member).process();
+                    new TradeCommand(messageArgs, event);
                     break;
                 case TRAUMADEBT:
                     break;
                 case UPDATE:
-                    new UpdateCommand(messageArgs, author, channel, member).process();
+                    new UpdateCommand(messageArgs, event);
                     break;
                 case UNKNOWN:
-                    channel.sendMessage(messageEvent + " Is An Unrecognised Command").queue();
+                    event.getChannel().sendMessage(messageEvent + " Is An Unrecognised Command").queue();
                     break;
                 case UPDATEBODYHP:
-                    new UpdateBodyHpCommand(messageArgs, author, channel, member).process();
+                    new UpdateBodyHpCommand(messageArgs, event);
                     break;
             }
         }

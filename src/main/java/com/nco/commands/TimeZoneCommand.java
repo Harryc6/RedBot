@@ -3,9 +3,7 @@ package com.nco.commands;
 import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,8 +14,8 @@ public class TimeZoneCommand extends AbstractCommand {
 
     private final static String[] UTCArray = { "UTC-12", "UTC-11", "UTC-10", "UTC-9:30", "UTC-9", "UTC-8", "UTC-7", "UTC-6", "UTC-5", "UTC-4", "UTC-3:30", "UTC-3", "UTC-2", "UTC-1", "UTC+0", "UTC+1", "UTC+2", "UTC+3", "UTC+3:30", "UTC+4", "UTC+4:30", "UTC+5", "UTC+5:30", "UTC+5:45", "UTC+6", "UTC+6:30", "UTC+7", "UTC+8", "UTC+8:45", "UTC+9", "UTC+9:30", "UTC+10", "UTC+10:30", "UTC+11", "UTC+12", "UTC+12:45", "UTC+13", "UTC+14" };
 
-    public TimeZoneCommand(String[] messageArgs, User author, MessageChannel channel, Member member) {
-        super(messageArgs, author, channel, member);
+    public TimeZoneCommand(String[] messageArgs, GuildMessageReceivedEvent event) {
+        super(messageArgs, event);
     }
 
     @Override
@@ -34,7 +32,6 @@ public class TimeZoneCommand extends AbstractCommand {
     protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
         if (updateTimeZone(conn) && insertTimeZone(conn, pc)) {
             builder.setTitle(messageArgs[0] + "'s Time Zone Updated");
-            builder.setDescription("For \"" + messageArgs[1] + "\"");
             builder.addField("Old Time Zone", pc.getTimeZone(), true);
             builder.addBlankField(true);
             builder.addField("New Time Zone", messageArgs[1], true);

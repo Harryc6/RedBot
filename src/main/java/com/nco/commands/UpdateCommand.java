@@ -2,19 +2,16 @@ package com.nco.commands;
 
 import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
-import com.nco.utils.JDAUtils;
 import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.sql.*;
 
 public class UpdateCommand extends AbstractCommand {
 
-    public UpdateCommand(String[] messageArgs, User author, MessageChannel channel, Member member) {
-        super(messageArgs, author, channel, member);
+    public UpdateCommand(String[] messageArgs, GuildMessageReceivedEvent event) {
+        super(messageArgs, event);
     }
 
     @Override

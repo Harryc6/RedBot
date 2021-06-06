@@ -7,8 +7,10 @@ import com.nco.utils.JDAUtils;
 import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,15 +25,18 @@ public abstract class AbstractCommand {
     User author;
     MessageChannel channel;
     Member member;
+    Message message;
 
-    public AbstractCommand(String[] messageArgs, User author, MessageChannel channel, Member member) {
+    public AbstractCommand(String[] messageArgs, GuildMessageReceivedEvent event) {
         this.messageArgs = messageArgs;
-        this.author = author;
-        this.channel = channel;
-        this.member = member;
+        this.author = event.getAuthor();
+        this.channel = event.getChannel();
+        this.member = event.getMember();
+        this.message = event.getMessage();
+        process();
     }
 
-    public void process() {
+    private void process() {
         channel.sendTyping().queue();
         logger.info("Starting " + getClass().getSimpleName() + " with args: " + StringUtils.parseArray(messageArgs));
         if (userHasPermission()) {
