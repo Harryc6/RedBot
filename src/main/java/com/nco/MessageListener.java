@@ -93,6 +93,7 @@ public class MessageListener extends ListenerAdapter {
                 case TECHIE:
                     break;
                 case TIMEZONE:
+                    new TimeZoneCommand(messageArgs, author, channel, member).process();
                     break;
                 case TRADE:
                     new TradeCommand(messageArgs, author, channel, member).process();
