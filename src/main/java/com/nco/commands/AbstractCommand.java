@@ -40,12 +40,20 @@ public abstract class AbstractCommand {
         channel.sendTyping().queue();
         logger.info("Starting " + getClass().getSimpleName() + " with args: " + StringUtils.parseArray(messageArgs));
         if (userHasPermission()) {
-            if (canProcessByUser()) {
-                processByUser();
-            } else if (canProcessByName()) {
-                processByName();
+            if (findPlayerCharacter()) {
+                if (canProcessByUser()) {
+                    processByUser();
+                } else if (canProcessByName()) {
+                    processByName();
+                } else {
+                    returnHelp();
+                }
             } else {
-                returnHelp();
+                if (canProcessWithoutPC()) {
+                    processWithoutPC();
+                } else {
+                    returnHelp();
+                }
             }
         } else {
             invalidPermissions();
@@ -61,6 +69,10 @@ public abstract class AbstractCommand {
         }
     }
 
+    protected boolean findPlayerCharacter() {
+        return true;
+    }
+
     protected String getRoleRequiredForCommand() {
         return "";
     }
@@ -70,6 +82,10 @@ public abstract class AbstractCommand {
     }
 
     protected boolean canProcessByName() {
+        return false;
+    }
+
+    protected boolean canProcessWithoutPC() {
         return false;
     }
 
@@ -103,6 +119,17 @@ public abstract class AbstractCommand {
                 builder.setTitle("No Character Found");
                 builder.setDescription("No character information was found where the character is called  " + messageArgs[0]);
             }
+            channel.sendMessage(builder.build()).queue();
+            builder.clear();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+    private void processWithoutPC() {
+        try (Connection conn = DBUtils.getConnection()) {
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setColor(Color.red);
+            processUpdateAndRespond(conn, null, builder);
             channel.sendMessage(builder.build()).queue();
             builder.clear();
         } catch (SQLException throwables) {

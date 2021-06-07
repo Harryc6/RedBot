@@ -9,22 +9,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class MessageListener extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-//        JSONObject jsonObject = null;
-//        List<Message.Attachment> attachments = event.getMessage().getAttachments();
-//        if (!attachments.isEmpty() && attachments.get(0).getFileExtension().equalsIgnoreCase("JSON")) {
-//            CompletableFuture<File> future = attachments.get(0).downloadToFile();
-//            try {
-//                File file = future.get();
-//                FileReader fileReader = new FileReader(file);
-//                jsonObject = (JSONObject) new JSONParser().parse(fileReader);
-//                file.delete();
-//            } catch (InterruptedException | ExecutionException | IOException | ParseException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        assert jsonObject != null;
-//        jsonObject.get("attribs");
         String messageEvent = event.getMessage().getContentRaw().split(" ")[0];
         if (!event.getAuthor().isBot() && messageEvent.startsWith(RedBot.PREFIX)) {
             String[] messageArgs = StringUtils.parseArgsString(event.getMessage().getContentRaw().substring(messageEvent.length()).trim());
@@ -94,6 +78,9 @@ public class MessageListener extends ListenerAdapter {
                     break;
                 case SELECT:
                     new SelectCommand(messageArgs, event);
+                    break;
+                case START:
+                    new StartCommand(messageArgs, event);
                     break;
                 case TEAM:
                     break;
