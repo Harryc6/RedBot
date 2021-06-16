@@ -50,9 +50,9 @@ public class UpdateBodyHpCommand extends AbstractCommand {
         String sql  = "INSERT INTO NCO_BODY_HP_UPDATE (character_name, old_body, new_body, old_max_hp, new_max_hp, reason, created_by) VALUES (?,?,?,?,?,?,?)";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);
-            stat.setInt(2, pc.getBodyScore());
+            stat.setInt(2, pc.getBody());
             stat.setInt(3, Integer.parseInt(messageArgs[1]));
-            stat.setInt(4, pc.getMaxHP());
+            stat.setInt(4, pc.getMaxHp());
             stat.setInt(5, Integer.parseInt(messageArgs[2]));
             stat.setString(6, messageArgs[3]);
             stat.setString(7, author.getAsTag());
@@ -63,10 +63,10 @@ public class UpdateBodyHpCommand extends AbstractCommand {
     private void buildEmbeddedContent(PlayerCharacter pc, EmbedBuilder builder) {
         builder.setTitle(messageArgs[0] + "'s Body & HP Updated");
         builder.setDescription("For \"" + messageArgs[3] + "\"");
-        builder.addField("Old Body", String.valueOf(pc.getBodyScore()), true);
+        builder.addField("Old Body", String.valueOf(pc.getBody()), true);
         builder.addBlankField(true);
         builder.addField("New Body", messageArgs[1], true);
-        builder.addField("Old Max HP", String.valueOf(pc.getMaxHP()), true);
+        builder.addField("Old Max HP", String.valueOf(pc.getMaxHp()), true);
         builder.addBlankField(true);
         builder.addField("New Max HP", messageArgs[2], true);
     }

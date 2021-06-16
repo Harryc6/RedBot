@@ -34,12 +34,12 @@ public class NanoHPCommand extends AbstractCommand {
         if (Integer.parseInt(messageArgs[1]) > pc.getDowntime()) {
             builder.setTitle("ERROR: Not Enough DT");
             builder.addField("You have:", String.valueOf(pc.getDowntime()), true);
-        } else if(pc.getHeadSP() == Integer.parseInt(messageArgs[2]) && pc.getBodySP() == Integer.parseInt(messageArgs[2])) {
+        } else if(pc.getHeadSp() == Integer.parseInt(messageArgs[2]) && pc.getBodySp() == Integer.parseInt(messageArgs[2])) {
             builder.setTitle("ERROR: You are at full HeadSP and BodySP");
-            builder.addField("Your current HeadSP:", String.valueOf(pc.getHeadSP()), true);
+            builder.addField("Your current HeadSP:", String.valueOf(pc.getHeadSp()), true);
             builder.addBlankField(true);
             builder.addField("Your max HeadSP:", messageArgs[2], true);
-            builder.addField("Your current BodySP:", String.valueOf(pc.getBodySP()), true);
+            builder.addField("Your current BodySP:", String.valueOf(pc.getBodySp()), true);
             builder.addBlankField(true);
             builder.addField("Your max BodySP:", messageArgs[2], true);
         } else {
@@ -48,10 +48,10 @@ public class NanoHPCommand extends AbstractCommand {
             int[] hpAndArmor = getNewHPAndArmor(pc);
             newDT += dtAmount;
 
-            logger.info("PC : " + messageArgs[0] + "\nCurrent HP : " + pc.getCurrentHP() +
-                    "\nBody : " + pc.getBodyScore() + "\nBonus : " + getBonuses(pc) +
-                    "\nArmorBonus : " + getArmorBonuses(pc) + "\n Current Head Armor : " + pc.getBodySP() +
-                    "\n Current Body Armor : " + pc.getHeadSP() +
+            logger.info("PC : " + messageArgs[0] + "\nCurrent HP : " + pc.getCurrentHp() +
+                    "\nBody : " + pc.getBody() + "\nBonus : " + getBonuses(pc) +
+                    "\nArmorBonus : " + getArmorBonuses(pc) + "\n Current Head Armor : " + pc.getBodySp() +
+                    "\n Current Body Armor : " + pc.getHeadSp() +
                     "\n New HeadSP : " + hpAndArmor[1] + " New BodySP : " + hpAndArmor[2] + " New HP : " + hpAndArmor[0] );
 
             if (updateNanoHP(conn, hpAndArmor, newDT) && insertNanoHP(conn, pc, hpAndArmor, newDT)) {
@@ -64,22 +64,22 @@ public class NanoHPCommand extends AbstractCommand {
     }
 
     public int[] getNewHPAndArmor(PlayerCharacter pc) {
-        int newHP = pc.getCurrentHP();
-        int newHeadSP = pc.getHeadSP();
-        int newBodySP = pc.getBodySP();
+        int newHP = pc.getCurrentHp();
+        int newHeadSP = pc.getHeadSp();
+        int newBodySP = pc.getBodySp();
         int multiplier = messageArgs[2].toLowerCase().contains("cryotank") ? 2 : 1;
         while (dtAmount > 0 && (newBodySP < Integer.parseInt(messageArgs[2]) || newHeadSP < Integer.parseInt(messageArgs[2])
-                || newHP < pc.getMaxHP())) {
-            newHP += (pc.getBodyScore() + getBonuses(pc)) * multiplier;
+                || newHP < pc.getMaxHp())) {
+            newHP += (pc.getBody() + getBonuses(pc)) * multiplier;
             if (messageArgs[2].toLowerCase().contains("speedheal")) {
-                newHP += pc.getBodyScore() + pc.getWillScore();
+                newHP += pc.getBody() + pc.getWillpower();
             }
             newBodySP += 1 + getArmorBonuses(pc);
             newHeadSP += 1 + getArmorBonuses(pc);
             dtAmount--;
         }
-        if (newHP > pc.getMaxHP()) {
-            newHP = pc.getMaxHP();
+        if (newHP > pc.getMaxHp()) {
+            newHP = pc.getMaxHp();
         }
         if (newHeadSP > Integer.parseInt(messageArgs[2])) {
             newHeadSP = Integer.parseInt(messageArgs[2]);
@@ -94,7 +94,7 @@ public class NanoHPCommand extends AbstractCommand {
         int bonuses = 0;
         if (messageArgs.length > 3) {
             if (messageArgs[3].toLowerCase().contains("enhanced")) {
-                bonuses += pc.getBodyScore();
+                bonuses += pc.getBody();
             }
             if (messageArgs[3].toLowerCase().contains("antibodies")) {
                 bonuses += 2;
@@ -145,11 +145,11 @@ public class NanoHPCommand extends AbstractCommand {
                 "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);
-            stat.setInt(2, pc.getCurrentHP());
+            stat.setInt(2, pc.getCurrentHp());
             stat.setInt(3, hpAndArmor[0]);
-            stat.setInt(4, pc.getHeadSP());
+            stat.setInt(4, pc.getHeadSp());
             stat.setInt(5, hpAndArmor[1]);
-            stat.setInt(6, pc.getBodySP());
+            stat.setInt(6, pc.getBodySp());
             stat.setInt(7, hpAndArmor[2]);
             stat.setInt(8, pc.getDowntime());
             stat.setInt(9, newDT);
@@ -164,13 +164,13 @@ public class NanoHPCommand extends AbstractCommand {
     private void buildEmbed(EmbedBuilder builder, PlayerCharacter pc, int newDT, int[] hpAndArmor) {
         builder.setTitle(messageArgs[0] + "'s HP and/or Armor Restored");
         builder.setDescription("Used " + (NumberUtils.asPositive(messageArgs[1]) - dtAmount) + " DT ");
-        builder.addField("Old HP", String.valueOf(pc.getCurrentHP()), true);
+        builder.addField("Old HP", String.valueOf(pc.getCurrentHp()), true);
         builder.addBlankField(true);
         builder.addField("New HP", String.valueOf(hpAndArmor[0]), true);
-        builder.addField("Old Head SP", String.valueOf(pc.getHeadSP()), true);
+        builder.addField("Old Head SP", String.valueOf(pc.getHeadSp()), true);
         builder.addBlankField(true);
         builder.addField("New Head SP", String.valueOf(hpAndArmor[1]), true);
-        builder.addField("Old Body SP", String.valueOf(pc.getBodySP()), true);
+        builder.addField("Old Body SP", String.valueOf(pc.getBodySp()), true);
         builder.addBlankField(true);
         builder.addField("New Body SP", String.valueOf(hpAndArmor[2]), true);
         builder.addField("Old Downtime", String.valueOf(pc.getDowntime()), true);

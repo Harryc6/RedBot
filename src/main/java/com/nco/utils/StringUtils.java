@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class StringUtils {
 
     public static String[] parseArgsString(String s) {
-        String builtS = "";
+        StringBuilder builtS = new StringBuilder();
         boolean isBetweenQuotationMarks = false;
         for (char c : s.toCharArray()) {
             if (c == '"') {
@@ -16,18 +16,16 @@ public class StringUtils {
                 c = '~';
             }
             if (c != '"' && (c != '~' || builtS.charAt(builtS.length() - 1) != '~')) {
-                builtS += c;
+                builtS.append(c);
             }
         }
-        return builtS.split("~");
+        return builtS.toString().split("~");
     }
 
     public static String[] prefixArray(String prefix, String[] array) {
         String[] newArray = new String[array.length + 1];
         newArray[0] = prefix;
-        for (int i = 1; i < newArray.length; i++) {
-            newArray[i] = array[i-1];
-        }
+        System.arraycopy(array, 0, newArray, 1, newArray.length - 1);
         return newArray;
     }
 
@@ -50,12 +48,24 @@ public class StringUtils {
         sb.append("[");
         for (String s : array) {
             if (!s.isEmpty()) {
-                sb.append(s + ", ");
+                sb.append(s).append(", ");
             }
         }
         if (sb.length() > 1) {
             sb.replace(sb.lastIndexOf(", "), sb.lastIndexOf(", ") + 2, "");
         }
         return sb.append("]").toString();
+    }
+
+    public static String camelToSnakeCase(String s) {
+        return s.replaceAll("([A-Z])", "_$1").toLowerCase();
+    }
+
+    public static String snakeToCamelCase(String s) {
+        while (s.contains("_")) {
+            s = s.replaceFirst("_[a-z]", String.valueOf(Character.toUpperCase(s.charAt(s.indexOf("_") + 1))));
+        }
+        return s;
+
     }
 }

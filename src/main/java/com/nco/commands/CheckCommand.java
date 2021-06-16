@@ -29,15 +29,15 @@ public class CheckCommand extends AbstractCommand {
     @Override
     protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
         String characterName = pc.getCharacterName();
-        int currentHum = pc.getHumanity();
+        int currentHum = pc.getCurrentHumanity();
 
         builder.setTitle(characterName);
         builder.addField("Bank", String.valueOf(pc.getBank()), true);
-        builder.addField("HP", pc.getCurrentHP() + "/" +
-                pc.getMaxHP(), true);
+        builder.addField("HP", pc.getCurrentHp() + "/" +
+                pc.getMaxHp(), true);
         builder.addField("Humanity", currentHum + "/" +
                 pc.getMaxHumanity(), true);
-        builder.addField("Monthly", pc.getPayDues(), true);
+//        builder.addField("Monthly", pc.getPayDues(), true);
         builder.addField("Down Time", String.valueOf(pc.getDowntime()), true);
         builder.addField("IP", String.valueOf(pc.getInfluencePoints()), true);
         builder.addField("Reputation", String.valueOf(pc.getReputation()), true);

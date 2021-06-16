@@ -1,4 +1,4 @@
-package com.nco.commands;
+package com.nco.enums;
 
 public enum Commands {
     ADDICTION,
@@ -33,5 +33,5 @@ public enum Commands {
     TRAUMADEBT,
     UPDATE,
     UNKNOWN,
-    UPDATEBODYHP;
+    UPDATEBODYHP
 }

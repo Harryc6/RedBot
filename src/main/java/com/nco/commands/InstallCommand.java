@@ -44,7 +44,7 @@ public class InstallCommand extends AbstractCommand {
     @Override
     protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
         int valueRolled = RPGDice.roll(messageArgs[2]);
-        int newHumanity = pc.getHumanity() - valueRolled;
+        int newHumanity = pc.getCurrentHumanity() - valueRolled;
         int newMaxHumanity = pc.getMaxHumanity() - (messageArgs[4].equalsIgnoreCase("cyberware") ? 2 : 4);
         int newBank = pc.getBank() - (isPaid() ? 0 : NumberUtils.asPositive(messageArgs[3]));
         if (!isPaid() && newBank < 0) {
@@ -94,7 +94,7 @@ public class InstallCommand extends AbstractCommand {
             builder.addField("New Balance", newBank + "eb", true);
         }
 
-        builder.addField("Old Humanity", pc.getHumanity() + "/" + pc.getMaxHumanity(), true);
+        builder.addField("Old Humanity", pc.getCurrentHumanity() + "/" + pc.getMaxHumanity(), true);
         builder.addField("Roll: " + messageArgs[2], String.valueOf(valueRolled), true);
         builder.addField("New Humanity", newHumanity + "/" + newMaxHumanity, true);
     }

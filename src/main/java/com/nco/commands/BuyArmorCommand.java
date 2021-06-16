@@ -72,19 +72,19 @@ public class BuyArmorCommand extends AbstractCommand {
         } else if (updateArmor(conn, pc) && insertBuyArmor(conn)) {
             builder.setTitle(messageArgs[0] + "'s Armor Updated");
             if (isMultiLocation()) {
-                builder.addField("Old Head SP", String.valueOf(pc.getHeadSP()), true);
+                builder.addField("Old Head SP", String.valueOf(pc.getHeadSp()), true);
                 builder.addBlankField(true);
                 builder.addField("New Head SP", (isHead(2) ? messageArgs[3] : messageArgs[6]), true);
-                builder.addField("Old Body SP", String.valueOf(pc.getBodySP()), true);
+                builder.addField("Old Body SP", String.valueOf(pc.getBodySp()), true);
                 builder.addBlankField(true);
                 builder.addField("New Body SP", (isBody(2) ? messageArgs[3] : messageArgs[6]), true);
             } else {
                 if (isHead(2)) {
-                    builder.addField("Old Head SP", String.valueOf(pc.getHeadSP()), true);
+                    builder.addField("Old Head SP", String.valueOf(pc.getHeadSp()), true);
                     builder.addBlankField(true);
                     builder.addField("New Head SP", messageArgs[3], true);
                 } else {
-                    builder.addField("Old Body SP", String.valueOf(pc.getBodySP()), true);
+                    builder.addField("Old Body SP", String.valueOf(pc.getBodySp()), true);
                     builder.addBlankField(true);
                     builder.addField("New Body SP", messageArgs[3], true);
                 }

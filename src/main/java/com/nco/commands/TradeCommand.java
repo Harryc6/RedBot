@@ -81,17 +81,15 @@ public class TradeCommand extends AbstractCommand {
     }
 
     private boolean updateReceiverTrade(Connection conn) {
-        PlayerCharacter pc = DBUtils.getCharacter(messageArgs[3]);
-        if (pc != null) {
-            int newBalance = pc.getBank() + NumberUtils.asPositive(messageArgs[2]);
-            String sql = "UPDATE NCO_PC set Bank = ? Where character_name = ?";
-            try (PreparedStatement stat = conn.prepareStatement(sql)) {
-                stat.setInt(1, newBalance);
-                stat.setString(2, messageArgs[3]);
-                return stat.executeUpdate() == 1;
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
+        PlayerCharacter pc = new PlayerCharacter(conn, messageArgs[3], true);
+        int newBalance = pc.getBank() + NumberUtils.asPositive(messageArgs[2]);
+        String sql = "UPDATE NCO_PC set Bank = ? Where character_name = ?";
+        try (PreparedStatement stat = conn.prepareStatement(sql)) {
+            stat.setInt(1, newBalance);
+            stat.setString(2, messageArgs[3]);
+            return stat.executeUpdate() == 1;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
         return false;
     }

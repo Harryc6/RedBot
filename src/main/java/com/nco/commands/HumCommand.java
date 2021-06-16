@@ -42,7 +42,7 @@ public class HumCommand extends AbstractCommand {
         } else {
             String humSelect = messageArgs[1].equalsIgnoreCase("Pro Standard") ? "2d6" : "4d6";
             int humRoll = RPGDice.roll(humSelect);
-            int newHum = pc.getHumanity() + humRoll;
+            int newHum = pc.getCurrentHumanity() + humRoll;
             if (newHum > pc.getMaxHumanity()) {
                 newHum = pc.getMaxHumanity();
             }
@@ -79,7 +79,7 @@ public class HumCommand extends AbstractCommand {
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);
             stat.setString(2, messageArgs[1]);
-            stat.setInt(3, pc.getHumanity());
+            stat.setInt(3, pc.getCurrentHumanity());
             stat.setInt(4, newHum);
             stat.setInt(5, pc.getBank());
             stat.setInt(6, newBank);
@@ -94,7 +94,7 @@ public class HumCommand extends AbstractCommand {
                             int newBank, int newDT) {
         builder.setTitle(messageArgs[0] + "'s Humanity Restored");
         builder.setDescription("Rolled a " + humSelect + " for " + humRoll + "");
-        builder.addField("Old Humanity", String.valueOf(pc.getHumanity()), true);
+        builder.addField("Old Humanity", String.valueOf(pc.getCurrentHumanity()), true);
         builder.addBlankField(true);
         builder.addField("New Humanity", String.valueOf(newHum), true);
         builder.addField("Old Bank", String.valueOf(pc.getBank()), true);

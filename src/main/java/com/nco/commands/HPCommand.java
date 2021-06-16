@@ -34,17 +34,17 @@ public class HPCommand extends AbstractCommand {
         if (Integer.parseInt(messageArgs[1]) > pc.getDowntime()) {
             builder.setTitle("ERROR: Not Enough DT");
             builder.addField("You have:", String.valueOf(pc.getDowntime()), true);
-        } else if (pc.getCurrentHP() == pc.getMaxHP()) {
+        } else if (pc.getCurrentHp() == pc.getMaxHp()) {
             builder.setTitle("ERROR: You are at full HP");
-            builder.addField("Your current HP :", String.valueOf(pc.getCurrentHP()), true);
-            builder.addField("Your max HP:", String.valueOf(pc.getMaxHP()), true);
+            builder.addField("Your current HP :", String.valueOf(pc.getCurrentHp()), true);
+            builder.addField("Your max HP:", String.valueOf(pc.getMaxHp()), true);
         } else {
             int newDT = pc.getDowntime() - NumberUtils.asPositive(messageArgs[1]);
             dtAmount = NumberUtils.asPositive(messageArgs[1]);
             int newHP = getNewHP(pc);
             newDT += dtAmount;
-            logger.info("PC : " + messageArgs[0] + "\nCurrent HP : " + pc.getCurrentHP() +
-                    "\nBody : " + pc.getBodyScore() + "\nBonus : " + getBonuses(pc) +
+            logger.info("PC : " + messageArgs[0] + "\nCurrent HP : " + pc.getCurrentHp() +
+                    "\nBody : " + pc.getBody() + "\nBonus : " + getBonuses(pc) +
                     "\n DT Used : " + dtAmount + "\nCombines to new HP of " + newHP);
             if (updateHP(conn, newHP, newDT) && insertHP(conn, pc, newHP, newDT)) {
                 buildEmbed(builder, pc, newHP, newDT);
@@ -56,17 +56,17 @@ public class HPCommand extends AbstractCommand {
     }
 
     public int getNewHP(PlayerCharacter pc) {
-        int newHP = pc.getCurrentHP();
+        int newHP = pc.getCurrentHp();
         int multiplier = messageArgs[2].toLowerCase().contains("cryotank") ? 2 : 1;
-        while (dtAmount > 0 && newHP < pc.getMaxHP()) {
-            newHP += (pc.getBodyScore() + getBonuses(pc)) * multiplier;
+        while (dtAmount > 0 && newHP < pc.getMaxHp()) {
+            newHP += (pc.getBody() + getBonuses(pc)) * multiplier;
             if (messageArgs[2].toLowerCase().contains("speedheal")) {
-                newHP += pc.getBodyScore() + pc.getWillScore();
+                newHP += pc.getBody() + pc.getWillpower();
             }
             dtAmount--;
         }
-        if (newHP > pc.getMaxHP()) {
-            newHP = pc.getMaxHP();
+        if (newHP > pc.getMaxHp()) {
+            newHP = pc.getMaxHp();
         }
         return newHP;
     }
@@ -75,7 +75,7 @@ public class HPCommand extends AbstractCommand {
         int bonuses = 0;
         if (messageArgs.length > 3) {
             if (messageArgs[3].toLowerCase().contains("enhanced")) {
-                bonuses += pc.getBodyScore();
+                bonuses += pc.getBody();
             }
             if (messageArgs[3].toLowerCase().contains("antibodies")) {
                 bonuses += 2;
@@ -108,7 +108,7 @@ public class HPCommand extends AbstractCommand {
                   "values (?, ?, ?, ?, ?, ?, ?, ?)";
          try (PreparedStatement stat = conn.prepareStatement(sql)) {
              stat.setString(1, messageArgs[0]);
-             stat.setInt(2, pc.getCurrentHP());
+             stat.setInt(2, pc.getCurrentHp());
              stat.setInt(3, newHP);
              stat.setInt(4, pc.getDowntime());
              stat.setInt(5, newDT);
@@ -122,7 +122,7 @@ public class HPCommand extends AbstractCommand {
     private void buildEmbed(EmbedBuilder builder, PlayerCharacter pc, int newHP, int newDT) {
         builder.setTitle(messageArgs[0] + "'s HP Restored");
         builder.setDescription("Used " + (NumberUtils.asPositive(messageArgs[1]) - dtAmount) + " DT ");
-        builder.addField("Old HP", String.valueOf(pc.getCurrentHP()), true);
+        builder.addField("Old HP", String.valueOf(pc.getCurrentHp()), true);
         builder.addBlankField(true);
         builder.addField("New HP", String.valueOf(newHP), true);
         builder.addField("Old Downtime", String.valueOf(pc.getDowntime()), true);

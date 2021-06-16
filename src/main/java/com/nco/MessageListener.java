@@ -1,6 +1,7 @@
 package com.nco;
 
 import com.nco.commands.*;
+import com.nco.enums.Commands;
 import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

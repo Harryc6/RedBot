@@ -18,6 +18,8 @@ import java.awt.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import static com.nco.enums.Commands.ADDICTION;
+
 public abstract class AbstractCommand {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -90,17 +92,12 @@ public abstract class AbstractCommand {
     }
 
     private void processByUser() {
-        PlayerCharacter pc = DBUtils.getCharacterByUser(author.getAsTag());
         try(Connection conn = DBUtils.getConnection()) {
+            PlayerCharacter pc = new PlayerCharacter(conn, author.getAsTag(), false);
             EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.red);
-            if (pc != null) {
-                messageArgs = StringUtils.prefixArray(pc.getCharacterName(), messageArgs);
-                processUpdateAndRespond(conn, pc, builder);
-            } else {
-                builder.setTitle("No Character Found");
-                builder.setDescription("No active character was found tied to the user " + author.getAsTag());
-            }
+            messageArgs = StringUtils.prefixArray(pc.getCharacterName(), messageArgs);
+            processUpdateAndRespond(conn, pc, builder);
             channel.sendMessage(builder.build()).queue();
             builder.clear();
         } catch (SQLException throwables) {
@@ -109,16 +106,11 @@ public abstract class AbstractCommand {
     }
 
     private void processByName() {
-        PlayerCharacter pc = DBUtils.getCharacter(messageArgs[0]);
         try (Connection conn = DBUtils.getConnection()) {
+            PlayerCharacter pc = new PlayerCharacter(conn, messageArgs[0], true);
             EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.red);
-            if (pc != null) {
-                processUpdateAndRespond(conn, pc, builder);
-            } else {
-                builder.setTitle("No Character Found");
-                builder.setDescription("No character information was found where the character is called  " + messageArgs[0]);
-            }
+            processUpdateAndRespond(conn, pc, builder);
             channel.sendMessage(builder.build()).queue();
             builder.clear();
         } catch (SQLException throwables) {

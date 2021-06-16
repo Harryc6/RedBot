@@ -30,6 +30,17 @@ public class NumberUtils {
         return (i < 0 ? i : i * -1);
     }
 
+    public static int checkNullOrEmpty(String str) {
+        if (str == null || str.isEmpty()) {
+            str = "0";
+        }
+        return Integer.parseInt(str);
+    }
+
+    public static int ParseNumber(String str) {
+        return checkNullOrEmpty(str.replaceAll("[^0-9]", ""));
+    }
+
 //    public  static int reputationFromFame() {
 //
 //    }

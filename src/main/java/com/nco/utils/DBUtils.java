@@ -35,27 +35,4 @@ public class DBUtils {
         return false;
     }
 
-    public static PlayerCharacter getCharacter(String characterName) {
-        String sql = "Select * From NCO_PC where character_name = ?";
-        return getPlayerCharacter(characterName, sql);
-    }
-
-    public static PlayerCharacter getCharacterByUser(String user) {
-        String sql = "Select * From NCO_PC where discord_name = ? AND retired_yn = 'N'";
-        return getPlayerCharacter(user, sql);
-    }
-
-    private static PlayerCharacter getPlayerCharacter(String arg, String sql) {
-        try(Connection conn = DBUtils.getConnection(); PreparedStatement stat = conn.prepareStatement(sql)) {
-            stat.setString(1, arg);
-            try (ResultSet rs = stat.executeQuery()) {
-                if (rs.next()) {
-                    return new PlayerCharacter(rs);
-                }
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return null;
-    }
 }

@@ -12,4 +12,8 @@ public class NCOUtils {
         }
         return famePerReputation.length;
     }
+
+    public static int getStartingStreetCredFromRank(String role) {
+        return 0;
+    }
 }
