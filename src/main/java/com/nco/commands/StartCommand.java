@@ -3,6 +3,7 @@ package com.nco.commands;
 
 import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
+import com.nco.utils.DBUtils;
 import com.nco.utils.NCOUtils;
 import com.nco.utils.NumberUtils;
 import com.nco.utils.tables.Attribute;
@@ -37,7 +38,9 @@ public class StartCommand extends AbstractCommand {
 
     @Override
     protected boolean canProcessWithoutPC() {
-        return messageArgs.length != 0 && !message.getAttachments().isEmpty();
+        return messageArgs.length != 0 && !message.getAttachments().isEmpty() && !DBUtils.doesCharacterExist(messageArgs[1]) &&
+                (messageArgs.length == 4 || (messageArgs.length == 5 && NCOUtils.validRank(messageArgs[4]))) &&
+                NCOUtils.validUTC(messageArgs[3]);
     }
 
     @Override
@@ -60,7 +63,7 @@ public class StartCommand extends AbstractCommand {
     }
 
     private boolean insertPc(Connection conn, Map<String, Attribute> map) throws SQLException {
-        String StartingRank = (messageArgs.length > 5) ? messageArgs[4] : "E-Sheep";
+        String StartingRank = (messageArgs.length == 5) ? NCOUtils.getCorrectRankCase(messageArgs[4]) : "E-Sheep";
         String sql = "INSERT INTO nco_pc (discord_name, character_name, role, creation_rank, rank, street_cred, bank, head_sp, body_sp, influence_points, vault, time_zone, created_by) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);

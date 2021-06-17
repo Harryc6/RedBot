@@ -2,6 +2,7 @@ package com.nco.commands;
 
 import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
+import com.nco.utils.NCOUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
@@ -12,7 +13,7 @@ import java.util.Arrays;
 
 public class TimeZoneCommand extends AbstractCommand {
 
-    private final static String[] UTCArray = { "UTC-12", "UTC-11", "UTC-10", "UTC-9:30", "UTC-9", "UTC-8", "UTC-7", "UTC-6", "UTC-5", "UTC-4", "UTC-3:30", "UTC-3", "UTC-2", "UTC-1", "UTC+0", "UTC+1", "UTC+2", "UTC+3", "UTC+3:30", "UTC+4", "UTC+4:30", "UTC+5", "UTC+5:30", "UTC+5:45", "UTC+6", "UTC+6:30", "UTC+7", "UTC+8", "UTC+8:45", "UTC+9", "UTC+9:30", "UTC+10", "UTC+10:30", "UTC+11", "UTC+12", "UTC+12:45", "UTC+13", "UTC+14" };
+    private final static String[] UTCArray = NCOUtils.getUTCArray();
 
     public TimeZoneCommand(String[] messageArgs, GuildMessageReceivedEvent event) {
         super(messageArgs, event);
@@ -20,12 +21,12 @@ public class TimeZoneCommand extends AbstractCommand {
 
     @Override
     protected boolean canProcessByUser() {
-        return messageArgs.length == 1 && Arrays.stream(UTCArray).anyMatch(s -> messageArgs[0].equalsIgnoreCase(s));
+        return messageArgs.length == 1 && NCOUtils.validUTC(messageArgs[0]);
     }
 
     @Override
     protected boolean canProcessByName() {
-        return messageArgs.length == 2 && Arrays.stream(UTCArray).anyMatch(s -> messageArgs[1].equalsIgnoreCase(s));
+        return messageArgs.length == 2 && NCOUtils.validUTC(messageArgs[1]);
     }
 
     @Override
