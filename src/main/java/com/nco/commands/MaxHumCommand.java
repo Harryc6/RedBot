@@ -47,7 +47,7 @@ public class MaxHumCommand extends AbstractCommand {
     }
 
     private boolean updateMaxHum(int newMaxHumTotal, Connection conn) throws SQLException {
-        String sql = "UPDATE NCO_PC set max_humanity = ? Where character_name = ?";
+        String sql = "UPDATE nco_pc_stats set max_humanity = ? Where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, newMaxHumTotal);
             stat.setString(2, messageArgs[0]);

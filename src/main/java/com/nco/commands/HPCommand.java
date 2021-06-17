@@ -94,30 +94,42 @@ public class HPCommand extends AbstractCommand {
     }
 
     private boolean updateHP(Connection conn, int newHP, int newDT) throws SQLException {
-            String sql = "UPDATE NCO_PC set current_hp = ?, downtime = ? Where character_name = ?";
-         try (PreparedStatement stat = conn.prepareStatement(sql)) {
-                   stat.setInt(1, newHP);
-             stat.setInt(2, newDT);
-             stat.setString(3, messageArgs[0]);
-             return stat.executeUpdate() == 1;
-          }
-      }
+        return updatePc(conn, newDT) && updateStats(conn, newHP);
+    }
 
-       private boolean insertHP(Connection conn, PlayerCharacter pc, int newHP, int newDT) throws SQLException {
-          String sql = "insert into nco_hp(character_name, old_hp, new_hp, old_dt, new_dt, bonuses_used, multiplier, created_by) " +
-                  "values (?, ?, ?, ?, ?, ?, ?, ?)";
-         try (PreparedStatement stat = conn.prepareStatement(sql)) {
-             stat.setString(1, messageArgs[0]);
-             stat.setInt(2, pc.getCurrentHp());
-             stat.setInt(3, newHP);
-             stat.setInt(4, pc.getDowntime());
-             stat.setInt(5, newDT);
-             stat.setString(6, (messageArgs.length > 2 ? messageArgs[2] : ""));
-             stat.setInt(7, getBonuses(pc));
-             stat.setString(8, author.getAsTag());
-             return stat.executeUpdate() == 1;
+    private boolean updatePc(Connection conn, int newDT) throws SQLException {
+        String sql = "UPDATE NCO_PC set downtime = ? Where character_name = ?";
+        try (PreparedStatement stat = conn.prepareStatement(sql)) {
+            stat.setInt(1, newDT);
+            stat.setString(2, messageArgs[0]);
+            return stat.executeUpdate() == 1;
         }
-       }
+    }
+
+    private boolean updateStats(Connection conn, int newHP) throws SQLException {
+        String sql = "UPDATE nco_pc_stats set current_hp = ? Where character_name = ?";
+        try (PreparedStatement stat = conn.prepareStatement(sql)) {
+            stat.setInt(1, newHP);
+            stat.setString(2, messageArgs[0]);
+            return stat.executeUpdate() == 1;
+        }
+    }
+
+    private boolean insertHP(Connection conn, PlayerCharacter pc, int newHP, int newDT) throws SQLException {
+        String sql = "insert into nco_hp(character_name, old_hp, new_hp, old_dt, new_dt, bonuses_used, multiplier, created_by) " +
+              "values (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stat = conn.prepareStatement(sql)) {
+            stat.setString(1, messageArgs[0]);
+            stat.setInt(2, pc.getCurrentHp());
+            stat.setInt(3, newHP);
+            stat.setInt(4, pc.getDowntime());
+            stat.setInt(5, newDT);
+            stat.setString(6, (messageArgs.length > 2 ? messageArgs[2] : ""));
+            stat.setInt(7, getBonuses(pc));
+            stat.setString(8, author.getAsTag());
+            return stat.executeUpdate() == 1;
+        }
+    }
 
     private void buildEmbed(EmbedBuilder builder, PlayerCharacter pc, int newHP, int newDT) {
         builder.setTitle(messageArgs[0] + "'s HP Restored");

@@ -63,12 +63,24 @@ public class HumCommand extends AbstractCommand {
     }
 
     private boolean updateHum(Connection conn, int newHum, int newBank, int newDT) throws SQLException {
-        String sql = "UPDATE NCO_PC set humanity = ?, bank = ?, downtime = ? Where character_name = ?";
+        return updatePC(conn, newBank, newDT) && updateStats(conn, newHum);
+    }
+
+    private boolean updatePC(Connection conn, int newBank, int newDT) throws SQLException {
+        String sql = "UPDATE NCO_PC set bank = ?, downtime = ? Where character_name = ?";
+        try (PreparedStatement stat = conn.prepareStatement(sql)) {
+            stat.setInt(1, newBank);
+            stat.setInt(2, newDT);
+            stat.setString(3, messageArgs[0]);
+            return stat.executeUpdate() == 1;
+        }
+    }
+
+    private boolean updateStats(Connection conn, int newHum) throws SQLException {
+        String sql = "UPDATE nco_pc_stats set current_humanity = ? Where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, newHum);
-            stat.setInt(2, newBank);
-            stat.setInt(3, newDT);
-            stat.setString(4, messageArgs[0]);
+            stat.setString(2, messageArgs[0]);
             return stat.executeUpdate() == 1;
         }
     }

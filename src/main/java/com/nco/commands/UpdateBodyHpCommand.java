@@ -37,7 +37,7 @@ public class UpdateBodyHpCommand extends AbstractCommand {
     }
 
     private boolean updateBodyHp(Connection conn) throws SQLException {
-        String sql = "UPDATE NCO_PC set body_score = ?, max_hp = ? Where character_name = ?";
+        String sql = "UPDATE nco_pc_stats set body = ?, max_hp = ? Where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, Integer.parseInt(messageArgs[1]));
             stat.setInt(2, Integer.parseInt(messageArgs[2]));

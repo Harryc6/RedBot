@@ -128,16 +128,30 @@ public class NanoHPCommand extends AbstractCommand {
     }
 
     private boolean updateNanoHP(Connection conn, int[] hpAndArmor, int newDT) throws SQLException {
-        String sql = "UPDATE NCO_PC set current_hp = ?, head_sp = ?, body_sp = ?, downtime = ? Where character_name = ?";
+        return updatePc(conn, hpAndArmor, newDT) && updateStats(conn, hpAndArmor);
+    }
+
+    private boolean updatePc(Connection conn, int[] hpAndArmor, int newDT) throws SQLException {
+        String sql = "UPDATE NCO_PC set head_sp = ?, body_sp = ?, downtime = ? Where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
-            stat.setInt(1, hpAndArmor[0]);
-            stat.setInt(2, hpAndArmor[1]);
-            stat.setInt(3, hpAndArmor[2]);
-            stat.setInt(4, newDT);
-            stat.setString(5, messageArgs[0]);
+            stat.setInt(1, hpAndArmor[1]);
+            stat.setInt(2, hpAndArmor[2]);
+            stat.setInt(3, newDT);
+            stat.setString(4, messageArgs[0]);
             return stat.executeUpdate() == 1;
         }
     }
+
+
+    private boolean updateStats(Connection conn, int[] hpAndArmor) throws SQLException {
+        String sql = "UPDATE nco_pc_stats set current_hp = ? Where character_name = ?";
+        try (PreparedStatement stat = conn.prepareStatement(sql)) {
+            stat.setInt(1, hpAndArmor[0]);
+            stat.setString(2, messageArgs[0]);
+            return stat.executeUpdate() == 1;
+        }
+    }
+
 
     private boolean insertNanoHP(Connection conn, PlayerCharacter pc, int[] hpAndArmor, int newDT) throws SQLException {
         String sql = "insert into nco_nano_hp(character_name, old_hp, new_hp, old_head_sp, new_head_sp," +

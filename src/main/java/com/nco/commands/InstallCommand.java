@@ -51,7 +51,7 @@ public class InstallCommand extends AbstractCommand {
                 builder.setTitle("ERROR: Not Enough Eurobucks");
                 builder.setDescription(messageArgs[0] + " has only " + pc.getBank() + "eb available " +
                         "where " + NumberUtils.asPositive(messageArgs[messageArgs.length - 1]) + "eb is being spent.");
-        } else if (updateInstall(newHumanity, newMaxHumanity, newBank, conn) && insertInstall(valueRolled, conn)) {
+        } else if (updateInstall(conn, newHumanity, newMaxHumanity, newBank) && insertInstall(valueRolled, conn)) {
             buildEmbeddedContent(pc, builder, valueRolled, newHumanity, newMaxHumanity, newBank);
         } else {
             builder.setTitle("ERROR: Install Update Or Insert Failure");
@@ -59,13 +59,25 @@ public class InstallCommand extends AbstractCommand {
         }
     }
 
-    private boolean updateInstall(int newHumanity, int newMaxHumanity, int newBank, Connection conn) throws SQLException {
-        String sql = "UPDATE NCO_PC set humanity = ?, max_humanity = ?, bank = ? Where character_name = ?";
+    private boolean updateInstall(Connection conn, int newHumanity, int newMaxHumanity, int newBank) throws SQLException {
+        return updatePC(conn, newBank) && updateStats(conn, newHumanity, newMaxHumanity);
+    }
+
+    private boolean updatePC(Connection conn, int newBank) throws SQLException {
+        String sql = "UPDATE NCO_PC set bank = ? Where character_name = ?";
+        try (PreparedStatement stat = conn.prepareStatement(sql)) {
+            stat.setInt(1, newBank);
+            stat.setString(2, messageArgs[0]);
+            return stat.executeUpdate() == 1;
+        }
+    }
+
+    private boolean updateStats(Connection conn, int newHumanity, int newMaxHumanity) throws SQLException {
+        String sql = "UPDATE nco_pc_stats set current_humanity = ?, max_humanity = ? Where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, newHumanity);
             stat.setInt(2, newMaxHumanity);
-            stat.setInt(3, newBank);
-            stat.setString(4, messageArgs[0]);
+            stat.setString(3, messageArgs[0]);
             return stat.executeUpdate() == 1;
         }
     }
