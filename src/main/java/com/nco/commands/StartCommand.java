@@ -60,18 +60,22 @@ public class StartCommand extends AbstractCommand {
     }
 
     private boolean insertPc(Connection conn, Map<String, Attribute> map) throws SQLException {
-        String sql = "INSERT INTO nco_pc (discord_name, character_name, role, creation_rank, rank, street_cred, bank, influence_points, vault, created_by) values (?,?,?,?,?,?,?,?,?,?)";
+        String StartingRank = (messageArgs.length > 5) ? messageArgs[4] : "E-Sheep";
+        String sql = "INSERT INTO nco_pc (discord_name, character_name, role, creation_rank, rank, street_cred, bank, head_sp, body_sp, influence_points, vault, time_zone, created_by) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);
             stat.setString(2, messageArgs[1]);
-            stat.setString(3, messageArgs[2]);
-            stat.setString(4, messageArgs[3]);
-            stat.setString(5, messageArgs[3]);
-            stat.setInt(6, NCOUtils.getStartingStreetCredFromRank(messageArgs[3]));
+            stat.setString(3, map.get("role").getCurrent().toLowerCase());
+            stat.setString(4, StartingRank);
+            stat.setString(5, StartingRank);
+            stat.setInt(6, NCOUtils.getStartingStreetCredFromRank(StartingRank));
             stat.setInt(7, NumberUtils.ParseNumber(map.get("cash").getCurrent()));
-            stat.setInt(8, NumberUtils.checkNullOrEmpty(map.get("ippoints").getCurrent()));
-            stat.setString(9, messageArgs[4]);
-            stat.setString(10, author.getAsTag());
+            stat.setInt(8, NumberUtils.checkNullOrEmpty(map.get("headsp").getCurrent()));
+            stat.setInt(9, NumberUtils.checkNullOrEmpty(map.get("bodysp").getCurrent()));
+            stat.setInt(10, NumberUtils.checkNullOrEmpty(map.get("ippoints").getCurrent()));
+            stat.setString(11, messageArgs[3]);
+            stat.setString(12, messageArgs[2]);
+            stat.setString(13, author.getAsTag());
             return stat.executeUpdate() == 1;
         }
     }
@@ -173,6 +177,6 @@ public class StartCommand extends AbstractCommand {
     @Override
     protected String getHelpDescription() {
         return "Please use the commands below create a characters \n" + RedBot.PREFIX +
-                "start \"discordName\" \"PC Name\" \"Role\" \"Starting Rank(Optional)\" \"Vault\"";
+                "start \"discordName\" \"PC Name\" \"Vault\" \"Timezone\" \"Starting Rank(Optional)\"";
     }
 }

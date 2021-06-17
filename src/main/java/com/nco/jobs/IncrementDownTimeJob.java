@@ -19,7 +19,7 @@ public class IncrementDownTimeJob implements Job {
         logger.info("Started running IncrementDownTimeJob");
         int updateCount = 0;
         int maxedCount = 0;
-        String sql = "Select * from NCO_PC where retired_yn = 'N'";
+        String sql = "Select * from NCO_PC where retired_yn = 'n'";
         String sql2 = "UPDATE NCO_PC set downtime = ? where character_name = ?";
 
         try(Connection conn = DBUtils.getConnection(); ResultSet rs = conn.prepareStatement(sql).executeQuery()) {

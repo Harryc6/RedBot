@@ -3,7 +3,6 @@ package com.nco.pojos;
 import com.nco.enums.PC;
 import com.nco.enums.Skills;
 import com.nco.enums.Stats;
-import com.nco.utils.DBUtils;
 import com.nco.utils.StringUtils;
 
 import java.lang.reflect.Field;
@@ -159,7 +158,7 @@ public class PlayerCharacter {
         if (isPC) {
             return "Select * From NCO_PC where character_name = ?";
         } else {
-            return "Select * From NCO_PC where discord_name = ? AND retired_yn = 'N'";
+            return "Select * From NCO_PC where discord_name = ? AND retired_yn = 'n'";
         }
     }
 
