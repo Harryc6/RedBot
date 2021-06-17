@@ -8,6 +8,7 @@ import com.nco.utils.NCOUtils;
 import com.nco.utils.NumberUtils;
 import com.nco.utils.tables.Attribute;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.json.simple.JSONArray;
@@ -38,14 +39,13 @@ public class StartCommand extends AbstractCommand {
 
     @Override
     protected boolean canProcessWithoutPC() {
-        return messageArgs.length != 0 && !message.getAttachments().isEmpty() && !DBUtils.doesCharacterExist(messageArgs[1]) &&
+        return !message.getAttachments().isEmpty() && !DBUtils.doesCharacterExist(messageArgs[1]) &&
                 (messageArgs.length == 4 || (messageArgs.length == 5 && NCOUtils.validRank(messageArgs[4]))) &&
-                NCOUtils.validUTC(messageArgs[3]);
+                NCOUtils.validUTC(messageArgs[2]);
     }
 
     @Override
     protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
-        builder.setTitle("working");
         JSONObject jsonObject = getJsonObject();
         if (jsonObject != null) {
             List<Attribute> attribs = getAttributeList(jsonObject);
@@ -53,9 +53,13 @@ public class StartCommand extends AbstractCommand {
             for (Attribute attrib : attribs) {
                 map.put(attrib.getName().toLowerCase(), attrib);
             }
-            insertPc(conn, map);
-            insertStats(conn, map);
-            insertSkills(conn, attribs);
+            if (insertPc(conn, map) && insertStats(conn, map) && insertSkills(conn, attribs)) {
+                pc = new PlayerCharacter(conn, messageArgs[1], true);
+                builder.setTitle(pc.getCharacterName() +" Created");
+                Member pcMember = message.getGuild().getMemberByTag(pc.getDiscordName());
+                builder.setDescription(pc.getCharacterName() + " is linked to " +
+                        (pcMember != null ? pcMember.getAsMention() : pc.getDiscordName()));
+            }
         } else {
             builder.setTitle("ERROR: No Player Character JSON File Found");
             builder.setDescription("Please attach a characters JSON export.");
@@ -75,7 +79,7 @@ public class StartCommand extends AbstractCommand {
             stat.setInt(7, NumberUtils.ParseNumber(map.get("cash").getCurrent()));
             stat.setInt(8, NumberUtils.checkNullOrEmpty(map.get("headsp").getCurrent()));
             stat.setInt(9, NumberUtils.checkNullOrEmpty(map.get("bodysp").getCurrent()));
-            stat.setInt(10, NumberUtils.checkNullOrEmpty(map.get("ippoints").getCurrent()));
+            stat.setInt(10, NumberUtils.ParseNumber(map.get("ippoints").getCurrent()));
             stat.setString(11, messageArgs[3]);
             stat.setString(12, messageArgs[2]);
             stat.setString(13, author.getAsTag());
@@ -138,7 +142,6 @@ public class StartCommand extends AbstractCommand {
             sb.append("?,");
         }
         sb.append("?)");
-        logger.info("SQL : " + sb);
         return sb.toString();
     }
 
@@ -179,7 +182,21 @@ public class StartCommand extends AbstractCommand {
 
     @Override
     protected String getHelpDescription() {
-        return "Please use the commands below create a characters \n" + RedBot.PREFIX +
+        return getHelpReason() + "Please use the commands below create a characters \n" + RedBot.PREFIX +
                 "start \"discordName\" \"PC Name\" \"Vault\" \"Timezone\" \"Starting Rank(Optional)\"";
+    }
+
+    private String getHelpReason() {
+        if (message.getAttachments().isEmpty()) {
+            return "No attachments found.\n\n";
+        } else if (DBUtils.doesCharacterExist(messageArgs[1])) {
+            return "Character name is already in use.\n\n";
+        } else if (messageArgs.length == 5 && !NCOUtils.validRank(messageArgs[4])) {
+            return "Not a recognised rank.\n\n";
+        } else if (!NCOUtils.validUTC(messageArgs[2])) {
+            return "Not a recognised timezone.\n\n";
+        } else {
+            return "";
+        }
     }
 }

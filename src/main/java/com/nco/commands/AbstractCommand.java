@@ -18,8 +18,6 @@ import java.awt.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import static com.nco.enums.Commands.ADDICTION;
-
 public abstract class AbstractCommand {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
