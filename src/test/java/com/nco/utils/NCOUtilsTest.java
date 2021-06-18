@@ -18,4 +18,14 @@ class NCOUtilsTest {
     }
 
 
+    @Test
+    void parseAndFormatRole() {
+        assertEquals("Nomad", NCOUtils.parseAndFormatRole("nomads"));
+        assertEquals("lawmen", NCOUtils.parseAndFormatRole("lawmen"));
+        assertEquals("Lawman", NCOUtils.parseAndFormatRole("excelawmannomad"));
+        assertEquals("Rockerboy", NCOUtils.parseAndFormatRole("Rockerboy"));
+        assertEquals("sockerboy", NCOUtils.parseAndFormatRole("sockerboy"));
+        assertEquals("Netrunner", NCOUtils.parseAndFormatRole("Net-runner"));
+        assertEquals("Netrunner", NCOUtils.parseAndFormatRole("Net runner"));
+    }
 }

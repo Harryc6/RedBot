@@ -72,7 +72,7 @@ public class StartCommand extends AbstractCommand {
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);
             stat.setString(2, messageArgs[1]);
-            stat.setString(3, map.get("role").getCurrent().toLowerCase());
+            stat.setString(3, NCOUtils.parseAndFormatRole(map.get("role").getCurrent()));
             stat.setString(4, StartingRank);
             stat.setString(5, StartingRank);
             stat.setInt(6, NCOUtils.getStartingStreetCredFromRank(StartingRank));
