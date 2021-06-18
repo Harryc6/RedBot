@@ -25,7 +25,7 @@ public class InfoCommand extends AbstractCommand {
 
     @Override
     protected String getHelpDescription() {
-        return "This is based off of the previous iteration RedBot by  Kookie & Blaze.\n\n" +
+        return "This is based off of the previous iteration of RedBot by Blaze & Kookie.\n\n" +
                 "**Version:** Pre-Alpha\n\n" +
                 "**Creators:** Harry, Naabsault & Ronin";
     }
