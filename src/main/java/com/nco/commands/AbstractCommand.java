@@ -93,40 +93,40 @@ public abstract class AbstractCommand {
     }
 
     private void processByUser() {
-        EmbedBuilder builder = new EmbedBuilder();
         try(Connection conn = DBUtils.getConnection()) {
             PlayerCharacter pc = new PlayerCharacter(conn, author.getAsTag(), false);
+            EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.red);
             messageArgs = StringUtils.prefixArray(pc.getCharacterName(), messageArgs);
             processUpdateAndRespond(conn, pc, builder);
             channel.sendMessage(builder.build()).queue();
             builder.clear();
         } catch (Exception e) {
-            logErrorAndRespond(builder, e);
+            logErrorAndRespond(e);
         }
     }
 
     private void processByName() {
-        EmbedBuilder builder = new EmbedBuilder();
         try (Connection conn = DBUtils.getConnection()) {
             PlayerCharacter pc = new PlayerCharacter(conn, messageArgs[0], true);
+            EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.red);
             processUpdateAndRespond(conn, pc, builder);
             channel.sendMessage(builder.build()).queue();
             builder.clear();
         } catch (Exception e) {
-            logErrorAndRespond(builder, e);
+            logErrorAndRespond(e);
         }
     }
     private void processWithoutPC() {
-        EmbedBuilder builder = new EmbedBuilder();
         try (Connection conn = DBUtils.getConnection()) {
+            EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.red);
             processUpdateAndRespond(conn, null, builder);
             channel.sendMessage(builder.build()).queue();
             builder.clear();
         } catch (Exception e) {
-            logErrorAndRespond(builder, e);
+            logErrorAndRespond(e);
         }
     }
 
@@ -155,9 +155,9 @@ public abstract class AbstractCommand {
         builder.clear();
     }
 
-    private void logErrorAndRespond(EmbedBuilder builder, Exception e) {
+    private void logErrorAndRespond(Exception e) {
         logger.error(e.getMessage(), e);
-        builder.clear();
+        EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("ERROR: " + e);
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
