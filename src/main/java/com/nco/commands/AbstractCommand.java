@@ -15,8 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 public abstract class AbstractCommand {
 
@@ -90,40 +93,40 @@ public abstract class AbstractCommand {
     }
 
     private void processByUser() {
+        EmbedBuilder builder = new EmbedBuilder();
         try(Connection conn = DBUtils.getConnection()) {
             PlayerCharacter pc = new PlayerCharacter(conn, author.getAsTag(), false);
-            EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.red);
             messageArgs = StringUtils.prefixArray(pc.getCharacterName(), messageArgs);
             processUpdateAndRespond(conn, pc, builder);
             channel.sendMessage(builder.build()).queue();
             builder.clear();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (Exception e) {
+            logErrorAndRespond(builder, e);
         }
     }
 
     private void processByName() {
+        EmbedBuilder builder = new EmbedBuilder();
         try (Connection conn = DBUtils.getConnection()) {
             PlayerCharacter pc = new PlayerCharacter(conn, messageArgs[0], true);
-            EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.red);
             processUpdateAndRespond(conn, pc, builder);
             channel.sendMessage(builder.build()).queue();
             builder.clear();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (Exception e) {
+            logErrorAndRespond(builder, e);
         }
     }
     private void processWithoutPC() {
+        EmbedBuilder builder = new EmbedBuilder();
         try (Connection conn = DBUtils.getConnection()) {
-            EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.red);
             processUpdateAndRespond(conn, null, builder);
             channel.sendMessage(builder.build()).queue();
             builder.clear();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (Exception e) {
+            logErrorAndRespond(builder, e);
         }
     }
 
@@ -150,6 +153,18 @@ public abstract class AbstractCommand {
         builder.setDescription("You do not have the required role to use this command");
         channel.sendMessage(builder.build()).queue();
         builder.clear();
+    }
+
+    private void logErrorAndRespond(EmbedBuilder builder, Exception e) {
+        logger.error(e.getMessage(), e);
+        builder.clear();
+        builder.setTitle("ERROR: " + e);
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        String trace = sw.toString().substring(e.toString().length(), 700);
+        trace = "```Java\n" + trace.substring(0, trace.lastIndexOf("\n")) + "\n```";
+        builder.setDescription(trace);
+        channel.sendMessage(builder.build()).queue();
     }
 
 }
