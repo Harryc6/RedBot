@@ -12,7 +12,7 @@
 <%@ page import="java.lang.reflect.InvocationTargetException" %>
 <%@ page import="java.lang.reflect.Method" %>
 <%@ page import="com.nco.utils.NumberUtils" %>
-<%@ page import="java.sql.Date" %>
+
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%! PlayerCharacter pc = getUser(); %>
 <!DOCTYPE html>
@@ -24,8 +24,6 @@
             Method method = pc.getClass().getMethod("get" + StringUtils.capitalSnakeToCamelCase(field.getName()));
             if (method.getReturnType() == int.class) {
                 return String.valueOf((int) method.invoke(pc));
-            } else if (method.getReturnType() == Date.class) {
-                return method.invoke(pc).toString();
             } else {
                 return (String) method.invoke(pc);
             }
