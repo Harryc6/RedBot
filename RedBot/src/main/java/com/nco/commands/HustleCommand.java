@@ -76,7 +76,7 @@ public class HustleCommand extends AbstractCommand {
     }
 
     private ArrayList<HustleRow> getJobList(PlayerCharacter pc, int attempts) {
-        ArrayList<HustleRow> jobList = new ArrayList();
+        ArrayList<HustleRow> jobList = new ArrayList<HustleRow>();
         for (int i = 0; i < attempts; i++) {
             jobList.add(HustleTables.getRoleTable(pc).get(RPGDice.roll("1d6-1")));
         }
