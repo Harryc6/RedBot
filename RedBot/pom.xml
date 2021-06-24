@@ -62,6 +62,7 @@
     </properties>
 
     <build>
+        <finalName>RedBot</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

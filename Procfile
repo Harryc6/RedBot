@@ -1,3 +1,3 @@
-worker: java -jar RedBot/target/RedBot-2.jar
+worker: java -jar RedBot/target/RedBot.jar
 
-web: java -jar RedSite/target/RedSite-2.war
+web: java -jar RedSite/target/RedSite.war
