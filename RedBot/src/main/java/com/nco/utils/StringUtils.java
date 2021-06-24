@@ -70,6 +70,9 @@ public class StringUtils {
             s = s.replaceFirst("_[a-z]", String.valueOf(Character.toUpperCase(s.charAt(s.indexOf("_") + 1))));
         }
         return s;
+    }
 
+    public static String camelToFormal(String s) {
+        return s.substring(0,1).toUpperCase() + s.substring(1).replaceAll("([A-Z])", " $1");
     }
 }
