@@ -1,5 +1,4 @@
 package com.nco.utils;
-import com.nco.pojos.PlayerCharacter;
 
 import java.sql.*;
 

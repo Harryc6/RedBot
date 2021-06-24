@@ -83,6 +83,9 @@ public class MessageListener extends ListenerAdapter {
                 case START:
                     new StartCommand(messageArgs, event);
                     break;
+                case STARTROLE:
+                    new StartRoleCommand(messageArgs, event);
+                    break;
                 case TEAM:
                     break;
                 case TECHIE:

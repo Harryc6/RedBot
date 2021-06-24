@@ -19,7 +19,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Arrays;
 
 public abstract class AbstractCommand {
 

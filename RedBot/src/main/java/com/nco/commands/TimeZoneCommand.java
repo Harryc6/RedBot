@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Arrays;
 
 public class TimeZoneCommand extends AbstractCommand {
 

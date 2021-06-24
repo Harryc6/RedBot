@@ -26,6 +26,7 @@ public enum Commands {
     RENT,
     SELECT,
     START,
+    STARTROLE,
     TEAM,
     TECHIE,
     TIMEZONE,

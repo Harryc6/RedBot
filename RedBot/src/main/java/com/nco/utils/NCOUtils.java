@@ -8,6 +8,7 @@ import java.util.Locale;
 
 public class NCOUtils {
 
+    private static final String[] fashion = {"Bag Lady Chic", "Gang Colors", "Generic Chic", "Bohemian Folksy", "Leisurewear Comfort", "Nomad Leathers", "Asia Pop", "Urban Flash", "Businesswear", "High Fashion"};
     private static final int[] famePerReputation = {10, 25, 45, 70, 100, 135, 175, 220, 270, 335};
     private static final String[] ranks = {"E-Sheep", "Poser", "Little Runner", "Gato", "Choomba", "Street Samurai", "Hardwired", "Silverhand", "Blackhand", "????????"};
     private static final int[] streetCredPerRank = {0, 12, 24, 36, 48, 60, 72, 84, 96, 108};
