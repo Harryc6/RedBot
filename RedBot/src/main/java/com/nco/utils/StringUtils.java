@@ -61,6 +61,10 @@ public class StringUtils {
         return s.replaceAll("([A-Z])", "_$1").toLowerCase();
     }
 
+    public static String capitalSnakeToCamelCase(String s) {
+        return snakeToCamelCase(s).substring(0, 1).toUpperCase() + snakeToCamelCase(s).substring(1);
+    }
+
     public static String snakeToCamelCase(String s) {
         while (s.contains("_")) {
             s = s.replaceFirst("_[a-z]", String.valueOf(Character.toUpperCase(s.charAt(s.indexOf("_") + 1))));
