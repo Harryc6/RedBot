@@ -6,6 +6,8 @@ import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -14,6 +16,18 @@ import java.util.ArrayList;
 public class MessageListener extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
+        CommandData commandData = new CommandData("bank", "Manage a characters bank")
+                .addOption(OptionType.STRING, "reason", "Transaction Reason", true)
+                .addOption(OptionType.INTEGER, "amount", "Change in bank balance", true)
+                .addOption(OptionType.STRING, "pc-name", "Player characters ame", false)
+                .addOption(OptionType.INTEGER, "dt", "Downtime used", false);
+//        /Reason" "Amount" "DT(Optional)
+        event.getGuild().upsertCommand(commandData).queue();
+        commandData = new CommandData("check", "checking something").addOption(OptionType.STRING, "pc-name", "Player characters Name", false);
+        event.getGuild().upsertCommand(commandData).queue();
+
+        event.getGuild().retrieveCommands().complete();
+
         String messageEvent = event.getMessage().getContentRaw().split(" ")[0];
         if (!event.getAuthor().isBot() && messageEvent.startsWith(RedBot.PREFIX)) {
             String[] messageArgs = StringUtils.parseArgsString(event.getMessage().getContentRaw().substring(messageEvent.length()).trim());

@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
@@ -77,9 +78,9 @@ public class RedBot {
 
     private static void insertSlashCommands(JDA jda) {
         for (Guild guild : jda.getGuilds()) {
-            CommandData commandData = new CommandData("check", "checking something").addOption(OptionType.STRING, "pc-name", "Player characters Name", false);
-            guild.upsertCommand(commandData).submit();
+
         }
+        jda.retrieveCommands().complete();
     }
 
 }
