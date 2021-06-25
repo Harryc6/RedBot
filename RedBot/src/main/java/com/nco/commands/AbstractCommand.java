@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ import java.sql.SQLException;
 
 public abstract class AbstractCommand {
 
+    SlashCommandEvent event;
     Logger logger = LoggerFactory.getLogger(this.getClass());
     String[] messageArgs;
     User author;
@@ -35,6 +37,15 @@ public abstract class AbstractCommand {
         this.channel = event.getChannel();
         this.member = event.getMember();
         this.message = event.getMessage();
+        process();
+    }
+
+    public AbstractCommand(String[] messageArgs, SlashCommandEvent event) {
+        this.messageArgs = messageArgs;
+        this.author = event.getUser();
+        this.channel = event.getChannel();
+        this.member = event.getMember();
+        this.event = event;
         process();
     }
 
@@ -98,7 +109,11 @@ public abstract class AbstractCommand {
             builder.setColor(Color.red);
             messageArgs = StringUtils.prefixArray(pc.getCharacterName(), messageArgs);
             processUpdateAndRespond(conn, pc, builder);
-            channel.sendMessage(builder.build()).queue();
+            if (event == null) {
+                channel.sendMessageEmbeds(builder.build()).queue();
+            } else {
+                event.replyEmbeds(builder.build()).queue();
+            }
             builder.clear();
         } catch (Exception e) {
             logErrorAndRespond(e);
@@ -111,7 +126,11 @@ public abstract class AbstractCommand {
             EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.red);
             processUpdateAndRespond(conn, pc, builder);
-            channel.sendMessage(builder.build()).queue();
+            if (event == null) {
+                channel.sendMessageEmbeds(builder.build()).queue();
+            } else {
+                event.replyEmbeds(builder.build()).queue();
+            }
             builder.clear();
         } catch (Exception e) {
             logErrorAndRespond(e);
@@ -122,7 +141,7 @@ public abstract class AbstractCommand {
             EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.red);
             processUpdateAndRespond(conn, null, builder);
-            channel.sendMessage(builder.build()).queue();
+            channel.sendMessageEmbeds(builder.build()).queue();
             builder.clear();
         } catch (Exception e) {
             logErrorAndRespond(e);
@@ -137,7 +156,11 @@ public abstract class AbstractCommand {
         builder.setTitle(getHelpTitle());
         builder.setDescription(getHelpDescription());
         builder.addField("Need more help?", "[Documentation can be found here](" + ConfigVar.getDocumentationURL() + ")", true);
-        channel.sendMessage(builder.build()).queue();
+        if (event == null) {
+            channel.sendMessageEmbeds(builder.build()).queue();
+        } else {
+            event.replyEmbeds(builder.build()).queue();
+        }
         builder.clear();
     }
 
@@ -150,7 +173,11 @@ public abstract class AbstractCommand {
         builder.setColor(Color.red);
         builder.setTitle("Invalid Permissions");
         builder.setDescription("You do not have the required role to use this command");
-        channel.sendMessage(builder.build()).queue();
+        if (event == null) {
+            channel.sendMessageEmbeds(builder.build()).queue();
+        } else {
+            event.replyEmbeds(builder.build()).queue();
+        }
         builder.clear();
     }
 
@@ -163,7 +190,7 @@ public abstract class AbstractCommand {
         String trace = sw.toString().substring(e.toString().length(), 700);
         trace = "```Java\n" + trace.substring(0, trace.lastIndexOf("\n")) + "\n```";
         builder.setDescription(trace);
-        channel.sendMessage(builder.build()).queue();
+        channel.sendMessageEmbeds(builder.build()).queue();
     }
 
 }

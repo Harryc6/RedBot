@@ -3,14 +3,27 @@ package com.nco;
 import com.nco.commands.*;
 import com.nco.enums.Commands;
 import com.nco.utils.StringUtils;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import org.jetbrains.annotations.NotNull;
 
 
 public class MessageListener extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         String messageEvent = event.getMessage().getContentRaw().split(" ")[0];
+        event.getGuild().upsertCommand("png4", "does simertgunba").submit();
+
+        CommandData commandData = new CommandData("check", "checking something").addOption(OptionType.STRING, "pc-name", "Player characters Name", false);
+
+        event.getGuild().upsertCommand(commandData).submit();
+        event.getGuild().upsertCommand(commandData).queue();
+        event.getGuild().upsertCommand(commandData).submit().isCompletedExceptionally();
+
+        event.getGuild().retrieveCommands().complete();
         if (!event.getAuthor().isBot() && messageEvent.startsWith(RedBot.PREFIX)) {
             String[] messageArgs = StringUtils.parseArgsString(event.getMessage().getContentRaw().substring(messageEvent.length()).trim());
 
@@ -110,4 +123,20 @@ public class MessageListener extends ListenerAdapter {
             }
         }
     }
+
+    @Override
+    public void onSlashCommand(@NotNull SlashCommandEvent event) {
+//        event.getGuild().retrieveCommands().complete();
+
+        if (event.getName().equalsIgnoreCase("check")) {
+            event.getOptions().size();
+            new CheckCommand(new String[]{event.getOptions().get(0).getAsString()}, event);
+        }
+        if (!event.getName().equals("ping")) return; // make sure we handle the right command
+        long time = System.currentTimeMillis();
+        event.reply("Pong!").setEphemeral(true) // reply or acknowledge
+                .flatMap(v ->
+                        event.getHook().editOriginalFormat("Pong: %d ms", System.currentTimeMillis() - time) // then edit original
+                ).queue(); // Queue both reply and edit
+        }
 }
