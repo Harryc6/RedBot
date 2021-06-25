@@ -4,6 +4,7 @@ import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
 import com.nco.utils.NumberUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.sql.Connection;
@@ -12,8 +13,8 @@ import java.sql.SQLException;
 
 public class BuyArmorCommand extends AbstractCommand {
 
-    public BuyArmorCommand(String[] messageArgs, GuildMessageReceivedEvent event) {
-        super(messageArgs, event);
+    public BuyArmorCommand(String[] messageArgs, Object event, boolean isSlash) {
+        super(messageArgs, event, isSlash);
     }
 
     @Override

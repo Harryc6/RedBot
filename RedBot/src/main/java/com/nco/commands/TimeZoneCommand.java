@@ -4,6 +4,7 @@ import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
 import com.nco.utils.NCOUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.sql.Connection;
@@ -14,8 +15,8 @@ public class TimeZoneCommand extends AbstractCommand {
 
     private final static String[] UTCArray = NCOUtils.getUTCArray();
 
-    public TimeZoneCommand(String[] messageArgs, GuildMessageReceivedEvent event) {
-        super(messageArgs, event);
+    public TimeZoneCommand(String[] messageArgs, Object event, boolean isSlash) {
+        super(messageArgs, event, isSlash);
     }
 
     @Override

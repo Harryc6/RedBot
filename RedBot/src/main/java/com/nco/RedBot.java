@@ -6,6 +6,8 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.quartz.*;
@@ -33,16 +35,7 @@ public class RedBot {
                     .addEventListeners(new MessageListener())
                     .build();
 
-            jda.upsertCommand("ping", "Calculate ping of the bot").queue();
-            CommandData commandData = new CommandData("check", "checking something").setDefaultEnabled(true);
-
-
-            jda.upsertCommand(commandData).queue();
-            jda.retrieveCommands().complete();
-//            jda.getGuilds().iterator().next().upsertCommand(commandData).queue();
-
-            jda.getGuilds().get(0).updateCommands().addCommands(new CommandData("ping3", "Calculate ping of the bot"));
-
+            insertSlashCommands(jda);
             jda.awaitReady();
             Logger logger = LoggerFactory.getLogger(RedBot.class);
             logger.info("Finished Setting Up JDA For RedBot");
@@ -81,4 +74,12 @@ public class RedBot {
             se.printStackTrace();
         }
     }
+
+    private static void insertSlashCommands(JDA jda) {
+        for (Guild guild : jda.getGuilds()) {
+            CommandData commandData = new CommandData("check", "checking something").addOption(OptionType.STRING, "pc-name", "Player characters Name", false);
+            guild.upsertCommand(commandData).submit();
+        }
+    }
+
 }

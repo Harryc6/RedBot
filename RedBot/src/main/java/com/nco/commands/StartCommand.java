@@ -10,6 +10,7 @@ import com.nco.utils.tables.Attribute;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -28,8 +29,8 @@ import java.util.stream.Collectors;
 
 public class StartCommand extends AbstractCommand {
 
-    public StartCommand(String[] messageArgs, GuildMessageReceivedEvent event) {
-        super(messageArgs, event);
+    public StartCommand(String[] messageArgs, Object event, boolean isSlash) {
+        super(messageArgs, event, isSlash);
     }
 
     @Override

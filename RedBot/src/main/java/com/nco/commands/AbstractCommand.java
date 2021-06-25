@@ -31,21 +31,21 @@ public abstract class AbstractCommand {
     Member member;
     Message message;
 
-    public AbstractCommand(String[] messageArgs, GuildMessageReceivedEvent event) {
+    public AbstractCommand(String[] messageArgs, Object event, boolean isSlash) {
         this.messageArgs = messageArgs;
-        this.author = event.getAuthor();
-        this.channel = event.getChannel();
-        this.member = event.getMember();
-        this.message = event.getMessage();
-        process();
-    }
-
-    public AbstractCommand(String[] messageArgs, SlashCommandEvent event) {
-        this.messageArgs = messageArgs;
-        this.author = event.getUser();
-        this.channel = event.getChannel();
-        this.member = event.getMember();
-        this.event = event;
+        if (isSlash) {
+            SlashCommandEvent slashEvent = (SlashCommandEvent) event;
+            this.author = slashEvent.getUser();
+            this.channel = slashEvent.getChannel();
+            this.member = slashEvent.getMember();
+            this.event = slashEvent;
+        } else {
+            GuildMessageReceivedEvent guildEvent = (GuildMessageReceivedEvent) event;
+            this.author = guildEvent.getAuthor();
+            this.channel = guildEvent.getChannel();
+            this.member = guildEvent.getMember();
+            this.message = guildEvent.getMessage();
+        }
         process();
     }
 

@@ -13,12 +13,8 @@ import java.sql.SQLException;
 
 public class CheckCommand extends AbstractCommand {
 
-    public CheckCommand(String[] messageArgs, GuildMessageReceivedEvent event) {
-        super(messageArgs, event);
-    }
-
-    public CheckCommand(String[] messageArgs, SlashCommandEvent event) {
-        super(messageArgs, event);
+    public CheckCommand(String[] messageArgs, Object event, boolean isSlash) {
+        super(messageArgs, event, isSlash);
     }
 
     @Override

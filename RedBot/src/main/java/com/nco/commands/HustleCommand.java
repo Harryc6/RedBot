@@ -7,6 +7,7 @@ import com.nco.utils.RPGDice;
 import com.nco.utils.tables.HustleRow;
 import com.nco.utils.tables.HustleTables;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.sql.Connection;
@@ -16,8 +17,8 @@ import java.util.ArrayList;
 
 public class HustleCommand extends AbstractCommand {
 
-    public HustleCommand(String[] messageArgs, GuildMessageReceivedEvent event) {
-        super(messageArgs, event);
+    public HustleCommand(String[] messageArgs, Object event, boolean isSlash) {
+        super(messageArgs, event, isSlash);
     }
 
     @Override
