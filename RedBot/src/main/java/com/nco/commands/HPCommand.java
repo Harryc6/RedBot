@@ -150,7 +150,7 @@ public class HPCommand extends AbstractCommand {
 
     @Override
     protected String getHelpDescription() {
-        return "Please use the commands below to add MaxHumanity onto a characters \n" + RedBot.PREFIX +
-                "hp \"PC Name(Optional)\", “DT”, “improvements”\n";
+        return "Please use the commands below to heal a character \n" + RedBot.PREFIX +
+                "hp \"PC Name(Optional)\", “DT”, “Improvements”\n";
     }
 }

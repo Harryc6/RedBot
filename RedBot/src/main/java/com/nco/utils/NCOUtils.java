@@ -47,7 +47,7 @@ public class NCOUtils {
     }
 
     public static String[] getUTCArray() {
-        return getUTCArray();
+        return UTCArray;
     }
 
     public static boolean validUTC(String suppliedUtc) {
