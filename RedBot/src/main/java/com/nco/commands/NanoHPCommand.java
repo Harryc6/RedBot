@@ -55,7 +55,8 @@ public class NanoHPCommand extends AbstractCommand {
                     "\n Current Body Armor : " + pc.getHeadSp() +
                     "\n New HeadSP : " + hpAndArmor[1] + " New BodySP : " + hpAndArmor[2] + " New HP : " + hpAndArmor[0] );
 
-            if (updateNanoHP(conn, hpAndArmor, newDT) && insertNanoHP(conn, pc, hpAndArmor, newDT)) {
+//            if (updateNanoHP(conn, hpAndArmor, newDT) && insertNanoHP(conn, pc, hpAndArmor, newDT)) {
+            if (updateNanoHP(conn, hpAndArmor, newDT)) {
                 buildEmbed(builder, pc, newDT, hpAndArmor);
             } else {
                 builder.setTitle("ERROR: Install Update Or Insert Failure");

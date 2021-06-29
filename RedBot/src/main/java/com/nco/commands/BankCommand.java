@@ -40,7 +40,8 @@ public class BankCommand extends AbstractCommand {
             builder.setDescription(messageArgs[0] + " has only " + pc.getBank() + "eb available " +
                     "where " + NumberUtils.asPositive(messageArgs[2]) + "eb is being spent.");
 
-        } else if (updateBank(pc, conn) && insertBank(conn)) {
+//        } else if (updateBank(pc, conn) && insertBank(conn)) {
+        } else if (updateBank(pc, conn)) {
             int oldBank = pc.getBank();
             int newBank = oldBank + Integer.parseInt(messageArgs[2]);
             builder.setTitle(messageArgs[0] + "'s Bank Balance Updated");

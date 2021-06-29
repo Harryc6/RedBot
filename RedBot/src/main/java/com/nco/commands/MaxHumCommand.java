@@ -35,7 +35,8 @@ public class MaxHumCommand extends AbstractCommand {
     protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
         int oldMaxHum = pc.getMaxHumanity();
         int newMaxHum = oldMaxHum + (messageArgs[1].equalsIgnoreCase("cyberware") ? 2 : 4);
-        if (updateMaxHum(newMaxHum, conn) && insertMaxHum(conn, oldMaxHum, newMaxHum)) {
+//        if (updateMaxHum(newMaxHum, conn) && insertMaxHum(conn, oldMaxHum, newMaxHum)) {
+        if (updateMaxHum(newMaxHum, conn)) {
             builder.setTitle(messageArgs[0] + "'s MaxHumanity Updated");
             builder.setDescription("Removed \"" + messageArgs[1] + "\"");
             builder.addField("Old MaxHumanity", String.valueOf(oldMaxHum), true);

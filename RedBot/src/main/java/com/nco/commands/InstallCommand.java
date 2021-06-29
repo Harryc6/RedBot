@@ -52,7 +52,8 @@ public class InstallCommand extends AbstractCommand {
                 builder.setTitle("ERROR: Not Enough Eurobucks");
                 builder.setDescription(messageArgs[0] + " has only " + pc.getBank() + "eb available " +
                         "where " + NumberUtils.asPositive(messageArgs[messageArgs.length - 1]) + "eb is being spent.");
-        } else if (updateInstall(conn, newHumanity, newMaxHumanity, newBank) && insertInstall(valueRolled, conn)) {
+//        } else if (updateInstall(conn, newHumanity, newMaxHumanity, newBank) && insertInstall(valueRolled, conn)) {
+        } else if (updateInstall(conn, newHumanity, newMaxHumanity, newBank)) {
             buildEmbeddedContent(pc, builder, valueRolled, newHumanity, newMaxHumanity, newBank);
         } else {
             builder.setTitle("ERROR: Install Update Or Insert Failure");

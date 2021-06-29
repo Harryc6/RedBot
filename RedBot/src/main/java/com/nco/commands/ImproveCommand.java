@@ -36,7 +36,8 @@ public class ImproveCommand extends AbstractCommand {
             builder.setTitle("ERROR: Not Enough IP");
             builder.setDescription(messageArgs[0] + " has only " + pc.getInfluencePoints() + " IP available " +
                     "where " + NumberUtils.asPositive(messageArgs[2]) + " IP is being used.");
-        } else if (updateImprove(newIP, conn) && insertImprove(conn)) {
+//        } else if (updateImprove(newIP, conn) && insertImprove(conn)) {
+        } else if (updateImprove(newIP, conn)) {
             buildEmbeddedContent(pc, builder, newIP);
         } else {
             builder.setTitle("ERROR: Improve Update Or Insert Failure");

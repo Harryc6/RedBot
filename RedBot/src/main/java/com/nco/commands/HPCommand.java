@@ -47,7 +47,8 @@ public class HPCommand extends AbstractCommand {
             logger.info("PC : " + messageArgs[0] + "\nCurrent HP : " + pc.getCurrentHp() +
                     "\nBody : " + pc.getBody() + "\nBonus : " + getBonuses(pc) +
                     "\n DT Used : " + dtAmount + "\nCombines to new HP of " + newHP);
-            if (updateHP(conn, newHP, newDT) && insertHP(conn, pc, newHP, newDT)) {
+//            if (updateHP(conn, newHP, newDT) && insertHP(conn, pc, newHP, newDT)) {
+            if (updateHP(conn, newHP, newDT)) {
                 buildEmbed(builder, pc, newHP, newDT);
             } else {
                 builder.setTitle("ERROR: Install Update Or Insert Failure");

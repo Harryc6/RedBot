@@ -40,7 +40,8 @@ public class TradeCommand extends AbstractCommand {
             builder.setTitle("ERROR: Not Enough Eurobucks");
             builder.setDescription(messageArgs[0] + " has only " + pc.getBank() + "eb available " +
                     "where " + NumberUtils.asPositive(messageArgs[2]) + "eb is being spent.");
-        } else if (updateSenderTrade(pc, conn) && updateReceiverTrade(conn) && insertTrade(conn)) {
+//        } else if (updateSenderTrade(pc, conn) && updateReceiverTrade(conn) && insertTrade(conn)) {
+        } else if (updateSenderTrade(pc, conn) && updateReceiverTrade(conn)) {
             builder.setDescription(NumberUtils.asPositive(messageArgs[2]) + "eb sent to " + messageArgs[3]);
             int oldBank = pc.getBank();
             int newBank = oldBank + NumberUtils.asNegative(messageArgs[2]);

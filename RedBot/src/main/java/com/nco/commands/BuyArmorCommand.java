@@ -70,7 +70,8 @@ public class BuyArmorCommand extends AbstractCommand {
             builder.setTitle("ERROR: Not Enough Eurobucks");
             builder.setDescription(messageArgs[0] + " has only " + pc.getBank() + "eb available " +
                     "where " + NumberUtils.asPositive(messageArgs[messageArgs.length - 1]) + "eb is being spent.");
-        } else if (updateArmor(conn, pc) && insertBuyArmor(conn)) {
+//        } else if (updateArmor(conn, pc) && insertBuyArmor(conn)) {
+        } else if (updateArmor(conn, pc)) {
             builder.setTitle(messageArgs[0] + "'s Armor Updated");
             if (isMultiLocation()) {
                 builder.addField("Old Head SP", String.valueOf(pc.getHeadSp()), true);

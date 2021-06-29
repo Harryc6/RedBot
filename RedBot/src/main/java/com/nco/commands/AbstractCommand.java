@@ -1,10 +1,7 @@
 package com.nco.commands;
 
 import com.nco.pojos.PlayerCharacter;
-import com.nco.utils.ConfigVar;
-import com.nco.utils.DBUtils;
-import com.nco.utils.JDAUtils;
-import com.nco.utils.StringUtils;
+import com.nco.utils.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -12,6 +9,7 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +17,9 @@ import java.awt.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 public abstract class AbstractCommand {
 
@@ -108,6 +108,7 @@ public abstract class AbstractCommand {
             EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.red);
             messageArgs = StringUtils.prefixArray(pc.getCharacterName(), messageArgs);
+            logCommandUse(conn);
             processUpdateAndRespond(conn, pc, builder);
             if (event == null) {
                 channel.sendMessageEmbeds(builder.build()).queue();
@@ -125,6 +126,7 @@ public abstract class AbstractCommand {
             PlayerCharacter pc = new PlayerCharacter(conn, messageArgs[0], true);
             EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.red);
+            logCommandUse(conn);
             processUpdateAndRespond(conn, pc, builder);
             if (event == null) {
                 channel.sendMessageEmbeds(builder.build()).queue();
@@ -140,12 +142,40 @@ public abstract class AbstractCommand {
         try (Connection conn = DBUtils.getConnection()) {
             EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.red);
+            logCommandUse(conn);
             processUpdateAndRespond(conn, null, builder);
             channel.sendMessageEmbeds(builder.build()).queue();
             builder.clear();
         } catch (Exception e) {
             logErrorAndRespond(e);
         }
+    }
+
+    private void logCommandUse(Connection conn) {
+        String sql = getLoggingSQL();
+        String command = (event == null ? message.getContentRaw().split(" ")[0].substring(1) : event.getName()).toLowerCase();
+        try (PreparedStatement stat = conn.prepareStatement(sql)) {
+            stat.setString(1, command);
+            for (int i = 0; i < messageArgs.length; i++) {
+                stat.setString(i+2, messageArgs[i]);
+            }
+            stat.setString(messageArgs.length + 2, author.getAsTag());
+            stat.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    @NotNull
+    private String getLoggingSQL() {
+        StringBuilder sql =  new StringBuilder("INSERT INTO NCO_LOGGING (command, ");
+        for (int i = 0; i < messageArgs.length; i++) {
+            sql.append("arg_").append(i).append(", ");
+        }
+        sql.append(" created_by) VALUES (?,");
+        Arrays.stream(messageArgs).iterator().forEachRemaining(s -> sql.append("?,"));
+        sql.append("?)");
+        return sql.toString();
     }
 
     protected abstract void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException;

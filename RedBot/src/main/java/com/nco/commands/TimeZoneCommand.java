@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+@Deprecated //No reason to store timezone
 public class TimeZoneCommand extends AbstractCommand {
 
     private final static String[] UTCArray = NCOUtils.getUTCArray();

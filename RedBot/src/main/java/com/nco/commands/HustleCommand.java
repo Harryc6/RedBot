@@ -44,7 +44,8 @@ public class HustleCommand extends AbstractCommand {
             builder.setTitle("ERROR: Not Enough DT");
             builder.setDescription(messageArgs[0] + " has " + pc.getDowntime() + " DT available where " +
                     (attempts * 7) + " DT is required for " + attempts + " attempts");
-        } else if (updateHustle(conn, pc, jobList, attempts) && insertHustle(conn, pc, jobList, attempts)){
+//        } else if (updateHustle(conn, pc, jobList, attempts) && insertHustle(conn, pc, jobList, attempts)){
+        } else if (updateHustle(conn, pc, jobList, attempts)){
             buildEmbeddedContent(pc, builder, attempts, jobList);
         } else {
             builder.setTitle("ERROR: Improve Update Or Insert Failure");

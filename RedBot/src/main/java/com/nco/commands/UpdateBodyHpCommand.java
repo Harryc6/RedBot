@@ -29,7 +29,8 @@ public class UpdateBodyHpCommand extends AbstractCommand {
 
     @Override
     protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
-        if (updateBodyHp(conn) && insertBodyHp(conn, pc)) {
+//        if (updateBodyHp(conn) && insertBodyHp(conn, pc)) {
+        if (updateBodyHp(conn)) {
             buildEmbeddedContent(pc, builder);
         } else {
             builder.setTitle("ERROR: Improve Update Or Insert Failure");

@@ -23,6 +23,9 @@ public class StringUtils {
     }
 
     public static String[] prefixArray(String prefix, String[] array) {
+        if (array.length == 1 && array[0].isEmpty()) {
+            return new String[] { prefix };
+        }
         String[] newArray = new String[array.length + 1];
         newArray[0] = prefix;
         System.arraycopy(array, 0, newArray, 1, newArray.length - 1);

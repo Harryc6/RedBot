@@ -50,7 +50,8 @@ public class HumCommand extends AbstractCommand {
             int newBank = pc.getBank() - getTherapyCost();
             int newDT = pc.getDowntime() - 7;
 
-            if (updateHum(conn, newHum, newBank, newDT) && insertHum(conn, pc, newHum, newBank, newDT)) {
+//            if (updateHum(conn, newHum, newBank, newDT) && insertHum(conn, pc, newHum, newBank, newDT)) {
+            if (updateHum(conn, newHum, newBank, newDT)) {
                 buildEmbed(builder, pc, humSelect, humRoll, newHum, newBank, newDT);
             } else {
                 builder.setTitle("ERROR: Install Update Or Insert Failure");
