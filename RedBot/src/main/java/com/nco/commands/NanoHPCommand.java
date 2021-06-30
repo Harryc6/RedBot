@@ -56,7 +56,7 @@ public class NanoHPCommand extends AbstractCommand {
                     "\n New HeadSP : " + hpAndArmor[1] + " New BodySP : " + hpAndArmor[2] + " New HP : " + hpAndArmor[0] );
 
 //            if (updateNanoHP(conn, hpAndArmor, newDT) && insertNanoHP(conn, pc, hpAndArmor, newDT)) {
-            if (updateNanoHP(conn, hpAndArmor, newDT)) {
+            if (updateNanoHP(conn, hpAndArmor, newDT, pc)) {
                 buildEmbed(builder, pc, newDT, hpAndArmor);
             } else {
                 builder.setTitle("ERROR: Install Update Or Insert Failure");
@@ -129,16 +129,16 @@ public class NanoHPCommand extends AbstractCommand {
         return armorBonuses;
     }
 
-    private boolean updateNanoHP(Connection conn, int[] hpAndArmor, int newDT) throws SQLException {
-        return updatePc(conn, hpAndArmor, newDT) && updateStats(conn, hpAndArmor);
+    private boolean updateNanoHP(Connection conn, int[] hpAndArmor, int newDT, PlayerCharacter pc) throws SQLException {
+        return updatePc(conn, hpAndArmor, newDT, pc) && updateStats(conn, hpAndArmor);
     }
 
-    private boolean updatePc(Connection conn, int[] hpAndArmor, int newDT) throws SQLException {
+    private boolean updatePc(Connection conn, int[] hpAndArmor, int newDT, PlayerCharacter pc) throws SQLException {
         String sql = "UPDATE NCO_PC set head_sp = ?, body_sp = ?, downtime = ? Where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, hpAndArmor[1]);
             stat.setInt(2, hpAndArmor[2]);
-            stat.setInt(3, newDT);
+            stat.setInt(3, (newDT * 12) + pc.getDowntimeRemainder());
             stat.setString(4, messageArgs[0]);
             return stat.executeUpdate() == 1;
         }

@@ -3,6 +3,7 @@ package com.nco.commands;
 import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
 import com.nco.utils.NumberUtils;
+import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -63,7 +64,7 @@ public class UpdateBodyHpCommand extends AbstractCommand {
     }
 
     private void buildEmbeddedContent(PlayerCharacter pc, EmbedBuilder builder) {
-        builder.setTitle(messageArgs[0] + "'s Body & HP Updated");
+        builder.setTitle(StringUtils.capitalizeWords(messageArgs[0]) + "'s Body & HP Updated");
         builder.setDescription("For \"" + messageArgs[3] + "\"");
         builder.addField("Old Body", String.valueOf(pc.getBody()), true);
         builder.addBlankField(true);

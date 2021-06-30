@@ -24,6 +24,15 @@ public class NCOUtils {
         return famePerReputation.length;
     }
 
+    public static int getFameFromReputation(int reputation) {
+        if (reputation == 0 || reputation > famePerReputation.length) {
+            return 0;
+        } else {
+            return famePerReputation[reputation - 1];
+        }
+    }
+
+
     public static int getStartingStreetCredFromRank(String startingRank) {
         for (int i = 0; i < ranks.length; i++) {
             if (ranks[i].equalsIgnoreCase(startingRank)) {
@@ -60,4 +69,7 @@ public class NCOUtils {
         return Arrays.stream(roles).filter(role -> cleanedRole.contains(role.toLowerCase())).findFirst().orElse(suppliedRole);
     }
 
+    public static boolean validRole(String suppliedRole) {
+        return Arrays.stream(roles).anyMatch(suppliedRole::equalsIgnoreCase);
+    }
 }

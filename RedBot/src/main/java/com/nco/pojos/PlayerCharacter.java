@@ -5,9 +5,11 @@ import com.nco.enums.Skills;
 import com.nco.enums.Stats;
 import com.nco.utils.StringUtils;
 
+import java.awt.font.TextAttribute;
 import java.lang.reflect.Field;
 import java.sql.*;
 
+import java.text.AttributedString;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +36,13 @@ public class PlayerCharacter {
     private int gamesOverall;
     private int weeklyGames;
     private Date jobBanUntil;
-    private String timeZone;
+    private int surgery;
+    private int pharmaceuticals;
+    private int cryosystemOperation;
+    private int fieldExpertise;
+    private int upgradeExpertise;
+    private int fabricationExpertise;
+    private int inventionExpertise;
     private String retiredYn;
 
     // NCO_PC_STATS
@@ -213,6 +221,10 @@ public class PlayerCharacter {
         return characterName;
     }
 
+    public String getCharacterDisplayName() {
+        return StringUtils.capitalizeWords(characterName);
+    }
+
     public String getRole() {
         return role;
     }
@@ -262,7 +274,16 @@ public class PlayerCharacter {
     }
 
     public int getDowntime() {
-        return downtime;
+        return downtime / 12;
+    }
+
+    public int getDowntimeRemainder() {
+        return downtime % 12;
+    }
+
+    public String getDowntimeToDisplay() {
+        return downtime / 12 + ((downtime % 12 == 0) ? "" :
+                " " + StringUtils.superscript(String.valueOf(downtime % 12)) + "/" + StringUtils.subscript("12"));
     }
 
     public String getLifestyle() {
@@ -285,8 +306,32 @@ public class PlayerCharacter {
         return jobBanUntil;
     }
 
-    public String getTimeZone() {
-        return timeZone;
+    public int getSurgery() {
+        return surgery;
+    }
+
+    public int getPharmaceuticals() {
+        return pharmaceuticals;
+    }
+
+    public int getCryosystemOperation() {
+        return cryosystemOperation;
+    }
+
+    public int getFieldExpertise() {
+        return fieldExpertise;
+    }
+
+    public int getUpgradeExpertise() {
+        return upgradeExpertise;
+    }
+
+    public int getFabricationExpertise() {
+        return fabricationExpertise;
+    }
+
+    public int getInventionExpertise() {
+        return inventionExpertise;
     }
 
     public String getRetiredYn() {

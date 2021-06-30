@@ -6,7 +6,7 @@ import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.Command;
+
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,10 +18,6 @@ public class MessageListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
-//        for (Command command : event.getGuild().retrieveCommands().complete()) {
-//            event.getGuild().deleteCommandById(command.getId()).queue();
-//        }
-
         String messageEvent = event.getMessage().getContentRaw().split(" ")[0];
         if (!event.getAuthor().isBot() && messageEvent.startsWith(RedBot.PREFIX)) {
             String[] messageArgs = StringUtils.parseArgsString(event.getMessage().getContentRaw().substring(messageEvent.length()).trim());
@@ -106,15 +102,9 @@ public class MessageListener extends ListenerAdapter {
             case START:
                 new StartCommand(messageArgs, event, isSlash);
                 break;
-            case STARTROLE:
-                new StartRoleCommand(messageArgs, event, isSlash);
-                break;
             case TEAM:
                 break;
             case TECHIE:
-                break;
-            case TIMEZONE:
-//                new TimeZoneCommand(messageArgs, event, isSlash);
                 break;
             case TRADE:
                 new TradeCommand(messageArgs, event, isSlash);
@@ -228,17 +218,10 @@ public class MessageListener extends ListenerAdapter {
             case START:
                 //Unable to do Start command due to no support for attachments on slash command
                 break;
-//            case STARTROLE:
-//                new StartRoleCommand(messageArgs, event, isSlash);
-//                break;
             case TEAM:
                 break;
             case TECHIE:
                 break;
-            case TIMEZONE:
-                addOptionIfFound(options, argsList, "pc-name");
-                addOptionIfFound(options, argsList, "timezone");
-                return listNull(argsList);
             case TRADE:
                 addOptionIfFound(options, argsList, "sender");
                 addOptionIfFound(options, argsList, "reason");

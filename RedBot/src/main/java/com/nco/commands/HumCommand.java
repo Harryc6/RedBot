@@ -3,6 +3,7 @@ package com.nco.commands;
 import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
 import com.nco.utils.RPGDice;
+import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -51,7 +52,7 @@ public class HumCommand extends AbstractCommand {
             int newDT = pc.getDowntime() - 7;
 
 //            if (updateHum(conn, newHum, newBank, newDT) && insertHum(conn, pc, newHum, newBank, newDT)) {
-            if (updateHum(conn, newHum, newBank, newDT)) {
+            if (updateHum(conn, newHum, newBank, newDT, pc)) {
                 buildEmbed(builder, pc, humSelect, humRoll, newHum, newBank, newDT);
             } else {
                 builder.setTitle("ERROR: Install Update Or Insert Failure");
@@ -64,15 +65,15 @@ public class HumCommand extends AbstractCommand {
         return messageArgs[1].equalsIgnoreCase("Pro Standard") ? 500 : 1000;
     }
 
-    private boolean updateHum(Connection conn, int newHum, int newBank, int newDT) throws SQLException {
-        return updatePC(conn, newBank, newDT) && updateStats(conn, newHum);
+    private boolean updateHum(Connection conn, int newHum, int newBank, int newDT, PlayerCharacter pc) throws SQLException {
+        return updatePC(conn, newBank, newDT, pc) && updateStats(conn, newHum);
     }
 
-    private boolean updatePC(Connection conn, int newBank, int newDT) throws SQLException {
+    private boolean updatePC(Connection conn, int newBank, int newDT, PlayerCharacter pc) throws SQLException {
         String sql = "UPDATE NCO_PC set bank = ?, downtime = ? Where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, newBank);
-            stat.setInt(2, newDT);
+            stat.setInt(2, (newDT * 12) + pc.getDowntimeRemainder());
             stat.setString(3, messageArgs[0]);
             return stat.executeUpdate() == 1;
         }
@@ -106,7 +107,7 @@ public class HumCommand extends AbstractCommand {
 
     private void buildEmbed(EmbedBuilder builder, PlayerCharacter pc, String humSelect, int humRoll, int newHum,
                             int newBank, int newDT) {
-        builder.setTitle(messageArgs[0] + "'s Humanity Restored");
+        builder.setTitle(StringUtils.capitalizeWords(messageArgs[0]) + "'s Humanity Restored");
         builder.setDescription("Rolled a " + humSelect + " for " + humRoll + "");
         builder.addField("Old Humanity", String.valueOf(pc.getCurrentHumanity()), true);
         builder.addBlankField(true);

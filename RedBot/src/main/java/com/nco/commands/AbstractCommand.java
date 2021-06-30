@@ -106,16 +106,8 @@ public abstract class AbstractCommand {
         try(Connection conn = DBUtils.getConnection()) {
             PlayerCharacter pc = new PlayerCharacter(conn, author.getAsTag(), false);
             EmbedBuilder builder = new EmbedBuilder();
-            builder.setColor(Color.red);
             messageArgs = StringUtils.prefixArray(pc.getCharacterName(), messageArgs);
-            logCommandUse(conn);
-            processUpdateAndRespond(conn, pc, builder);
-            if (event == null) {
-                channel.sendMessageEmbeds(builder.build()).queue();
-            } else {
-                event.replyEmbeds(builder.build()).queue();
-            }
-            builder.clear();
+            processCommand(conn, pc, builder);
         } catch (Exception e) {
             logErrorAndRespond(e);
         }
@@ -123,21 +115,32 @@ public abstract class AbstractCommand {
 
     private void processByName() {
         try (Connection conn = DBUtils.getConnection()) {
+            messageArgs[0] = messageArgs[0].toLowerCase();
             PlayerCharacter pc = new PlayerCharacter(conn, messageArgs[0], true);
             EmbedBuilder builder = new EmbedBuilder();
-            builder.setColor(Color.red);
-            logCommandUse(conn);
-            processUpdateAndRespond(conn, pc, builder);
-            if (event == null) {
-                channel.sendMessageEmbeds(builder.build()).queue();
-            } else {
-                event.replyEmbeds(builder.build()).queue();
-            }
-            builder.clear();
+            processCommand(conn, pc, builder);
         } catch (Exception e) {
             logErrorAndRespond(e);
         }
     }
+
+    private void processCommand(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
+        builder.setColor(Color.red);
+        logCommandUse(conn);
+        if (pc.getCharacterName() == null) {
+            builder.setTitle("No Character Found");
+            builder.setDescription("No active character was found tied to the user " + author.getAsTag());
+        } else {
+            processUpdateAndRespond(conn, pc, builder);
+        }
+        if (event == null) {
+            channel.sendMessageEmbeds(builder.build()).queue();
+        } else {
+            event.replyEmbeds(builder.build()).queue();
+        }
+        builder.clear();
+    }
+
     private void processWithoutPC() {
         try (Connection conn = DBUtils.getConnection()) {
             EmbedBuilder builder = new EmbedBuilder();

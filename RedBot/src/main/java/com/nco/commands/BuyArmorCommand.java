@@ -3,6 +3,7 @@ package com.nco.commands;
 import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
 import com.nco.utils.NumberUtils;
+import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -68,11 +69,11 @@ public class BuyArmorCommand extends AbstractCommand {
     protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
         if (!isArmorPaid() && doesBankChange() && NumberUtils.asPositive(messageArgs[messageArgs.length - 1]) > pc.getBank()) {
             builder.setTitle("ERROR: Not Enough Eurobucks");
-            builder.setDescription(messageArgs[0] + " has only " + pc.getBank() + "eb available " +
+            builder.setDescription(StringUtils.capitalizeWords(messageArgs[0]) + " has only " + pc.getBank() + "eb available " +
                     "where " + NumberUtils.asPositive(messageArgs[messageArgs.length - 1]) + "eb is being spent.");
 //        } else if (updateArmor(conn, pc) && insertBuyArmor(conn)) {
         } else if (updateArmor(conn, pc)) {
-            builder.setTitle(messageArgs[0] + "'s Armor Updated");
+            builder.setTitle(StringUtils.capitalizeWords(messageArgs[0]) + "'s Armor Updated");
             if (isMultiLocation()) {
                 builder.addField("Old Head SP", String.valueOf(pc.getHeadSp()), true);
                 builder.addBlankField(true);

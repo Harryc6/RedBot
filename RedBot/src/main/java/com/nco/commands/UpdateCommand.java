@@ -27,7 +27,7 @@ public class UpdateCommand extends AbstractCommand {
 
     @Override
     protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
-        builder.setTitle("Update of " + messageArgs[0]);
+        builder.setTitle("Update of " + StringUtils.capitalizeWords(messageArgs[0]));
         String sql = "Select * From NCO_PC where character_name = ?";
         try(PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);

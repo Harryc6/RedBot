@@ -3,6 +3,7 @@ package com.nco.commands;
 import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
 import com.nco.utils.NCOUtils;
+import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -33,8 +34,8 @@ public class TimeZoneCommand extends AbstractCommand {
     @Override
     protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
         if (updateTimeZone(conn) && insertTimeZone(conn, pc)) {
-            builder.setTitle(messageArgs[0] + "'s Time Zone Updated");
-            builder.addField("Old Time Zone", pc.getTimeZone(), true);
+            builder.setTitle(StringUtils.capitalizeWords(messageArgs[0]) + "'s Time Zone Updated");
+//            builder.addField("Old Time Zone", pc.getTimeZone(), true);
             builder.addBlankField(true);
             builder.addField("New Time Zone", messageArgs[1], true);
         } else {
@@ -56,7 +57,7 @@ public class TimeZoneCommand extends AbstractCommand {
         String sql = "INSERT INTO nco_time_zone (character_name, old_time_zone, new_time_zone, created_by) VALUES (?,?,?,?)";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, messageArgs[0]);
-            stat.setString(2, pc.getTimeZone());
+//            stat.setString(2, pc.getTimeZone());
             stat.setString(3, messageArgs[1]);
             stat.setString(4, author.getAsTag());
             return stat.executeUpdate() == 1;

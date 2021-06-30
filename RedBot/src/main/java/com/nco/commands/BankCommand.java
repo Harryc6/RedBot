@@ -3,6 +3,7 @@ package com.nco.commands;
 import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
 import com.nco.utils.NumberUtils;
+import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -33,18 +34,18 @@ public class BankCommand extends AbstractCommand {
     protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
         if (messageArgs.length == 4  && NumberUtils.asPositive(messageArgs[3]) > pc.getDowntime()) {
             builder.setTitle("ERROR: Not Enough DT");
-            builder.setDescription(messageArgs[0] + " has only " + pc.getDowntime() + " available DT " +
+            builder.setDescription(StringUtils.capitalizeWords(messageArgs[0]) + " has only " + pc.getDowntime() + " available DT " +
                     "where " + NumberUtils.asPositive(messageArgs[3]) + " DT was requested.");
         } else if (Integer.parseInt(messageArgs[2]) < 0 && NumberUtils.asPositive(messageArgs[2]) > pc.getBank()) {
             builder.setTitle("ERROR: Not Enough Eurobucks");
-            builder.setDescription(messageArgs[0] + " has only " + pc.getBank() + "eb available " +
+            builder.setDescription(StringUtils.capitalizeWords(messageArgs[0]) + " has only " + pc.getBank() + "eb available " +
                     "where " + NumberUtils.asPositive(messageArgs[2]) + "eb is being spent.");
 
 //        } else if (updateBank(pc, conn) && insertBank(conn)) {
         } else if (updateBank(pc, conn)) {
             int oldBank = pc.getBank();
             int newBank = oldBank + Integer.parseInt(messageArgs[2]);
-            builder.setTitle(messageArgs[0] + "'s Bank Balance Updated");
+            builder.setTitle(StringUtils.capitalizeWords(messageArgs[0]) + "'s Bank Balance Updated");
             builder.setDescription("For \"" + messageArgs[1] + "\"");
             builder.addField("Old Balance", oldBank + "eb", true);
             builder.addBlankField(true);
@@ -76,7 +77,7 @@ public class BankCommand extends AbstractCommand {
 
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, newBalance);
-            stat.setInt(2, newDownTime);
+            stat.setInt(2, (newDownTime * 12) + pc.getDowntimeRemainder());
             stat.setString(3, messageArgs[0]);
             return stat.executeUpdate() == 1;
         }

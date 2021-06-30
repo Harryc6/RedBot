@@ -3,6 +3,7 @@ package com.nco.commands;
 import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
 import com.nco.utils.NumberUtils;
+import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -34,7 +35,7 @@ public class ImproveCommand extends AbstractCommand {
         int newIP = pc.getInfluencePoints() - NumberUtils.asPositive(messageArgs[2]);
         if (newIP < 0) {
             builder.setTitle("ERROR: Not Enough IP");
-            builder.setDescription(messageArgs[0] + " has only " + pc.getInfluencePoints() + " IP available " +
+            builder.setDescription(StringUtils.capitalizeWords(messageArgs[0]) + " has only " + pc.getInfluencePoints() + " IP available " +
                     "where " + NumberUtils.asPositive(messageArgs[2]) + " IP is being used.");
 //        } else if (updateImprove(newIP, conn) && insertImprove(conn)) {
         } else if (updateImprove(newIP, conn)) {
@@ -66,7 +67,7 @@ public class ImproveCommand extends AbstractCommand {
     }
 
     private void buildEmbeddedContent(PlayerCharacter pc, EmbedBuilder builder, int newIP) {
-        builder.setTitle(messageArgs[0] + "'s IP Updated");
+        builder.setTitle(StringUtils.capitalizeWords(messageArgs[0]) + "'s IP Updated");
         builder.setDescription("For \"" + messageArgs[1] + "\"");
         builder.addField("Old IP", String.valueOf(pc.getInfluencePoints()), true);
         builder.addBlankField(true);

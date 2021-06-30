@@ -4,6 +4,7 @@ import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
 import com.nco.utils.DBUtils;
 import com.nco.utils.NumberUtils;
+import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -44,11 +45,11 @@ public class HPCommand extends AbstractCommand {
             dtAmount = NumberUtils.asPositive(messageArgs[1]);
             int newHP = getNewHP(pc);
             newDT += dtAmount;
-            logger.info("PC : " + messageArgs[0] + "\nCurrent HP : " + pc.getCurrentHp() +
+            logger.info("PC : " + StringUtils.capitalizeWords(messageArgs[0]) + "\nCurrent HP : " + pc.getCurrentHp() +
                     "\nBody : " + pc.getBody() + "\nBonus : " + getBonuses(pc) +
                     "\n DT Used : " + dtAmount + "\nCombines to new HP of " + newHP);
 //            if (updateHP(conn, newHP, newDT) && insertHP(conn, pc, newHP, newDT)) {
-            if (updateHP(conn, newHP, newDT)) {
+            if (updateHP(conn, newHP, newDT, pc)) {
                 buildEmbed(builder, pc, newHP, newDT);
             } else {
                 builder.setTitle("ERROR: Install Update Or Insert Failure");
@@ -95,14 +96,14 @@ public class HPCommand extends AbstractCommand {
         return bonuses;
     }
 
-    private boolean updateHP(Connection conn, int newHP, int newDT) throws SQLException {
-        return updatePc(conn, newDT) && updateStats(conn, newHP);
+    private boolean updateHP(Connection conn, int newHP, int newDT, PlayerCharacter pc) throws SQLException {
+        return updatePc(conn, newDT, pc) && updateStats(conn, newHP);
     }
 
-    private boolean updatePc(Connection conn, int newDT) throws SQLException {
+    private boolean updatePc(Connection conn, int newDT, PlayerCharacter pc) throws SQLException {
         String sql = "UPDATE NCO_PC set downtime = ? Where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
-            stat.setInt(1, newDT);
+            stat.setInt(1, (newDT* 12) + pc.getDowntimeRemainder());
             stat.setString(2, messageArgs[0]);
             return stat.executeUpdate() == 1;
         }
@@ -134,7 +135,7 @@ public class HPCommand extends AbstractCommand {
     }
 
     private void buildEmbed(EmbedBuilder builder, PlayerCharacter pc, int newHP, int newDT) {
-        builder.setTitle(messageArgs[0] + "'s HP Restored");
+        builder.setTitle(StringUtils.capitalizeWords(messageArgs[0]) + "'s HP Restored");
         builder.setDescription("Used " + (NumberUtils.asPositive(messageArgs[1]) - dtAmount) + " DT ");
         builder.addField("Old HP", String.valueOf(pc.getCurrentHp()), true);
         builder.addBlankField(true);

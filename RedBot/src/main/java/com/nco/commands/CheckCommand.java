@@ -29,33 +29,30 @@ public class CheckCommand extends AbstractCommand {
 
     @Override
     protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
-        String characterName = pc.getCharacterName();
-        int currentHum = pc.getCurrentHumanity();
-
-        builder.setTitle(characterName);
+        builder.setTitle(pc.getCharacterDisplayName());
         builder.addField("Bank", String.valueOf(pc.getBank()), true);
         builder.addField("HP", pc.getCurrentHp() + "/" +
                 pc.getMaxHp(), true);
-        builder.addField("Humanity", currentHum + "/" +
+        builder.addField("Humanity", pc.getCurrentHumanity() + "/" +
                 pc.getMaxHumanity(), true);
 //        builder.addField("Monthly", pc.getPayDues(), true);
-        builder.addField("Down Time", String.valueOf(pc.getDowntime()), true);
+        builder.addField("Down Time", pc.getDowntimeToDisplay(), true);
         builder.addField("IP", String.valueOf(pc.getInfluencePoints()), true);
         builder.addField("Reputation", String.valueOf(pc.getReputation()), true);
         builder.addField("Weekly Games", String.valueOf(pc.getWeeklyGames()), true);
 
-        buildDescription(builder, currentHum, characterName, conn);
+        buildDescription(builder, pc.getCurrentHumanity(), conn);
     }
 
-    private void buildDescription(EmbedBuilder builder, int currentHum, String characterName, Connection conn) throws SQLException {
-        buildDescriptionForInjury(builder, characterName, conn);
+    private void buildDescription(EmbedBuilder builder, int currentHum, Connection conn) throws SQLException {
+        buildDescriptionForInjury(builder, conn);
         buildDescriptionForPsychosis(builder, currentHum);
     }
 
-    private static void buildDescriptionForInjury(EmbedBuilder builder, String characterName, Connection conn) throws SQLException {
+    private void buildDescriptionForInjury(EmbedBuilder builder, Connection conn) throws SQLException {
         String sql = "SELECT * FROM NCO_CRITICAL_INJURIES WHERE character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
-            stat.setString(1, characterName);
+            stat.setString(1, messageArgs[0]);
             try (ResultSet rs = stat.executeQuery()) {
                 boolean first = true;
                 while (rs.next()) {
@@ -70,7 +67,7 @@ public class CheckCommand extends AbstractCommand {
         }
     }
 
-    private static void buildDescriptionForPsychosis(EmbedBuilder builder, int currentHum) {
+    private void buildDescriptionForPsychosis(EmbedBuilder builder, int currentHum) {
         if (currentHum < 30) {
             if (!builder.getDescriptionBuilder().toString().isEmpty()) {
                 builder.appendDescription("\n");

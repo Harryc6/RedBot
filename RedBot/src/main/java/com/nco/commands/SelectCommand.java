@@ -33,7 +33,7 @@ public class SelectCommand extends AbstractCommand {
 
     @Override
     protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
-        builder.setTitle("Select of " + messageArgs[0]);
+        builder.setTitle("Select of " + StringUtils.capitalizeWords(messageArgs[0]));
 
         String sql = "Select * From NCO_PC where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
@@ -46,7 +46,7 @@ public class SelectCommand extends AbstractCommand {
                             channel.sendMessage(builder.build()).queue();
                             builder.clear();
                             builder.setColor(Color.red);
-                            builder.setTitle("Select of " + messageArgs[0] + " Continued");
+                            builder.setTitle("Select of " + StringUtils.capitalizeWords(messageArgs[0]) + " Continued");
                         }
                         builder.addField(rsmd.getColumnName(i), StringUtils.checkNull(rs.getString(i)), true);
                     }

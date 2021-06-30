@@ -2,6 +2,7 @@ package com.nco.commands;
 
 import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
+import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -37,7 +38,7 @@ public class MaxHumCommand extends AbstractCommand {
         int newMaxHum = oldMaxHum + (messageArgs[1].equalsIgnoreCase("cyberware") ? 2 : 4);
 //        if (updateMaxHum(newMaxHum, conn) && insertMaxHum(conn, oldMaxHum, newMaxHum)) {
         if (updateMaxHum(newMaxHum, conn)) {
-            builder.setTitle(messageArgs[0] + "'s MaxHumanity Updated");
+            builder.setTitle(StringUtils.capitalizeWords(messageArgs[0]) + "'s MaxHumanity Updated");
             builder.setDescription("Removed \"" + messageArgs[1] + "\"");
             builder.addField("Old MaxHumanity", String.valueOf(oldMaxHum), true);
             builder.addBlankField(true);

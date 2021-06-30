@@ -4,6 +4,7 @@ import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
 import com.nco.utils.NCOUtils;
 import com.nco.utils.NumberUtils;
+import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -63,7 +64,7 @@ public class FameCommand extends AbstractCommand {
     }
 
     private void buildEmbeddedContent(PlayerCharacter pc, EmbedBuilder builder, int newFame, int newReputation) {
-        builder.setTitle(messageArgs[0] + "'s Fame Updated");
+        builder.setTitle(StringUtils.capitalizeWords(messageArgs[0]) + "'s Fame Updated");
         builder.setDescription("For \"" + messageArgs[1] + "\"");
         builder.addField("Old Fame", String.valueOf(pc.getFame()), true);
         builder.addBlankField(true);

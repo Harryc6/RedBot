@@ -4,6 +4,7 @@ import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
 import com.nco.utils.NumberUtils;
 import com.nco.utils.RPGDice;
+import com.nco.utils.StringUtils;
 import com.nco.utils.tables.HustleRow;
 import com.nco.utils.tables.HustleTables;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -42,7 +43,7 @@ public class HustleCommand extends AbstractCommand {
         ArrayList<HustleRow> jobList = getJobList(pc, attempts);
         if (pc.getDowntime() < (attempts * 7)) {
             builder.setTitle("ERROR: Not Enough DT");
-            builder.setDescription(messageArgs[0] + " has " + pc.getDowntime() + " DT available where " +
+            builder.setDescription(StringUtils.capitalizeWords(messageArgs[0]) + " has " + pc.getDowntime() + " DT available where " +
                     (attempts * 7) + " DT is required for " + attempts + " attempts");
 //        } else if (updateHustle(conn, pc, jobList, attempts) && insertHustle(conn, pc, jobList, attempts)){
         } else if (updateHustle(conn, pc, jobList, attempts)){
@@ -57,7 +58,7 @@ public class HustleCommand extends AbstractCommand {
         String sql = "UPDATE NCO_PC set bank = ?, downtime = ? Where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, pc.getBank() + getTotalEarnings(jobList));
-            stat.setInt(2, pc.getDowntime() - (attempts * 7));
+            stat.setInt(2, ((pc.getDowntime() - (attempts * 7)) * 12) + pc.getDowntimeRemainder());
             stat.setString(3, messageArgs[0]);
             return stat.executeUpdate() == 1;
         }
@@ -86,7 +87,7 @@ public class HustleCommand extends AbstractCommand {
     }
 
     private void buildEmbeddedContent(PlayerCharacter pc, EmbedBuilder builder, int attempts, ArrayList<HustleRow> jobList) {
-        builder.setTitle(messageArgs[0] + "'s Hustle");
+        builder.setTitle(StringUtils.capitalizeWords(messageArgs[0]) + "'s Hustle");
         for (HustleRow row : jobList) {
             builder.addField(row.getJob(), getPayout(row) + "eb", false);
         }

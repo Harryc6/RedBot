@@ -4,6 +4,7 @@ import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
 import com.nco.utils.NumberUtils;
 import com.nco.utils.RPGDice;
+import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -50,7 +51,7 @@ public class InstallCommand extends AbstractCommand {
         int newBank = pc.getBank() - (isPaid() ? 0 : NumberUtils.asPositive(messageArgs[3]));
         if (!isPaid() && newBank < 0) {
                 builder.setTitle("ERROR: Not Enough Eurobucks");
-                builder.setDescription(messageArgs[0] + " has only " + pc.getBank() + "eb available " +
+                builder.setDescription(StringUtils.capitalizeWords(messageArgs[0]) + " has only " + pc.getBank() + "eb available " +
                         "where " + NumberUtils.asPositive(messageArgs[messageArgs.length - 1]) + "eb is being spent.");
 //        } else if (updateInstall(conn, newHumanity, newMaxHumanity, newBank) && insertInstall(valueRolled, conn)) {
         } else if (updateInstall(conn, newHumanity, newMaxHumanity, newBank)) {
@@ -99,7 +100,7 @@ public class InstallCommand extends AbstractCommand {
     }
 
     private void buildEmbeddedContent(PlayerCharacter pc, EmbedBuilder builder, int valueRolled, int newHumanity, int newMaxHumanity, int newBank) {
-        builder.setTitle(messageArgs[0] + "'s Installs Updated");
+        builder.setTitle(StringUtils.capitalizeWords(messageArgs[0]) + "'s Installs Updated");
         builder.setDescription("Installing \"" + messageArgs[1] + "\"");
 
         if (doesBankChange()) {
