@@ -1,6 +1,7 @@
 package com.nco;
 
 import com.nco.jobs.IncrementDownTimeJob;
+import com.nco.jobs.ResetWeeklyGamesJob;
 import com.nco.utils.ConfigVar;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.quartz.impl.StdSchedulerFactory;
 
 import static org.quartz.CronScheduleBuilder.dailyAtHourAndMinute;
+import static org.quartz.CronScheduleBuilder.weeklyOnDayAndHourAndMinute;
 import static org.quartz.JobBuilder.*;
 import static org.quartz.TriggerBuilder.*;
 
@@ -38,38 +40,39 @@ public class RedBot {
                     .setStatus(OnlineStatus.ONLINE)
                     .addEventListeners(new MessageListener())
                     .build();
-
             insertSlashCommands(jda);
             jda.awaitReady();
             Logger logger = LoggerFactory.getLogger(RedBot.class);
             logger.info("Finished Setting Up JDA For RedBot");
-
-
-
-
         } catch (LoginException | InterruptedException e) {
             e.printStackTrace();
         }
 
         try {
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
-
             // and start it off
             scheduler.start();
-
             // define the job and tie it to our HelloJob class
-            JobDetail job = newJob(IncrementDownTimeJob.class)
-                    .withIdentity("job1", "group1")
+            JobDetail incrementDownTime = newJob(IncrementDownTimeJob.class)
+                    .withIdentity("incrementDownTime", "group1")
+                    .build();
+            JobDetail resetWeeklyGames = newJob(ResetWeeklyGamesJob.class)
+                    .withIdentity("resetWeeklyGames", "group2")
                     .build();
 
             // Trigger the job to run now, and then repeat every 40 seconds
-            Trigger trigger = newTrigger()
-                    .withIdentity("trigger1", "group1")
-                    .startNow().withSchedule(dailyAtHourAndMinute(19, 0))
+            Trigger dailyTrigger = newTrigger()
+                    .withIdentity("daily", "group1")
+                    .startNow().withSchedule(dailyAtHourAndMinute(0, 0))
+                    .build();
+            Trigger weeklyTrigger = newTrigger()
+                    .withIdentity("weekly", "group2")
+                    .startNow().withSchedule(weeklyOnDayAndHourAndMinute(2,0,0))
                     .build();
 
             // Tell quartz to schedule the job using our trigger
-            scheduler.scheduleJob(job, trigger);
+            scheduler.scheduleJob(incrementDownTime, dailyTrigger);
+            scheduler.scheduleJob(resetWeeklyGames, weeklyTrigger);
 
 //            Thread.sleep(60000);
 //            scheduler.shutdown();
@@ -81,10 +84,8 @@ public class RedBot {
 
     private static void insertSlashCommands(JDA jda) {
         jda.updateCommands().addCommands(getCommandData()).queue();
-
     }
 
-    @NotNull
     private static List<CommandData> getCommandData() {
         List<CommandData> commandDataList = new ArrayList<>();
 
