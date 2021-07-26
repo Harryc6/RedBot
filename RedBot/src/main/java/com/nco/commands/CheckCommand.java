@@ -33,12 +33,16 @@ public class CheckCommand extends AbstractCommand {
         builder.addField("Bank", String.valueOf(pc.getBank()), true);
         builder.addField("HP", pc.getCurrentHp() + "/" +
                 pc.getMaxHp(), true);
+        builder.addField("SP H|B", pc.getHeadSp() + "|" +
+                pc.getBodySp(), true);
         builder.addField("Humanity", pc.getCurrentHumanity() + "/" +
                 pc.getMaxHumanity(), true);
-//        builder.addField("Monthly", pc.getPayDues(), true);
         builder.addField("Down Time", pc.getDowntimeToDisplay(), true);
-        builder.addField("IP", String.valueOf(pc.getInfluencePoints()), true);
         builder.addField("Reputation", String.valueOf(pc.getReputation()), true);
+        builder.addField("IP", String.valueOf(pc.getInfluencePoints()), true);
+//        builder.addField("Monthly", pc.getPayDues(), true);
+        builder.addField("Lifestyle", pc.getLifestyle(), true);
+        builder.addField("Rent", pc.getRent(), true);
         builder.addField("Weekly Games", String.valueOf(pc.getWeeklyGames()), true);
 
         buildDescription(builder, pc.getCurrentHumanity(), conn);
