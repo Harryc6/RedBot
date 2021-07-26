@@ -9,7 +9,7 @@ public class StringUtils {
         StringBuilder builtS = new StringBuilder();
         boolean isBetweenQuotationMarks = false;
         for (char c : s.toCharArray()) {
-            if (c == '"') {
+            if (c == '"' || c == '“' || c == '”') {
                 isBetweenQuotationMarks = !isBetweenQuotationMarks;
             }
             if (c == ' ' && !isBetweenQuotationMarks) {
