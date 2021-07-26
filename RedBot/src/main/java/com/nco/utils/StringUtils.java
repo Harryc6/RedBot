@@ -15,7 +15,7 @@ public class StringUtils {
             if (c == ' ' && !isBetweenQuotationMarks) {
                 c = '~';
             }
-            if (c != '"' && (c != '~' || builtS.charAt(builtS.length() - 1) != '~')) {
+            if (!(c == '"' || c == '“' || c == '”') && (c != '~' || builtS.charAt(builtS.length() - 1) != '~')) {
                 builtS.append(c);
             }
         }

@@ -107,7 +107,8 @@ public abstract class AbstractCommand {
             PlayerCharacter pc = new PlayerCharacter(conn, author.getAsTag(), false);
             EmbedBuilder builder = new EmbedBuilder();
             messageArgs = StringUtils.prefixArray(pc.getCharacterName(), messageArgs);
-            processCommand(conn, pc, builder);
+            String errorDesc = "No active character was found tied to the user " + author.getAsTag();
+            processCommand(conn, pc, builder, errorDesc);
         } catch (Exception e) {
             logErrorAndRespond(e);
         }
@@ -118,18 +119,19 @@ public abstract class AbstractCommand {
             messageArgs[0] = messageArgs[0].toLowerCase();
             PlayerCharacter pc = new PlayerCharacter(conn, messageArgs[0], true);
             EmbedBuilder builder = new EmbedBuilder();
-            processCommand(conn, pc, builder);
+            String errorDesc = "No active character was found called " + messageArgs[0];
+            processCommand(conn, pc, builder, errorDesc);
         } catch (Exception e) {
             logErrorAndRespond(e);
         }
     }
 
-    private void processCommand(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
+    private void processCommand(Connection conn, PlayerCharacter pc, EmbedBuilder builder, String errorDesc) throws SQLException {
         builder.setColor(Color.red);
         logCommandUse(conn);
         if (pc.getCharacterName() == null) {
             builder.setTitle("No Character Found");
-            builder.setDescription("No active character was found tied to the user " + author.getAsTag());
+            builder.setDescription(errorDesc);
         } else {
             processUpdateAndRespond(conn, pc, builder);
         }
