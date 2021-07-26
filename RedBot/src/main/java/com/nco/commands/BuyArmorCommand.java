@@ -20,7 +20,7 @@ public class BuyArmorCommand extends AbstractCommand {
 
     @Override
     protected boolean canProcessByUser() {
-        return ((messageArgs.length == 4 && isArmorLocation(1) && NumberUtils.isNumeric(messageArgs[0])) ||
+        return ((messageArgs.length == 4 && isArmorLocation(1) && NumberUtils.isNumeric(messageArgs[2])) ||
                 (messageArgs.length == 7 && NumberUtils.isNumeric(messageArgs[2]) && NumberUtils.isNumeric(messageArgs[5]) &&
                 ((isBody(1) && isHead(4)) || isHead(1) && isBody(4))))
                 && (doesBankChange() || isArmorPaid());
