@@ -2,24 +2,20 @@ package com.nco;
 
 import com.nco.jobs.IncrementDownTimeJob;
 import com.nco.jobs.ResetWeeklyGamesJob;
+import com.nco.jobs.StayAliveJob;
 import com.nco.utils.ConfigVar;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
-import org.jetbrains.annotations.NotNull;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.quartz.impl.StdSchedulerFactory;
 
-import static org.quartz.CronScheduleBuilder.dailyAtHourAndMinute;
-import static org.quartz.CronScheduleBuilder.weeklyOnDayAndHourAndMinute;
+import static org.quartz.CronScheduleBuilder.*;
 import static org.quartz.JobBuilder.*;
 import static org.quartz.TriggerBuilder.*;
 
@@ -54,25 +50,35 @@ public class RedBot {
             scheduler.start();
             // define the job and tie it to our HelloJob class
             JobDetail incrementDownTime = newJob(IncrementDownTimeJob.class)
-                    .withIdentity("incrementDownTime", "group1")
+                    .withIdentity("incrementDownTime")
                     .build();
+
             JobDetail resetWeeklyGames = newJob(ResetWeeklyGamesJob.class)
-                    .withIdentity("resetWeeklyGames", "group2")
+                    .withIdentity("resetWeeklyGames")
+                    .build();
+
+            JobDetail stayAlive = newJob(StayAliveJob.class)
+                    .withIdentity("stayAlive")
                     .build();
 
             // Trigger the job to run now, and then repeat every 40 seconds
             Trigger dailyTrigger = newTrigger()
-                    .withIdentity("daily", "group1")
+                    .withIdentity("daily")
                     .startNow().withSchedule(dailyAtHourAndMinute(0, 0))
                     .build();
             Trigger weeklyTrigger = newTrigger()
-                    .withIdentity("weekly", "group2")
+                    .withIdentity("weekly")
                     .startNow().withSchedule(weeklyOnDayAndHourAndMinute(2,0,0))
+                    .build();
+            Trigger quarterHourTrigger = newTrigger()
+                    .withIdentity("quarterHour")
+                    .startNow().withSchedule(cronSchedule("0 0/15 * * * ?"))
                     .build();
 
             // Tell quartz to schedule the job using our trigger
             scheduler.scheduleJob(incrementDownTime, dailyTrigger);
             scheduler.scheduleJob(resetWeeklyGames, weeklyTrigger);
+            scheduler.scheduleJob(stayAlive, quarterHourTrigger);
 
 //            Thread.sleep(60000);
 //            scheduler.shutdown();
@@ -149,10 +155,6 @@ public class RedBot {
                 .addOption(OptionType.STRING, "bonuses", "Bonuses to increase healing", false));
 
         commandDataList.add(new CommandData("select", "See db information on characters")
-                .addOption(OptionType.STRING, "pc-name", "Player characters Name", false));
-
-        commandDataList.add(new CommandData("timezone", "Update players time zone")
-                .addOption(OptionType.STRING, "timezone", "Enter UTC time zone", true)
                 .addOption(OptionType.STRING, "pc-name", "Player characters Name", false));
 
         commandDataList.add(new CommandData("trade", "Trade eddies between characters")
