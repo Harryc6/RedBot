@@ -158,12 +158,12 @@ public class RedBot {
                 .addOption(OptionType.STRING, "cyberware-or-borgware", "Are you removing cyberware or borgware", true)
                 .addOption(OptionType.STRING, "pc-name", "Player characters name", false));
 
-        commandDataList.add(new CommandData("update", "See db information on characters")
+        commandDataList.add(new CommandData("update", "Update db information of a characters")
                 .addOption(OptionType.STRING, "pc-name", "Player characters Name", true)
                 .addOption(OptionType.STRING, "column-name", "Column to update", true)
                 .addOption(OptionType.STRING, "column-value", "Value to update column with", true));
 
-        commandDataList.add(new CommandData("updatebodyhp", "See db information on characters")
+        commandDataList.add(new CommandData("updatebodyhp", "Manage a characters body & max HP")
                 .addOption(OptionType.INTEGER, "body", "New body value", true)
                 .addOption(OptionType.INTEGER, "hp", "New HP total", true)
                 .addOption(OptionType.STRING, "reason", "Reason for update", true)
