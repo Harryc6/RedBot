@@ -57,7 +57,11 @@ public abstract class AbstractCommand {
                 if (canProcessByUser()) {
                     processByUser();
                 } else if (canProcessByName()) {
-                    processByName();
+                    if (userHasPermissionToProcessByName()) {
+                        processByName();
+                    } else {
+                        invalidPermissions();
+                    }
                 } else {
                     returnHelp();
                 }
@@ -82,12 +86,12 @@ public abstract class AbstractCommand {
         }
     }
 
-    protected boolean findPlayerCharacter() {
-        return true;
-    }
-
     protected String getRoleRequiredForCommand() {
         return "";
+    }
+
+    protected boolean findPlayerCharacter() {
+        return true;
     }
 
     protected boolean canProcessByUser() {
@@ -96,6 +100,18 @@ public abstract class AbstractCommand {
 
     protected boolean canProcessByName() {
         return false;
+    }
+
+    private boolean userHasPermissionToProcessByName() {
+        if (getRoleRequiredForProcessByUser() == null || getRoleRequiredForProcessByUser().length == 0) {
+            return true;
+        } else {
+            return JDAUtils.hasRoleIn(member, getRoleRequiredForProcessByUser());
+        }
+    }
+
+    protected String[] getRoleRequiredForProcessByUser() {
+        return new String[]{"Tech-Support", "Referees", "Junior Referee"};
     }
 
     protected boolean canProcessWithoutPC() {
@@ -171,7 +187,6 @@ public abstract class AbstractCommand {
         }
     }
 
-    @NotNull
     private String getLoggingSQL() {
         StringBuilder sql =  new StringBuilder("INSERT INTO NCO_LOGGING (command, ");
         for (int i = 0; i < messageArgs.length; i++) {
@@ -207,7 +222,7 @@ public abstract class AbstractCommand {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(Color.red);
         builder.setTitle("Invalid Permissions");
-        builder.setDescription("You do not have the required role to use this command");
+        builder.setDescription("You do not have the required role to use this command or to specify a character with this command.");
         if (event == null) {
             channel.sendMessageEmbeds(builder.build()).queue();
         } else {

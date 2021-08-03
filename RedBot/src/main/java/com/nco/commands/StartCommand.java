@@ -32,6 +32,11 @@ public class StartCommand extends AbstractCommand {
     }
 
     @Override
+    protected String getRoleRequiredForCommand() {
+        return "Tech-Support";
+    }
+
+    @Override
     protected boolean findPlayerCharacter() {
         return false;
     }

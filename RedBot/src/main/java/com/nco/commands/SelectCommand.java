@@ -22,13 +22,8 @@ public class SelectCommand extends AbstractCommand {
     }
 
     @Override
-    protected boolean canProcessByUser() {
-        return messageArgs[0].isEmpty();
-    }
-
-    @Override
     protected boolean canProcessByName() {
-        return messageArgs.length == 1;
+        return messageArgs.length == 1 && !messageArgs[0].isEmpty();
     }
 
     @Override
@@ -65,6 +60,6 @@ public class SelectCommand extends AbstractCommand {
     @Override
     protected String getHelpDescription() {
         return "Please use the commands below to select the data directly from the NCO_PC table in the database. \n" + RedBot.PREFIX +
-                "select \"PC Name(Optional)\"";
+                "select \"PC Name\"";
     }
 }

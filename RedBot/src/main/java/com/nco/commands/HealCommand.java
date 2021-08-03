@@ -13,11 +13,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class HPCommand extends AbstractCommand {
+public class HealCommand extends AbstractCommand {
 
     int dtAmount;
 
-    public HPCommand(String[] messageArgs, Object event, boolean isSlash) {
+    public HealCommand(String[] messageArgs, Object event, boolean isSlash) {
         super(messageArgs, event, isSlash);
     }
 
@@ -60,10 +60,10 @@ public class HPCommand extends AbstractCommand {
 
     public int getNewHP(PlayerCharacter pc) {
         int newHP = pc.getCurrentHp();
-        int multiplier = messageArgs[2].toLowerCase().contains("cryotank") ? 2 : 1;
+        int multiplier = messageArgs.length == 3 && messageArgs[2].toLowerCase().contains("cryotank") ? 2 : 1;
         while (dtAmount > 0 && newHP < pc.getMaxHp()) {
             newHP += (pc.getBody() + getBonuses(pc)) * multiplier;
-            if (messageArgs[2].toLowerCase().contains("speedheal")) {
+            if (messageArgs.length == 3 && messageArgs[2].toLowerCase().contains("speedheal")) {
                 newHP += pc.getBody() + pc.getWillpower();
             }
             dtAmount--;
@@ -76,7 +76,7 @@ public class HPCommand extends AbstractCommand {
 
     private int getBonuses(PlayerCharacter pc) {
         int bonuses = 0;
-        if (messageArgs.length > 3) {
+        if (messageArgs.length == 3) {
             if (messageArgs[3].toLowerCase().contains("enhanced")) {
                 bonuses += pc.getBody();
             }
@@ -147,12 +147,12 @@ public class HPCommand extends AbstractCommand {
 
     @Override
     protected String getHelpTitle() {
-        return "Incorrect HP Formatting";
+        return "Incorrect Heal Formatting";
     }
 
     @Override
     protected String getHelpDescription() {
         return "Please use the commands below to heal a character \n" + RedBot.PREFIX +
-                "hp \"PC Name(Optional)\", “DT”, “Improvements”\n";
+                "heal \"PC Name(Optional)\", “DT”, “Improvements”\n";
     }
 }

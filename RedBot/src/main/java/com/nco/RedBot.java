@@ -2,7 +2,6 @@ package com.nco;
 
 import com.nco.jobs.IncrementDownTimeJob;
 import com.nco.jobs.ResetWeeklyGamesJob;
-import com.nco.jobs.StayAliveJob;
 import com.nco.utils.ConfigVar;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -57,10 +56,6 @@ public class RedBot {
                     .withIdentity("resetWeeklyGames")
                     .build();
 
-            JobDetail stayAlive = newJob(StayAliveJob.class)
-                    .withIdentity("stayAlive")
-                    .build();
-
             // Trigger the job to run now, and then repeat every 40 seconds
             Trigger dailyTrigger = newTrigger()
                     .withIdentity("daily")
@@ -78,7 +73,6 @@ public class RedBot {
             // Tell quartz to schedule the job using our trigger
             scheduler.scheduleJob(incrementDownTime, dailyTrigger);
             scheduler.scheduleJob(resetWeeklyGames, weeklyTrigger);
-            scheduler.scheduleJob(stayAlive, quarterHourTrigger);
 
 //            Thread.sleep(60000);
 //            scheduler.shutdown();
@@ -116,14 +110,10 @@ public class RedBot {
                 .addOption(OptionType.INTEGER, "amount", "Increase in fame", true)
                 .addOption(OptionType.STRING, "pc-name", "Player characters name", false));
 
-        commandDataList.add(new CommandData("hp", "Heal a character")
+        commandDataList.add(new CommandData("heal", "Heal a character")
                 .addOption(OptionType.INTEGER, "dt", "Downtime used", true)
                 .addOption(OptionType.STRING, "pc-name", "Player characters name", false)
                 .addOption(OptionType.STRING, "bonuses", "Bonuses to increase healing", false));
-
-        commandDataList.add(new CommandData("hum", "Give a character therapy")
-                .addOption(OptionType.STRING, "therapy-type", "Pro Standard or Pro Extreme", true)
-                .addOption(OptionType.STRING, "pc-name", "Player characters name", false));
 
         commandDataList.add(new CommandData("hustle", "Hustle to earn eddies on with down time")
                 .addOption(OptionType.INTEGER, "role-level", "Characters role level", true)
@@ -144,18 +134,18 @@ public class RedBot {
                 .addOption(OptionType.STRING, "cyberware-or-borgware", "Is the product cyberware or borgware", true)
                 .addOption(OptionType.STRING, "pc-name", "Player characters name", false));
 
-        commandDataList.add(new CommandData("maxhum", "Restore max humanity when removing cyberware")
-                .addOption(OptionType.STRING, "cyberware-or-borgware", "Are you removing cyberware or borgware", true)
-                .addOption(OptionType.STRING, "pc-name", "Player characters name", false));
-
-        commandDataList.add(new CommandData("nanohp", "Heal a character & their armor")
+        commandDataList.add(new CommandData("nanoheal", "Heal a character & their armor")
                 .addOption(OptionType.INTEGER, "dt", "Downtime used", true)
                 .addOption(OptionType.INTEGER, "max-sp", "Maximum SP of characters armour", true)
                 .addOption(OptionType.STRING, "pc-name", "Player characters name", false)
                 .addOption(OptionType.STRING, "bonuses", "Bonuses to increase healing", false));
 
         commandDataList.add(new CommandData("select", "See db information on characters")
-                .addOption(OptionType.STRING, "pc-name", "Player characters Name", false));
+                .addOption(OptionType.STRING, "pc-name", "Player characters Name", true));
+
+        commandDataList.add(new CommandData("therapy", "Give a character therapy")
+                .addOption(OptionType.STRING, "therapy-type", "Pro Standard or Pro Extreme", true)
+                .addOption(OptionType.STRING, "pc-name", "Player characters name", false));
 
         commandDataList.add(new CommandData("trade", "Trade eddies between characters")
                 .addOption(OptionType.STRING, "sender", "Character sending eddies", true)
@@ -163,6 +153,10 @@ public class RedBot {
                 .addOption(OptionType.INTEGER, "amount", "Amount of eddied traded", true)
                 .addOption(OptionType.STRING, "recipient", "Character receiving eddies", true)
                 .addOption(OptionType.INTEGER, "dt", "DT spent for trade", false));
+
+        commandDataList.add(new CommandData("uninstall", "Restore max humanity when removing cyberware")
+                .addOption(OptionType.STRING, "cyberware-or-borgware", "Are you removing cyberware or borgware", true)
+                .addOption(OptionType.STRING, "pc-name", "Player characters name", false));
 
         commandDataList.add(new CommandData("update", "See db information on characters")
                 .addOption(OptionType.STRING, "pc-name", "Player characters Name", true)
@@ -174,6 +168,7 @@ public class RedBot {
                 .addOption(OptionType.INTEGER, "hp", "New HP total", true)
                 .addOption(OptionType.STRING, "reason", "Reason for update", true)
                 .addOption(OptionType.STRING, "pc-name", "Player characters Name", false));
+
         return commandDataList;
     }
 

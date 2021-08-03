@@ -21,4 +21,12 @@ public class JDAUtils {
                 .anyMatch(role -> role.getName().equalsIgnoreCase(roleName));
     }
 
+    public static boolean hasRoleIn(Member member, String[] roles) {
+        for (String role: roles) {
+            if (hasRole(member, role)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -12,9 +12,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class HumCommand extends AbstractCommand {
+public class TherapyCommand extends AbstractCommand {
 
-    public HumCommand(String[] messageArgs, Object event, boolean isSlash) {
+    public TherapyCommand(String[] messageArgs, Object event, boolean isSlash) {
         super(messageArgs, event, isSlash);
     }
 
@@ -108,7 +108,7 @@ public class HumCommand extends AbstractCommand {
     private void buildEmbed(EmbedBuilder builder, PlayerCharacter pc, String humSelect, int humRoll, int newHum,
                             int newBank, int newDT) {
         builder.setTitle(StringUtils.capitalizeWords(messageArgs[0]) + "'s Humanity Restored");
-        builder.setDescription("Rolled a " + humSelect + " for " + humRoll + "");
+        builder.setDescription("Rolled " + humSelect + " for " + humRoll + "");
         builder.addField("Old Humanity", String.valueOf(pc.getCurrentHumanity()), true);
         builder.addBlankField(true);
         builder.addField("New Humanity", String.valueOf(newHum), true);
@@ -122,13 +122,13 @@ public class HumCommand extends AbstractCommand {
 
     @Override
     protected String getHelpTitle() {
-        return "Incorrect Update Humanity Formatting";
+        return "Incorrect Therapy Formatting";
     }
 
     @Override
     protected String getHelpDescription() {
-        return "Please use the commands below to add Humanity onto a characters \n" + RedBot.PREFIX +
-                "hum \"PC Name(Optional)\" “Pro Standard” or “Pro Extreme”\n";
+        return "Please use the commands below to give therapy to a characters \n" + RedBot.PREFIX +
+                "therapy \"PC Name(Optional)\" “Pro Standard” or “Pro Extreme”\n";
     }
 }
 

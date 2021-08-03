@@ -33,8 +33,7 @@ public class FameCommand extends AbstractCommand {
     protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
         int newFame = pc.getFame() + NumberUtils.asPositive(messageArgs[2]);
         int newReputation = NCOUtils.getReputationFromFame(newFame);
-//        if (updateFame(newFame, newReputation, conn) && insertFame(conn)) {
-        if (updateFame(newFame, newReputation, conn)) {
+        if (updateFame(newFame, newReputation, conn) && insertFame(conn)) {
             buildEmbeddedContent(pc, builder, newFame, newReputation);
         } else {
             builder.setTitle("ERROR: Fame Update Or Insert Failure");

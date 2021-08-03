@@ -33,7 +33,7 @@ public class CheckCommand extends AbstractCommand {
         builder.addField("Bank", String.valueOf(pc.getBank()), true);
         builder.addField("HP", pc.getCurrentHp() + "/" +
                 pc.getMaxHp(), true);
-        builder.addField("SP H|B", pc.getHeadSp() + "|" +
+        builder.addField("SP H | B", pc.getHeadSp() + " | " +
                 pc.getBodySp(), true);
         builder.addField("Humanity", pc.getCurrentHumanity() + "/" +
                 pc.getMaxHumanity(), true);

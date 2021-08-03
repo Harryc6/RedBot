@@ -12,11 +12,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class NanoHPCommand extends AbstractCommand {
+public class NanoHealCommand extends AbstractCommand {
 
     int dtAmount;
 
-    public NanoHPCommand(String[] messageArgs, Object event, boolean isSlash) {
+    public NanoHealCommand(String[] messageArgs, Object event, boolean isSlash) {
         super(messageArgs, event, isSlash);
     }
 
@@ -49,11 +49,11 @@ public class NanoHPCommand extends AbstractCommand {
             int[] hpAndArmor = getNewHPAndArmor(pc);
             newDT += dtAmount;
 
-            logger.info("PC : " + messageArgs[0] + "\nCurrent HP : " + pc.getCurrentHp() +
-                    "\nBody : " + pc.getBody() + "\nBonus : " + getBonuses(pc) +
-                    "\nArmorBonus : " + getArmorBonuses(pc) + "\n Current Head Armor : " + pc.getBodySp() +
-                    "\n Current Body Armor : " + pc.getHeadSp() +
-                    "\n New HeadSP : " + hpAndArmor[1] + " New BodySP : " + hpAndArmor[2] + " New HP : " + hpAndArmor[0] );
+//            logger.info("PC : " + messageArgs[0] + "\nCurrent HP : " + pc.getCurrentHp() +
+//                    "\nBody : " + pc.getBody() + "\nBonus : " + getBonuses(pc) +
+//                    "\nArmorBonus : " + getArmorBonuses(pc) + "\n Current Head Armor : " + pc.getBodySp() +
+//                    "\n Current Body Armor : " + pc.getHeadSp() +
+//                    "\n New HeadSP : " + hpAndArmor[1] + " New BodySP : " + hpAndArmor[2] + " New HP : " + hpAndArmor[0] );
 
 //            if (updateNanoHP(conn, hpAndArmor, newDT) && insertNanoHP(conn, pc, hpAndArmor, newDT)) {
             if (updateNanoHP(conn, hpAndArmor, newDT, pc)) {
@@ -69,11 +69,11 @@ public class NanoHPCommand extends AbstractCommand {
         int newHP = pc.getCurrentHp();
         int newHeadSP = pc.getHeadSp();
         int newBodySP = pc.getBodySp();
-        int multiplier = messageArgs[2].toLowerCase().contains("cryotank") ? 2 : 1;
+        int multiplier = messageArgs.length == 4 && messageArgs[3].toLowerCase().contains("cryotank") ? 2 : 1;
         while (dtAmount > 0 && (newBodySP < Integer.parseInt(messageArgs[2]) || newHeadSP < Integer.parseInt(messageArgs[2])
                 || newHP < pc.getMaxHp())) {
             newHP += (pc.getBody() + getBonuses(pc)) * multiplier;
-            if (messageArgs[2].toLowerCase().contains("speedheal")) {
+            if (messageArgs.length == 4 && messageArgs[2].toLowerCase().contains("speedheal")) {
                 newHP += pc.getBody() + pc.getWillpower();
             }
             newBodySP += 1 + getArmorBonuses(pc);
@@ -94,7 +94,7 @@ public class NanoHPCommand extends AbstractCommand {
 
     private int getBonuses(PlayerCharacter pc) {
         int bonuses = 0;
-        if (messageArgs.length > 3) {
+        if (messageArgs.length == 4) {
             if (messageArgs[3].toLowerCase().contains("enhanced")) {
                 bonuses += pc.getBody();
             }
@@ -178,17 +178,14 @@ public class NanoHPCommand extends AbstractCommand {
     }
 
     private void buildEmbed(EmbedBuilder builder, PlayerCharacter pc, int newDT, int[] hpAndArmor) {
-        builder.setTitle(messageArgs[0] + "'s HP and/or Armor Restored");
+        builder.setTitle(pc.getCharacterDisplayName() + "'s HP and Armor Restored");
         builder.setDescription("Used " + (NumberUtils.asPositive(messageArgs[1]) - dtAmount) + " DT ");
         builder.addField("Old HP", String.valueOf(pc.getCurrentHp()), true);
         builder.addBlankField(true);
         builder.addField("New HP", String.valueOf(hpAndArmor[0]), true);
-        builder.addField("Old Head SP", String.valueOf(pc.getHeadSp()), true);
+        builder.addField("Old SP H | B", pc.getHeadSp() + " | " + pc.getBodySp(), true);
         builder.addBlankField(true);
-        builder.addField("New Head SP", String.valueOf(hpAndArmor[1]), true);
-        builder.addField("Old Body SP", String.valueOf(pc.getBodySp()), true);
-        builder.addBlankField(true);
-        builder.addField("New Body SP", String.valueOf(hpAndArmor[2]), true);
+        builder.addField("New SP H | B", hpAndArmor[1] + " | " + hpAndArmor[2], true);
         builder.addField("Old Downtime", String.valueOf(pc.getDowntime()), true);
         builder.addBlankField(true);
         builder.addField("New Downtime", String.valueOf(newDT), true);
@@ -196,12 +193,12 @@ public class NanoHPCommand extends AbstractCommand {
 
     @Override
     protected String getHelpTitle() {
-        return "Incorrect nanoHP Formatting";
+        return "Incorrect NanoHeal Formatting";
     }
 
     @Override
     protected String getHelpDescription() {
         return "Please use the commands below to heal and restore SP when using Subdermal Armour or Skin Weave \n" +
-                RedBot.PREFIX + "nanohp \"PC Name(Optional)\" “DT” ”Max Head & Body SP” “Improvements(Optional)”\n";
+                RedBot.PREFIX + "nanoheal \"PC Name(Optional)\" “DT” ”Max Head & Body SP” “Improvements(Optional)”\n";
     }
 }

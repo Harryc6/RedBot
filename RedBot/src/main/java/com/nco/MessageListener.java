@@ -60,11 +60,8 @@ public class MessageListener extends ListenerAdapter {
                 break;
             case HOSPITAL:
                 break;
-            case HP:
-                new HPCommand(messageArgs, event, isSlash);
-                break;
-            case HUM:
-                new HumCommand(messageArgs, event, isSlash);
+            case HEAL:
+                new HealCommand(messageArgs, event, isSlash);
                 break;
             case HUSTLE:
                 new HustleCommand(messageArgs, event, isSlash);
@@ -80,17 +77,14 @@ public class MessageListener extends ListenerAdapter {
                 break;
             case LIFESTYLE:
                 break;
-            case MAXHUM:
-                new MaxHumCommand(messageArgs, event, isSlash);
-                break;
             case MEDTECH:
                 break;
             case MONTHLY:
                 break;
             case MOTO:
                 break;
-            case NANOHP:
-                new NanoHPCommand(messageArgs, event, isSlash);
+            case NANOHEAL:
+                new NanoHealCommand(messageArgs, event, isSlash);
                 break;
             case PROPERTY:
                 break;
@@ -106,6 +100,9 @@ public class MessageListener extends ListenerAdapter {
                 break;
             case TECHIE:
                 break;
+            case THERAPY:
+                new TherapyCommand(messageArgs, event, isSlash);
+                break;
             case TRADE:
                 new TradeCommand(messageArgs, event, isSlash);
                 break;
@@ -113,6 +110,9 @@ public class MessageListener extends ListenerAdapter {
                 break;
             case UPDATE:
                 new UpdateCommand(messageArgs, event, isSlash);
+                break;
+            case UNINSTALL:
+                new UninstallCommand(messageArgs, event, isSlash);
                 break;
             case UNKNOWN:
 //                event.getChannel().sendMessage(event.getName() + " Is An Unrecognised Command").queue();
@@ -162,14 +162,10 @@ public class MessageListener extends ListenerAdapter {
                 break;
             case HOSPITAL:
                 break;
-            case HP:
+            case HEAL:
                 addOptionIfFound(options, argsList, "pc-name");
                 addOptionIfFound(options, argsList, "dt");
                 addOptionIfFound(options, argsList, "bonuses");
-                return listNull(argsList);
-            case HUM:
-                addOptionIfFound(options, argsList, "pc-name");
-                addOptionIfFound(options, argsList, "therapy-type");
                 return listNull(argsList);
             case HUSTLE:
                 addOptionIfFound(options, argsList, "pc-name");
@@ -192,17 +188,13 @@ public class MessageListener extends ListenerAdapter {
                 return listNull(argsList);
             case LIFESTYLE:
                 break;
-            case MAXHUM:
-                addOptionIfFound(options, argsList, "pc-name");
-                addOptionIfFound(options, argsList, "cyberware-or-borgware");
-                return listNull(argsList);
             case MEDTECH:
                 break;
             case MONTHLY:
                 break;
             case MOTO:
                 break;
-            case NANOHP:
+            case NANOHEAL:
                 addOptionIfFound(options, argsList, "pc-name");
                 addOptionIfFound(options, argsList, "dt");
                 addOptionIfFound(options, argsList, "max-sp");
@@ -222,6 +214,10 @@ public class MessageListener extends ListenerAdapter {
                 break;
             case TECHIE:
                 break;
+            case THERAPY:
+                addOptionIfFound(options, argsList, "pc-name");
+                addOptionIfFound(options, argsList, "therapy-type");
+                return listNull(argsList);
             case TRADE:
                 addOptionIfFound(options, argsList, "sender");
                 addOptionIfFound(options, argsList, "reason");
@@ -235,6 +231,10 @@ public class MessageListener extends ListenerAdapter {
                 addOptionIfFound(options, argsList, "pc-name");
                 addOptionIfFound(options, argsList, "column-name");
                 addOptionIfFound(options, argsList, "column-value");
+                return listNull(argsList);
+            case UNINSTALL:
+                addOptionIfFound(options, argsList, "pc-name");
+                addOptionIfFound(options, argsList, "cyberware-or-borgware");
                 return listNull(argsList);
             case UNKNOWN:
                 return new String[] {""};

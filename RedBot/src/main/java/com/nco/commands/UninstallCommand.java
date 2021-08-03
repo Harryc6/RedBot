@@ -11,9 +11,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class MaxHumCommand extends AbstractCommand {
+public class UninstallCommand extends AbstractCommand {
 
-    public MaxHumCommand(String[] messageArgs, Object event, boolean isSlash) {
+    public UninstallCommand(String[] messageArgs, Object event, boolean isSlash) {
         super(messageArgs, event, isSlash);
     }
 
@@ -34,17 +34,18 @@ public class MaxHumCommand extends AbstractCommand {
 
     @Override
     protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
-        int oldMaxHum = pc.getMaxHumanity();
-        int newMaxHum = oldMaxHum + (messageArgs[1].equalsIgnoreCase("cyberware") ? 2 : 4);
+        int newMaxHum = pc.getMaxHumanity() + (messageArgs[1].equalsIgnoreCase("cyberware") ? 2 : 4);
+        if (newMaxHum > pc.getMaxEmpathy() * 10) {
+            newMaxHum = pc.getMaxEmpathy() * 10;
+        }
 //        if (updateMaxHum(newMaxHum, conn) && insertMaxHum(conn, oldMaxHum, newMaxHum)) {
         if (updateMaxHum(newMaxHum, conn)) {
-            builder.setTitle(StringUtils.capitalizeWords(messageArgs[0]) + "'s MaxHumanity Updated");
-            builder.setDescription("Removed \"" + messageArgs[1] + "\"");
-            builder.addField("Old MaxHumanity", String.valueOf(oldMaxHum), true);
+            builder.setTitle(StringUtils.capitalizeWords(messageArgs[0]) + " Uninstalled " + StringUtils.capitalizeWords(messageArgs[1]));
+            builder.addField("Old Max Humanity", String.valueOf(pc.getMaxHumanity()), true);
             builder.addBlankField(true);
-            builder.addField("New MaxHumanity", String.valueOf(newMaxHum), true);
+            builder.addField("New Max Humanity", String.valueOf(newMaxHum), true);
         } else {
-            builder.setTitle("ERROR: MaxHum Update Or Insert Failure");
+            builder.setTitle("ERROR: Uninstall Update Failure");
             builder.setDescription("Please contact an administrator to get this resolved");
         }
     }
@@ -73,12 +74,12 @@ public class MaxHumCommand extends AbstractCommand {
 
     @Override
     protected String getHelpTitle() {
-        return "Incorrect Update Humanity Formatting";
+        return "Incorrect Uninstall Formatting";
     }
 
     @Override
     protected String getHelpDescription() {
-        return "Please use the commands below to add MaxHumanity onto a characters \n" + RedBot.PREFIX +
-                "maxhum \"PC Name(Optional)\" “cyberware” or “borgware”\n";
+        return "Please use the commands below to Uninstall cyberware from a characters \n" + RedBot.PREFIX +
+                "uninstall \"PC Name(Optional)\" “cyberware” or “borgware”\n";
     }
 }
