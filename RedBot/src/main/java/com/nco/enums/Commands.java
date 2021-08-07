@@ -6,6 +6,7 @@ public enum Commands {
     BUYARMOR,
     CHECK,
     COVERAGE,
+    CREATEGIG,
     FAME,
     FIXER,
     FIXERDEBT,

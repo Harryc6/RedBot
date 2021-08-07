@@ -153,6 +153,6 @@ public class HealCommand extends AbstractCommand {
     @Override
     protected String getHelpDescription() {
         return "Please use the commands below to heal a character \n" + RedBot.PREFIX +
-                "heal \"PC Name(Optional)\", “DT”, “Improvements”\n";
+                "heal \"PC Name(Optional)\", \"DT\", \"Improvements”\"";
     }
 }

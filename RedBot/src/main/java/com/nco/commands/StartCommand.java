@@ -32,8 +32,8 @@ public class StartCommand extends AbstractCommand {
     }
 
     @Override
-    protected String getRoleRequiredForCommand() {
-        return "Tech-Support";
+    protected String[] getRoleRequiredForCommand() {
+        return new String[]{"Tech-Support"};
     }
 
     @Override
@@ -87,7 +87,7 @@ public class StartCommand extends AbstractCommand {
             if (insertPc(conn, map) && insertStats(conn, map) && insertSkills(conn, attribs)) {
                 pc = new PlayerCharacter(conn, messageArgs[1].toLowerCase(), true);
                 builder.setTitle(pc.getCharacterDisplayName() +" Created");
-                Member pcMember = message.getGuild().getMemberByTag(pc.getDiscordName());
+                Member pcMember = guild.getMemberByTag(pc.getDiscordName());
                 builder.setDescription(pc.getCharacterDisplayName() + " is linked to " +
                         (pcMember != null ? pcMember.getAsMention() : pc.getDiscordName()));
             }

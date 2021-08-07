@@ -17,8 +17,8 @@ public class SelectCommand extends AbstractCommand {
     }
 
     @Override
-    protected String getRoleRequiredForCommand() {
-        return "Tech-Support";
+    protected String[] getRoleRequiredForCommand() {
+        return new String[]{"Tech-Support"};
     }
 
     @Override

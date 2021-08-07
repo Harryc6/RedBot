@@ -9,6 +9,9 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,9 +34,12 @@ public class RedBot {
     public static void main(String[] args) {
         try {
             JDA jda = JDABuilder.createDefault(ConfigVar.getDiscordToken())
+                    .setMemberCachePolicy(MemberCachePolicy.ALL)
                     .setActivity(Activity.playing("Cyberpunk Red"))
                     .setStatus(OnlineStatus.ONLINE)
+                    .setChunkingFilter(ChunkingFilter.ALL)
                     .addEventListeners(new MessageListener())
+                    .enableIntents(GatewayIntent.GUILD_MEMBERS)
                     .build();
             insertSlashCommands(jda);
             jda.awaitReady();
@@ -104,6 +110,10 @@ public class RedBot {
 
         commandDataList.add(new CommandData("check", "See information on characters")
                 .addOption(OptionType.STRING, "pc-name", "Player characters Name", false));
+
+        commandDataList.add(new CommandData("creategig", "Create a gig")
+                .addOption(OptionType.STRING, "gig-name", "Title of the gig", true)
+                .addOption(OptionType.STRING, "referee", "The referees discord tag", false));
 
         commandDataList.add(new CommandData("fame", "Add fame to a character")
                 .addOption(OptionType.STRING, "reason", "Reason for the fame increase", true)

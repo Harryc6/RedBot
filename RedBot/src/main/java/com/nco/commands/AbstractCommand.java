@@ -3,10 +3,7 @@ package com.nco.commands;
 import com.nco.pojos.PlayerCharacter;
 import com.nco.utils.*;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
@@ -23,30 +20,39 @@ import java.util.Arrays;
 
 public abstract class AbstractCommand {
 
-    SlashCommandEvent event;
+    private final boolean isSlash;
+    Guild guild;
+    private SlashCommandEvent event;
     Logger logger = LoggerFactory.getLogger(this.getClass());
     String[] messageArgs;
     User author;
     MessageChannel channel;
-    Member member;
+    private Member member;
     Message message;
 
     public AbstractCommand(String[] messageArgs, Object event, boolean isSlash) {
         this.messageArgs = messageArgs;
+        this.isSlash = isSlash;
         if (isSlash) {
             SlashCommandEvent slashEvent = (SlashCommandEvent) event;
             this.author = slashEvent.getUser();
             this.channel = slashEvent.getChannel();
             this.member = slashEvent.getMember();
+            this.guild = slashEvent.getGuild();
             this.event = slashEvent;
         } else {
             GuildMessageReceivedEvent guildEvent = (GuildMessageReceivedEvent) event;
             this.author = guildEvent.getAuthor();
             this.channel = guildEvent.getChannel();
             this.member = guildEvent.getMember();
+            this.guild = guildEvent.getGuild();
             this.message = guildEvent.getMessage();
         }
         process();
+    }
+
+    public boolean isSlashCommand() {
+        return isSlash;
     }
 
     private void process() {
@@ -79,15 +85,15 @@ public abstract class AbstractCommand {
     }
 
     private boolean userHasPermission() {
-        if (getRoleRequiredForCommand().isEmpty()) {
+        if (getRoleRequiredForCommand() == null || getRoleRequiredForCommand().length== 0) {
             return true;
         } else {
-            return JDAUtils.hasRole(member, getRoleRequiredForCommand());
+            return JDAUtils.hasRoleIn(member, getRoleRequiredForCommand());
         }
     }
 
-    protected String getRoleRequiredForCommand() {
-        return "";
+    protected String[] getRoleRequiredForCommand() {
+        return null;
     }
 
     protected boolean findPlayerCharacter() {
@@ -111,7 +117,7 @@ public abstract class AbstractCommand {
     }
 
     protected String[] getRoleRequiredForProcessByUser() {
-        return new String[]{"Tech-Support", "Referees", "Junior Referee"};
+        return new String[]{"Tech-Support", "Referees", "Junior Referees"};
     }
 
     protected boolean canProcessWithoutPC() {

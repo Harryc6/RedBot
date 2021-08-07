@@ -51,6 +51,9 @@ public class MessageListener extends ListenerAdapter {
                 break;
             case COVERAGE:
                 break;
+            case CREATEGIG:
+                new CreateGigCommand(messageArgs, event, isSlash);
+                break;
             case FAME:
                 new FameCommand(messageArgs, event, isSlash);
                 break;
@@ -151,6 +154,10 @@ public class MessageListener extends ListenerAdapter {
                 return listNull(argsList);
             case COVERAGE:
                 break;
+            case CREATEGIG:
+                addOptionIfFound(options, argsList, "referee");
+                addOptionIfFound(options, argsList, "gig-name");
+                return listNull(argsList);
             case FAME:
                 addOptionIfFound(options, argsList, "pc-name");
                 addOptionIfFound(options, argsList, "reason");
