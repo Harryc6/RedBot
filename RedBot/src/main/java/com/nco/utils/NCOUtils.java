@@ -9,7 +9,7 @@ public class NCOUtils {
 
     private static final String[] fashion = {"Bag Lady Chic", "Gang Colors", "Generic Chic", "Bohemian Folksy", "Leisurewear Comfort", "Nomad Leathers", "Asia Pop", "Urban Flash", "Businesswear", "High Fashion"};
     private static final int[] famePerReputation = {10, 25, 45, 70, 100, 135, 175, 220, 270, 335};
-    private static final String[] ranks = {"E-Sheep", "Poser", "Little Runner", "Gato", "Choomba", "Street Samurai", "Hardwired", "Silverhand", "Blackhand", "????????"};
+    private static final String[] ranks = {"E-Sheep", "Poser", "Little Runner", "Gato", "Choomba", "Street Samurai", "Hardwired", "Silverhand", "Blackhand", "Chrome Champion"};
     private static final int[] streetCredPerRank = {0, 12, 24, 36, 48, 60, 72, 84, 96, 108};
     private final static String[] UTCArray = { "UTC-12", "UTC-11", "UTC-10", "UTC-9:30", "UTC-9", "UTC-8", "UTC-7", "UTC-6", "UTC-5", "UTC-4", "UTC-3:30", "UTC-3", "UTC-2", "UTC-1", "UTC+0", "UTC+1", "UTC+2", "UTC+3", "UTC+3:30", "UTC+4", "UTC+4:30", "UTC+5", "UTC+5:30", "UTC+5:45", "UTC+6", "UTC+6:30", "UTC+7", "UTC+8", "UTC+8:45", "UTC+9", "UTC+9:30", "UTC+10", "UTC+10:30", "UTC+11", "UTC+12", "UTC+12:45", "UTC+13", "UTC+14" };
     private final static String[] roles = {"Rockerboy", "Solo", "Netrunner", "Tech", "Medtech", "Media", "Exec", "Lawman", "Fixer", "Nomad"};
