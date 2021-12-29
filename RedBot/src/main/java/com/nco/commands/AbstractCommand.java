@@ -171,7 +171,11 @@ public abstract class AbstractCommand {
             builder.setColor(Color.red);
             logCommandUse(conn);
             processUpdateAndRespond(conn, null, builder);
-            channel.sendMessageEmbeds(builder.build()).queue();
+            if (event == null) {
+                channel.sendMessageEmbeds(builder.build()).queue();
+            } else {
+                event.replyEmbeds(builder.build()).complete();
+            }
             builder.clear();
         } catch (Exception e) {
             logErrorAndRespond(e);
