@@ -148,7 +148,7 @@ public abstract class AbstractCommand {
         }
     }
 
-    private void processCommand(Connection conn, PlayerCharacter pc, EmbedBuilder builder, String errorDesc) throws SQLException {
+    private void processCommand(Connection conn, PlayerCharacter pc, EmbedBuilder builder, String errorDesc) throws Exception {
         builder.setColor(Color.red);
         logCommandUse(conn);
         if (pc.getCharacterName() == null) {
@@ -160,7 +160,7 @@ public abstract class AbstractCommand {
         if (event == null) {
             channel.sendMessageEmbeds(builder.build()).queue();
         } else {
-            event.replyEmbeds(builder.build()).queue();
+            event.replyEmbeds(builder.build()).complete();
         }
         builder.clear();
     }
@@ -204,7 +204,7 @@ public abstract class AbstractCommand {
         return sql.toString();
     }
 
-    protected abstract void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException;
+    protected abstract void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws Exception;
 
     private void returnHelp() {
         EmbedBuilder builder = new EmbedBuilder();
@@ -215,7 +215,7 @@ public abstract class AbstractCommand {
         if (event == null) {
             channel.sendMessageEmbeds(builder.build()).queue();
         } else {
-            event.replyEmbeds(builder.build()).queue();
+            event.replyEmbeds(builder.build()).complete();
         }
         builder.clear();
     }
@@ -232,7 +232,7 @@ public abstract class AbstractCommand {
         if (event == null) {
             channel.sendMessageEmbeds(builder.build()).queue();
         } else {
-            event.replyEmbeds(builder.build()).queue();
+            event.replyEmbeds(builder.build()).complete();
         }
         builder.clear();
     }

@@ -199,6 +199,6 @@ public class NanoHealCommand extends AbstractCommand {
     @Override
     protected String getHelpDescription() {
         return "Please use the commands below to heal and restore SP when using Subdermal Armour or Skin Weave \n" +
-                RedBot.PREFIX + "nanoheal \"PC Name(Optional)\" “DT” ”Max Head & Body SP” “Improvements(Optional)”\n";
+                RedBot.PREFIX + "nanoheal \"PC Name(Optional)\" \"DT\" \"Max Head & Body SP\" \"Improvements(Optional)\"";
     }
 }

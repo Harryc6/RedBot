@@ -38,7 +38,7 @@ public class SelectCommand extends AbstractCommand {
                 if (rs.next()) {
                     for (int i = 1; i < rsmd.getColumnCount(); i++) {
                         if (builder.getFields().size() >= 25) {
-                            channel.sendMessage(builder.build()).queue();
+                            channel.sendMessageEmbeds(builder.build()).queue();
                             builder.clear();
                             builder.setColor(Color.red);
                             builder.setTitle("Select of " + StringUtils.capitalizeWords(messageArgs[0]) + " Continued");

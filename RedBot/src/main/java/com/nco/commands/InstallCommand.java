@@ -122,7 +122,7 @@ public class InstallCommand extends AbstractCommand {
     @Override
     protected String getHelpDescription() {
         return "Please use the commands below to install a characters cyberware\n" + RedBot.PREFIX +
-                "install \"PC Name(Optional)\" \"Product\" \"Dice\" \"Amount\" or “Paid” “cyberware” or “borgware”\n";
+                "install \"PC Name(Optional)\" \"Product\" \"Dice\" \"Amount\" or \"Paid\" \"cyberware\" or “borgware”\n";
     }
 
 

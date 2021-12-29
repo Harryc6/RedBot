@@ -1,10 +1,9 @@
 package com.nco.utils;
 
-import jdk.nashorn.internal.runtime.regexp.joni.Regex;
+import com.nco.enums.Skills;
 
-import javax.annotation.RegEx;
 import java.util.Arrays;
-import java.util.Locale;
+import java.util.HashMap;
 
 public class NCOUtils {
 
@@ -71,5 +70,63 @@ public class NCOUtils {
 
     public static boolean validRole(String suppliedRole) {
         return Arrays.stream(roles).anyMatch(suppliedRole::equalsIgnoreCase);
+    }
+
+    public static HashMap<String, Integer> getHousing() {
+        HashMap<String, Integer> housing = new HashMap<>();
+        housing.put("Street Living", 0);
+        housing.put("Street Vehicle", 0);
+        housing.put("Cube Hotel", 500);
+        housing.put("Cargo Container", 1000);
+        housing.put("Studio Apt", 1500);
+        housing.put("Two Bedroom Apt", 2500);
+        housing.put("Corpo Conapt", 0);
+        housing.put("Upscale Conapt", 7500);
+        housing.put("Luxury Penthouse", 15000);
+        housing.put("Corpo House", 0);
+        housing.put("Corpo Mansion", 0);
+        housing.put("Starter Rent", 0);
+        housing.put("Motto Car", 0);
+        housing.put("BL RM Hotel", 250);
+        housing.put("BL RM Cargo", 500);
+        housing.put("BL RM Studio Apt", 750);
+        housing.put("RM Two Bed Apt", 1250);
+        housing.put("RM Upscale Conapt", 3570);
+        housing.put("RM Penthouse R 1/2", 7500);
+        housing.put("RM Penthouse R 1/3", 5000);
+        housing.put("RM Penthouse R 1/4", 3750);
+        housing.put("RM Penthouse R 1/5", 3000);
+        housing.put("NC RM Exec Conapt", 1);
+        housing.put("NC RM Exec House ", 1);
+        housing.put("NC RM Exec Mansion", 1);
+        housing.put("NC RM Cargo Con", 1);
+        housing.put("NC RM Studio Apt", 1);
+        housing.put("NC RM Two Bed Apt", 1);
+        housing.put("NC RM Conapt", 1);
+        housing.put("NC RM Penthouse", 1);
+        housing.put("NC RM House", 1);
+        housing.put("NC RM Mansion", 1);
+        housing.put("Owner Cargo Container", 0);
+        housing.put("Owner Studio Apt", 0);
+        housing.put("Owner Two Bed Apt", 0);
+        housing.put("Owner Upscale Conapt", 0);
+        housing.put("Owner Lux Pent", 0);
+        housing.put("Owner Lux House", 0);
+        housing.put("Owner Lux Mansion", 0);
+        return housing;
+    }
+
+    public static HashMap<String, Integer> getLifestyle() {
+        HashMap<String, Integer> lifestyle = new HashMap<>();
+        lifestyle.put("Kibble", 100);
+        lifestyle.put("Generic Prepak", 300);
+        lifestyle.put("Good Prepak", 600);
+        lifestyle.put("Fresh Food", 1500);
+        lifestyle.put("Starter Lifestyle", 0);
+        return lifestyle;
+    }
+
+    public static int getSkillLevelUpIP(Skills skill, int skillLevel) {
+        return (skillLevel + 1) * (20 * skill.difficulty);
     }
 }

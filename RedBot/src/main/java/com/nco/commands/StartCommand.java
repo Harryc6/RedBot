@@ -138,7 +138,7 @@ public class StartCommand extends AbstractCommand {
     }
 
     private String getPcSql() {
-        StringBuilder sb = new StringBuilder("INSERT INTO nco_pc (discord_name, character_name, role, creation_rank, rank, street_cred, bank, head_sp, body_sp, influence_points, reputation, fame, vault, created_by");
+        StringBuilder sb = new StringBuilder("INSERT INTO nco_pc (discord_name, character_name, role, creation_rank, rank, street_cred, bank, head_sp, body_sp, improvement_points, reputation, fame, vault, created_by");
         if (validMedtech()) {
             sb.append(", surgery, pharmaceuticals, cryosystem_operation)");
         } else if (validTech()) {
@@ -155,7 +155,6 @@ public class StartCommand extends AbstractCommand {
             sb.append(")");
         }
         return sb.toString();
-//        return "INSERT INTO nco_pc (discord_name, character_name, role, creation_rank, rank, street_cred, bank, head_sp, body_sp, influence_points, reputation, fame, vault, created_by) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     }
 
     private boolean insertStats(Connection conn, Map<String, Attribute> map) throws SQLException {

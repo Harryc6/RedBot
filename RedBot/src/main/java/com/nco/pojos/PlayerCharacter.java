@@ -5,11 +5,9 @@ import com.nco.enums.Skills;
 import com.nco.enums.Stats;
 import com.nco.utils.StringUtils;
 
-import java.awt.font.TextAttribute;
 import java.lang.reflect.Field;
 import java.sql.*;
 
-import java.text.AttributedString;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,13 +24,15 @@ public class PlayerCharacter {
     private int bank;
     private int headSp;
     private int bodySp;
-    private int influencePoints;
+    private int improvementPoints;
     private int reputation;
     private int fame;
     private String vault;
     private int downtime;
     private String lifestyle;
     private String rent;
+    private int monthlyDebt;
+    private int monthlyDue;
     private int gamesOverall;
     private int weeklyGames;
     private Date jobBanUntil;
@@ -257,8 +257,8 @@ public class PlayerCharacter {
         return bodySp;
     }
 
-    public int getInfluencePoints() {
-        return influencePoints;
+    public int getImprovementPoints() {
+        return improvementPoints;
     }
 
     public int getReputation() {
@@ -293,6 +293,19 @@ public class PlayerCharacter {
     public String getRent() {
         return rent;
     }
+
+    public int getMonthlyDebt() {
+        return monthlyDebt;
+    }
+
+    public int getMonthlyDue() {
+        return monthlyDue;
+    }
+
+    public int getGamesTillMonthlyDue() {
+        return getGamesOverall() - getMonthlyDue();
+    }
+
 
     public int getGamesOverall() {
         return gamesOverall;
@@ -402,7 +415,7 @@ public class PlayerCharacter {
         return maxHumanity;
     }
 
-    public int getaVTech() {
+    public int getAVTech() {
         return aVTech;
     }
 

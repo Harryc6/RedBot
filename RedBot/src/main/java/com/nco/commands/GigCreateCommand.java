@@ -10,9 +10,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
-public class CreateGigCommand extends AbstractCommand {
+public class GigCreateCommand extends AbstractCommand {
 
-    public CreateGigCommand(String[] messageArgs, Object event, boolean isSlash) {
+    public GigCreateCommand(String[] messageArgs, Object event, boolean isSlash) {
         super(messageArgs, event, isSlash);
     }
 
@@ -94,7 +94,7 @@ public class CreateGigCommand extends AbstractCommand {
     @Override
     protected String getHelpDescription() {
         return "Please use the commands below to create a gig in the system \n" + RedBot.PREFIX +
-                "creategig \"Referee's Discord Tag(Optional)\", \"Gig Name\"";
+                "gigcreate \"Referee's Discord Tag(Optional)\", \"Gig Name\"";
     }
 
 }

@@ -8,6 +8,8 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -51,15 +53,24 @@ public class MessageListener extends ListenerAdapter {
                 break;
             case COVERAGE:
                 break;
-            case CREATEGIG:
-                new CreateGigCommand(messageArgs, event, isSlash);
-                break;
             case FAME:
                 new FameCommand(messageArgs, event, isSlash);
                 break;
             case FIXER:
                 break;
             case FIXERDEBT:
+                break;
+            case GIGCREATE:
+                new GigCreateCommand(messageArgs, event, isSlash);
+                break;
+            case GIGCRIT:
+                new GigCritCommand(messageArgs, event, isSlash);
+                break;
+            case GIGEND:
+                new GigEndCommand(messageArgs, event, isSlash);
+                break;
+            case GIGLOG:
+                new GigLogCommand(messageArgs, event, isSlash);
                 break;
             case HOSPITAL:
                 break;
@@ -154,10 +165,6 @@ public class MessageListener extends ListenerAdapter {
                 return listNull(argsList);
             case COVERAGE:
                 break;
-            case CREATEGIG:
-                addOptionIfFound(options, argsList, "referee");
-                addOptionIfFound(options, argsList, "gig-name");
-                return listNull(argsList);
             case FAME:
                 addOptionIfFound(options, argsList, "pc-name");
                 addOptionIfFound(options, argsList, "reason");
@@ -167,6 +174,30 @@ public class MessageListener extends ListenerAdapter {
                 break;
             case FIXERDEBT:
                 break;
+            case GIGCREATE:
+                addOptionIfFound(options, argsList, "referee");
+                addOptionIfFound(options, argsList, "gig-name");
+                return listNull(argsList);
+            case GIGCRIT:
+                addOptionIfFound(options, argsList, "pc-name");
+                addOptionIfFound(options, argsList, "head-or-body");
+                addOptionIfFound(options, argsList, "rolled-value");
+            case GIGEND:
+                addOptionIfFound(options, argsList, "gig-id");
+                addOptionIfFound(options, argsList, "eddies");
+                addOptionIfFound(options, argsList, "ip");
+                return listNull(argsList);
+            case GIGLOG:
+                addOptionIfFound(options, argsList, "pc-name");
+                addOptionIfFound(options, argsList, "gig-id");
+                addOptionIfFound(options, argsList, "eddies");
+                addOptionIfFound(options, argsList, "ip");
+                addOptionIfFound(options, argsList, "current-hp");
+                addOptionIfFound(options, argsList, "head-sp");
+                addOptionIfFound(options, argsList, "body-sp");
+                addOptionIfFound(options, argsList, "fame");
+                addOptionIfFound(options, argsList, "fame-reason");
+                return listNull(argsList);
             case HOSPITAL:
                 break;
             case HEAL:
@@ -181,8 +212,11 @@ public class MessageListener extends ListenerAdapter {
                 return listNull(argsList);
             case IMPROVE:
                 addOptionIfFound(options, argsList, "pc-name");
-                addOptionIfFound(options, argsList, "skill-change");
-                addOptionIfFound(options, argsList, "ip-spent");
+                addOptionIfFound(options, argsList, "skill-a-to-d");
+                addOptionIfFound(options, argsList, "skill-e-to-m");
+                addOptionIfFound(options, argsList, "skill-p-to-s");
+                addOptionIfFound(options, argsList, "skill-t-to-z");
+                addOptionIfFound(options, argsList, "ip");
                 return listNull(argsList);
             case INFO:
                 return listNull(argsList);

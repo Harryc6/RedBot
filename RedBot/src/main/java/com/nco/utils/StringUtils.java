@@ -1,7 +1,10 @@
 package com.nco.utils;
 
+import com.mysql.cj.AppendingBatchVisitor;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 public class StringUtils {
 
@@ -61,7 +64,8 @@ public class StringUtils {
     }
 
     public static String camelToSnakeCase(String s) {
-        return s.replaceAll("([A-Z])", "_$1").toLowerCase();
+        s = s.trim();
+        return s.substring(0, 1).toLowerCase() + s.substring(1).replaceAll("([A-Z])", "_$1").toLowerCase();
     }
 
     public static String capitalSnakeToCamelCase(String s) {
@@ -69,6 +73,7 @@ public class StringUtils {
     }
 
     public static String snakeToCamelCase(String s) {
+        s = s.toLowerCase().trim();
         while (s.contains("_")) {
             s = s.replaceFirst("_[a-z]", String.valueOf(Character.toUpperCase(s.charAt(s.indexOf("_") + 1))));
         }
@@ -76,11 +81,54 @@ public class StringUtils {
     }
 
     public static String camelToFormal(String s) {
+        s = s.trim();
         return s.substring(0,1).toUpperCase() + s.substring(1).replaceAll("([A-Z])", " $1");
     }
 
+    public static String snakeToCapitalizedWords(String s) {
+        s = s.toLowerCase().trim();
+        return capitalizeWords(s.replace("_", " "));
+    }
+
+    public static String formalToCapitalizedCamelCase(String s) {
+        StringBuilder builder = new StringBuilder();
+        boolean shouldConvertNextCharToLower = false;
+        for (int i = 0; i < s.length(); i++) {
+            char currentChar = s.charAt(i);
+            if (currentChar == ' ') {
+                shouldConvertNextCharToLower = false;
+            } else if (shouldConvertNextCharToLower) {
+                builder.append(Character.toLowerCase(currentChar));
+            } else {
+                builder.append(Character.toUpperCase(currentChar));
+                shouldConvertNextCharToLower = true;
+            }
+        }
+        return builder.toString();
+    }
+
+    public static String formalToSnake(String s) {
+        return s.toLowerCase().replace(" ", "_");
+    }
+
+    public static String snakeToFormal(String s) {
+        StringBuilder builder = new StringBuilder();
+        boolean shouldConvertNextCharToLower = false;
+        for (int i = 0; i < s.length(); i++) {
+            char currentChar = s.charAt(i);
+            if (currentChar == '_') {
+                shouldConvertNextCharToLower = false;
+            } else if (shouldConvertNextCharToLower) {
+                builder.append(Character.toLowerCase(currentChar));
+            } else {
+                builder.append(Character.toUpperCase(currentChar));
+                shouldConvertNextCharToLower = true;
+            }
+        }
+        return builder.toString();    }
+
     public static String capitalizeWords(String s) {
-        char[] chars = s.toLowerCase().toCharArray();
+        char[] chars = s.toLowerCase().trim().toCharArray();
         boolean found = false;
         for (int i = 0; i < chars.length; i++) {
             if (!found && Character.isLetter(chars[i])) {

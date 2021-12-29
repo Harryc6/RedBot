@@ -1,13 +1,14 @@
 package com.nco.commands;
 
 import com.nco.RedBot;
+import com.nco.enums.Skills;
 import com.nco.pojos.PlayerCharacter;
+import com.nco.utils.NCOUtils;
 import com.nco.utils.NumberUtils;
 import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -31,23 +32,40 @@ public class ImproveCommand extends AbstractCommand {
 
 
     @Override
-    protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws SQLException {
-        int newIP = pc.getInfluencePoints() - NumberUtils.asPositive(messageArgs[2]);
-        if (newIP < 0) {
+    protected void processUpdateAndRespond(Connection conn, PlayerCharacter pc, EmbedBuilder builder) throws Exception {
+        int newIP = pc.getImprovementPoints() - NumberUtils.asPositive(messageArgs[2]);
+        Skills skill = StringUtils.getEnumFromString(Skills.class, StringUtils.formalToSnake(messageArgs[1]));
+        int skillLevel = getSkillLevel(pc, skill);
+        if (skill == null) {
+            builder.setTitle("ERROR: Skill Not Recognised");
+            builder.setDescription("Please contact an administrator to get this resolved");
+        } else if (NCOUtils.getSkillLevelUpIP(skill, skillLevel) != NumberUtils.asPositive(messageArgs[2])) {
+            builder.setTitle("ERROR: Incorrect IP To Upgrade Skill");
+            builder.setDescription(StringUtils.camelToFormal(skill.toString()) + " is at level " + skillLevel +
+                    " and requires " + NCOUtils.getSkillLevelUpIP(skill, skillLevel) + " IP move to level "
+                    + (skillLevel + 1) + ".");
+        } else if (newIP < 0) {
             builder.setTitle("ERROR: Not Enough IP");
-            builder.setDescription(StringUtils.capitalizeWords(messageArgs[0]) + " has only " + pc.getInfluencePoints() + " IP available " +
+            builder.setDescription(StringUtils.capitalizeWords(messageArgs[0]) + " has only " + pc.getImprovementPoints() + " IP available " +
                     "where " + NumberUtils.asPositive(messageArgs[2]) + " IP is being used.");
-//        } else if (updateImprove(newIP, conn) && insertImprove(conn)) {
-        } else if (updateImprove(newIP, conn)) {
-            buildEmbeddedContent(pc, builder, newIP);
+        } else if (updateImprove(newIP, conn) && updateSkill(skill, skillLevel, conn)) {
+            buildEmbeddedContent(pc, builder, newIP, skill, skillLevel);
         } else {
             builder.setTitle("ERROR: Improve Update Or Insert Failure");
             builder.setDescription("Please contact an administrator to get this resolved");
         }
     }
 
+    private int getSkillLevel(PlayerCharacter pc, Skills skill) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+         if (skill == null) {
+             return 0;
+         } else {
+             return (int) pc.getClass().getMethod("get" + StringUtils.capitalSnakeToCamelCase(skill.toString())).invoke(pc);
+         }
+    }
+
     private boolean updateImprove(int newIP, Connection conn) throws SQLException {
-        String sql = "UPDATE NCO_PC set influence_points = ? Where character_name = ?";
+        String sql = "UPDATE NCO_PC set improvement_points = ? where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, newIP);
             stat.setString(2, messageArgs[0]);
@@ -55,21 +73,21 @@ public class ImproveCommand extends AbstractCommand {
         }
     }
 
-    private boolean insertImprove(Connection conn) throws SQLException {
-        String sql  = "INSERT INTO NCO_IMPROVE (character_name, reason, influence_points, created_by) VALUES (?,?,?,?)";
+    private boolean updateSkill(Skills skill, int skillLevel, Connection conn) throws SQLException {
+        String sql = "UPDATE nco_pc_skills set " + skill.toString() + " = ? where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
-            stat.setString(1, messageArgs[0]);
-            stat.setString(2, messageArgs[1]);
-            stat.setInt(3, Integer.parseInt(messageArgs[2]));
-            stat.setString(4, author.getAsTag());
+            stat.setInt(1, skillLevel + 1);
+            stat.setString(2, messageArgs[0]);
             return stat.executeUpdate() == 1;
         }
     }
 
-    private void buildEmbeddedContent(PlayerCharacter pc, EmbedBuilder builder, int newIP) {
-        builder.setTitle(StringUtils.capitalizeWords(messageArgs[0]) + "'s IP Updated");
-        builder.setDescription("For \"" + messageArgs[1] + "\"");
-        builder.addField("Old IP", String.valueOf(pc.getInfluencePoints()), true);
+    private void buildEmbeddedContent(PlayerCharacter pc, EmbedBuilder builder, int newIP, Skills skill, int skillLevel) {
+        builder.setTitle(StringUtils.capitalizeWords(messageArgs[0]) + "'s Skills & IP Updated");
+        builder.addField("Old " + StringUtils.snakeToFormal(skill.toString()), String.valueOf(skillLevel), true);
+        builder.addBlankField(true);
+        builder.addField("New " + StringUtils.snakeToFormal(skill.toString()), String.valueOf(skillLevel + 1), true);
+        builder.addField("Old IP", String.valueOf(pc.getImprovementPoints()), true);
         builder.addBlankField(true);
         builder.addField("New IP", String.valueOf(newIP), true);
     }
@@ -82,7 +100,7 @@ public class ImproveCommand extends AbstractCommand {
     @Override
     protected String getHelpDescription() {
         return "Please use the commands below to improve a characters bank\n" + RedBot.PREFIX +
-                "improve \"PC Name(Optional)\" \"Skill Name, Current Skill Level, New Skill Level\" \"Amount\"";
+                "improve \"PC Name(Optional)\" \"Skill Name\" \"IP To Next Level\"";
     }
 
 }

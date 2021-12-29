@@ -128,7 +128,7 @@ public class TherapyCommand extends AbstractCommand {
     @Override
     protected String getHelpDescription() {
         return "Please use the commands below to give therapy to a characters \n" + RedBot.PREFIX +
-                "therapy \"PC Name(Optional)\" “Pro Standard” or “Pro Extreme”\n";
+                "therapy \"PC Name(Optional)\" \"Pro Standard\" or \"Pro Extreme\"";
     }
 }
 
