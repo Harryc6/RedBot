@@ -87,6 +87,7 @@ public class StartCommand extends AbstractCommand {
             if (insertPc(conn, map) && insertStats(conn, map) && insertSkills(conn, attribs)) {
                 pc = new PlayerCharacter(conn, messageArgs[1].toLowerCase(), true);
                 builder.setTitle(pc.getCharacterDisplayName() +" Created");
+                //todo add a support for not finding the the discord user
                 Member pcMember = guild.getMemberByTag(pc.getDiscordName());
                 builder.setDescription(pc.getCharacterDisplayName() + " is linked to " +
                         (pcMember != null ? pcMember.getAsMention() : pc.getDiscordName()));
@@ -111,6 +112,7 @@ public class StartCommand extends AbstractCommand {
             stat.setInt(7, NumberUtils.ParseNumber(checkNull(map.get("cash")).getCurrent()));
             stat.setInt(8, NumberUtils.checkNullOrEmpty(checkNull(map.get("headsp")).getCurrent()));
             stat.setInt(9, NumberUtils.checkNullOrEmpty(checkNull(map.get("bodysp")).getCurrent()));
+            //todo starting bonus eddies + ip depending on rank.
             stat.setInt(10, NumberUtils.ParseNumber(checkNull(map.get("ippoints")).getCurrent()));
             stat.setInt(11, reputation);
             stat.setInt(12, NCOUtils.getFameFromReputation(reputation));

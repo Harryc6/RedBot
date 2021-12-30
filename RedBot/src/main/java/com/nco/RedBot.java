@@ -14,7 +14,6 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
-import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -162,9 +161,6 @@ public class RedBot {
                 .addOption(OptionType.STRING, "pc-name", "Player characters name", false));
 
         commandDataList.add(new CommandData("improve", "Improve a characters skills")
-//                .addSubcommandGroups(getImproveSubcommandGroup()));
-//                .addOption(OptionType.INTEGER, "ip", "The IP cost to upgrade skill", true)
-//                .addOption(OptionType.STRING, "pc-name", "Player characters name", false));
                 .addSubcommands(getImproveSubcommand()));
 
         commandDataList.add(new CommandData("info", "Show Redbot info"));

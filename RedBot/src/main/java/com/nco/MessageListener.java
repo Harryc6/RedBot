@@ -73,6 +73,7 @@ public class MessageListener extends ListenerAdapter {
                 new GigLogCommand(messageArgs, event, isSlash);
                 break;
             case HOSPITAL:
+                //todo priority
                 break;
             case HEAL:
                 new HealCommand(messageArgs, event, isSlash);
@@ -94,6 +95,7 @@ public class MessageListener extends ListenerAdapter {
             case MEDTECH:
                 break;
             case MONTHLY:
+                //todo priority
                 break;
             case MOTO:
                 break;
@@ -103,6 +105,9 @@ public class MessageListener extends ListenerAdapter {
             case PROPERTY:
                 break;
             case RENT:
+                break;
+            case ROLL:
+                //todo gerneric roll command as filler for other incomplete commands.
                 break;
             case SELECT:
                 new SelectCommand(messageArgs, event, isSlash);
@@ -164,6 +169,7 @@ public class MessageListener extends ListenerAdapter {
                 addOptionIfFound(options, argsList, "pc-name");
                 return listNull(argsList);
             case COVERAGE:
+                //todo blame harlem
                 break;
             case FAME:
                 addOptionIfFound(options, argsList, "pc-name");
@@ -244,6 +250,8 @@ public class MessageListener extends ListenerAdapter {
             case PROPERTY:
                 break;
             case RENT:
+                break;
+            case ROLL:
                 break;
             case SELECT:
                 addOptionIfFound(options, argsList, "pc-name");

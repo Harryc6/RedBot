@@ -26,6 +26,7 @@ public enum Commands {
     NANOHEAL,
     PROPERTY,
     RENT,
+    ROLL,
     SELECT,
     START,
     TEAM,
