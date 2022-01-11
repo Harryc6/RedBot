@@ -48,7 +48,6 @@ public class HealCommand extends AbstractCommand {
             logger.info("PC : " + StringUtils.capitalizeWords(messageArgs[0]) + "\nCurrent HP : " + pc.getCurrentHp() +
                     "\nBody : " + pc.getBody() + "\nBonus : " + getBonuses(pc) +
                     "\n DT Used : " + dtAmount + "\nCombines to new HP of " + newHP);
-//            if (updateHP(conn, newHP, newDT) && insertHP(conn, pc, newHP, newDT)) {
             if (updateHP(conn, newHP, newDT, pc)) {
                 buildEmbed(builder, pc, newHP, newDT);
             } else {
@@ -77,10 +76,10 @@ public class HealCommand extends AbstractCommand {
     private int getBonuses(PlayerCharacter pc) {
         int bonuses = 0;
         if (messageArgs.length == 3) {
-            if (messageArgs[3].toLowerCase().contains("enhanced")) {
+            if (messageArgs[2].toLowerCase().contains("enhanced")) {
                 bonuses += pc.getBody();
             }
-            if (messageArgs[3].toLowerCase().contains("antibodies")) {
+            if (messageArgs[2].toLowerCase().contains("antibodies")) {
                 bonuses += 2;
             }
         }
