@@ -76,25 +76,11 @@ public class InstallCommand extends AbstractCommand {
     }
 
     private boolean updateStats(Connection conn, int newHumanity, int newMaxHumanity) throws SQLException {
-        String sql = "UPDATE nco_pc_stats set current_humanity = ?, max_humanity = ? Where character_name = ?";
+        String sql = "UPDATE nco_pc set current_humanity = ?, max_humanity = ? Where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, newHumanity);
             stat.setInt(2, newMaxHumanity);
             stat.setString(3, messageArgs[0]);
-            return stat.executeUpdate() == 1;
-        }
-    }
-
-    private boolean insertInstall(int valueRolled, Connection conn) throws SQLException {
-        String sql = "INSERT INTO NCO_INSTALL (character_name, product, dice, humanity_loss, amount, cyber_or_borg, created_by) VALUES (?,?,?,?,?,?,?)";
-        try (PreparedStatement stat = conn.prepareStatement(sql)) {
-            stat.setString(1, messageArgs[0]);
-            stat.setString(2, messageArgs[1]);
-            stat.setString(3, messageArgs[2]);
-            stat.setInt(4, valueRolled);
-            stat.setString(5, messageArgs[3]);
-            stat.setString(6, messageArgs[4]);
-            stat.setString(7, author.getAsTag());
             return stat.executeUpdate() == 1;
         }
     }

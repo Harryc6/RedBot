@@ -74,7 +74,7 @@ public class ImproveCommand extends AbstractCommand {
     }
 
     private boolean updateSkill(Skills skill, int skillLevel, Connection conn) throws SQLException {
-        String sql = "UPDATE nco_pc_skills set " + skill.toString() + " = ? where character_name = ?";
+        String sql = "UPDATE nco_pc set " + skill.toString() + " = ? where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, skillLevel + 1);
             stat.setString(2, messageArgs[0]);

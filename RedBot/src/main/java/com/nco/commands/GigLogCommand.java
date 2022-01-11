@@ -137,7 +137,7 @@ public class GigLogCommand extends AbstractCommand {
     }
 
     private boolean updateStats(Connection conn) throws SQLException {
-        String sql = "UPDATE nco_pc_stats set current_hp = ? Where character_name = ?";
+        String sql = "UPDATE nco_pc set current_hp = ? Where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, NumberUtils.ParseNumber(messageArgs[4]));
             stat.setString(2, messageArgs[0]);

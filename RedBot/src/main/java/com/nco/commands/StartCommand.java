@@ -10,6 +10,7 @@ import com.nco.utils.tables.Attribute;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.User;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -23,6 +24,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 public class StartCommand extends AbstractCommand {
@@ -88,7 +90,11 @@ public class StartCommand extends AbstractCommand {
                 pc = new PlayerCharacter(conn, messageArgs[1].toLowerCase(), true);
                 builder.setTitle(pc.getCharacterDisplayName() +" Created");
                 //todo add a support for not finding the the discord user
-                Member pcMember = guild.getMemberByTag(pc.getDiscordName());
+                Matcher matcher = User.USER_TAG.matcher(pc.getDiscordName());
+                Member pcMember = null;
+                if (matcher.matches()) {
+                    pcMember = guild.getMemberByTag(pc.getDiscordName());
+                }
                 builder.setDescription(pc.getCharacterDisplayName() + " is linked to " +
                         (pcMember != null ? pcMember.getAsMention() : pc.getDiscordName()));
             }
@@ -160,28 +166,27 @@ public class StartCommand extends AbstractCommand {
     }
 
     private boolean insertStats(Connection conn, Map<String, Attribute> map) throws SQLException {
-        String sql = "INSERT INTO nco_pc_stats (character_name, intelligence, reflexes, dexterity, technique, cool, " +
-                "willpower, luck, usable_luck, movement, body, current_empathy, max_empathy, current_hp, max_hp, " +
-                "current_humanity, max_humanity, created_by) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "UPDATE nco_pc SET intelligence = ?, reflexes = ?, dexterity = ?, technique = ?, cool = ?, " +
+                "willpower = ?, luck = ?, usable_luck = ?, movement = ?, body = ?, current_empathy = ?, max_empathy = ?," +
+                " current_hp = ?, max_hp = ?, current_humanity = ?, max_humanity = ? where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
-            stat.setString(1, messageArgs[1].toLowerCase());
-            stat.setInt(2, Integer.parseInt(checkNull(map.get("intelligence")).getCurrent()));
-            stat.setInt(3, Integer.parseInt(checkNull(map.get("reflex")).getCurrent()));
-            stat.setInt(4, Integer.parseInt(checkNull(map.get("dexterity")).getCurrent()));
-            stat.setInt(5, Integer.parseInt(checkNull(map.get("technique")).getCurrent()));
-            stat.setInt(6, Integer.parseInt(checkNull(map.get("cool")).getCurrent()));
-            stat.setInt(7, Integer.parseInt(checkNull(map.get("willpower")).getCurrent()));
+            stat.setInt(1, Integer.parseInt(checkNull(map.get("intelligence")).getCurrent()));
+            stat.setInt(2, Integer.parseInt(checkNull(map.get("reflex")).getCurrent()));
+            stat.setInt(3, Integer.parseInt(checkNull(map.get("dexterity")).getCurrent()));
+            stat.setInt(4, Integer.parseInt(checkNull(map.get("technique")).getCurrent()));
+            stat.setInt(5, Integer.parseInt(checkNull(map.get("cool")).getCurrent()));
+            stat.setInt(6, Integer.parseInt(checkNull(map.get("willpower")).getCurrent()));
+            stat.setInt(7, Integer.parseInt(checkNull(map.get("luck")).getMax()));
             stat.setInt(8, Integer.parseInt(checkNull(map.get("luck")).getMax()));
-            stat.setInt(9, Integer.parseInt(checkNull(map.get("luck")).getMax()));
-            stat.setInt(10, Integer.parseInt(checkNull(map.get("movement")).getCurrent()));
-            stat.setInt(11, Integer.parseInt(checkNull(map.get("body")).getCurrent()));
-            stat.setInt(12, Integer.parseInt(checkNull(map.get("empathy")).getCurrent()));
-            stat.setInt(13, Integer.parseInt(checkNull(map.get("empathy")).getMax()));
-            stat.setInt(14, Integer.parseInt(checkNull(map.get("hp")).getCurrent()));
-            stat.setInt(15, Integer.parseInt(checkNull(map.get("hp")).getMax()));
-            stat.setInt(16, Integer.parseInt(checkNull(map.get("humanity")).getCurrent()));
-            stat.setInt(17, Integer.parseInt(checkNull(map.get("humanity")).getMax()));
-            stat.setString(18, author.getAsTag());
+            stat.setInt(9, Integer.parseInt(checkNull(map.get("movement")).getCurrent()));
+            stat.setInt(10, Integer.parseInt(checkNull(map.get("body")).getCurrent()));
+            stat.setInt(11, Integer.parseInt(checkNull(map.get("empathy")).getCurrent()));
+            stat.setInt(12, Integer.parseInt(checkNull(map.get("empathy")).getMax()));
+            stat.setInt(13, Integer.parseInt(checkNull(map.get("hp")).getCurrent()));
+            stat.setInt(14, Integer.parseInt(checkNull(map.get("hp")).getMax()));
+            stat.setInt(15, Integer.parseInt(checkNull(map.get("humanity")).getCurrent()));
+            stat.setInt(16, Integer.parseInt(checkNull(map.get("humanity")).getMax()));
+            stat.setString(17, messageArgs[1].toLowerCase());
             return stat.executeUpdate() == 1;
         }
     }
@@ -190,30 +195,26 @@ public class StartCommand extends AbstractCommand {
         List<Attribute> skillList = attribs.stream().collect(Collectors.groupingBy(attribute -> attribute.getName().startsWith("LVL_"))).get(true);
         skillList.sort(Comparator.comparing(Attribute::getName));
         try (PreparedStatement stat = conn.prepareStatement(getInsertSkillsSQL(skillList))) {
-            stat.setString(1, messageArgs[1].toLowerCase());
             for (int i = 0; i < skillList.size(); i++) {
-                stat.setInt(i + 2, NumberUtils.checkNullOrEmpty(skillList.get(i).getCurrent()));
+                stat.setInt(i + 1, NumberUtils.checkNullOrEmpty(skillList.get(i).getCurrent()));
             }
-            stat.setString(skillList.size() + 2, author.getAsTag());
+            stat.setString(skillList.size() + 1, messageArgs[1].toLowerCase());
             return stat.executeUpdate() == 1;
         }
     }
 
     private String getInsertSkillsSQL(List<Attribute> skillList) {
         StringBuilder sb = new StringBuilder();
-        sb.append("INSERT INTO nco_pc_skills (character_name, ");
+        sb.append("update nco_pc set ");
         for (Attribute skill: skillList) {
             String[] split = skill.getName().substring(4).split("(?<!^)(?=[A-Z])");
             for (int i = 0; i < split.length; i++) {
                 sb.append(split[i].toLowerCase());
-                sb.append(i != split.length - 1 ? "_" : ", ");
+                sb.append(i != split.length - 1 ? "_" : " = ?, ");
             }
         }
-        sb.append("created_by) values (?,");
-        for (Attribute ignored : skillList) {
-            sb.append("?,");
-        }
-        sb.append("?)");
+        sb.setLength(Math.max(sb.length() - 2, 0));
+        sb.append(" where character_name = ?");
         return sb.toString();
     }
 

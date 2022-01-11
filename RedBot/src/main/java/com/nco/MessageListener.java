@@ -255,6 +255,7 @@ public class MessageListener extends ListenerAdapter {
                 break;
             case SELECT:
                 addOptionIfFound(options, argsList, "pc-name");
+                addOptionIfFound(options, argsList, "show-all");
                 return listNull(argsList);
             case START:
                 //Unable to do Start command due to no support for attachments on slash command

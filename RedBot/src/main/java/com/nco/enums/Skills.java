@@ -72,7 +72,14 @@ public enum Skills {
     WARDROBE(1),
     WEAPONSTECH(1),
     WILDERNESS(1),
-    YOUR_HOME(1);
+    YOUR_HOME(1),
+    SURGERY(0),
+    PHARMACEUTICALS(0),
+    CRYOSYSTEM_OPERATION(0),
+    FIELD_EXPERTISE(0),
+    UPGRADE_EXPERTISE(0),
+    FABRICATION_EXPERTISE(0),
+    INVENTION_EXPERTISE(0);
 
     public final int difficulty;
 

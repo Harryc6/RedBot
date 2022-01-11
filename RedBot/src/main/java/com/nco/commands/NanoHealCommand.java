@@ -146,33 +146,10 @@ public class NanoHealCommand extends AbstractCommand {
 
 
     private boolean updateStats(Connection conn, int[] hpAndArmor) throws SQLException {
-        String sql = "UPDATE nco_pc_stats set current_hp = ? Where character_name = ?";
+        String sql = "UPDATE nco_pc set current_hp = ? Where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, hpAndArmor[0]);
             stat.setString(2, messageArgs[0]);
-            return stat.executeUpdate() == 1;
-        }
-    }
-
-
-    private boolean insertNanoHP(Connection conn, PlayerCharacter pc, int[] hpAndArmor, int newDT) throws SQLException {
-        String sql = "insert into nco_nano_hp(character_name, old_hp, new_hp, old_head_sp, new_head_sp," +
-                "old_body_sp, new_body_sp, old_dt, new_dt, bonuses_used, hp_multiplier, armor_multiplier, created_by) " +
-                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stat = conn.prepareStatement(sql)) {
-            stat.setString(1, messageArgs[0]);
-            stat.setInt(2, pc.getCurrentHp());
-            stat.setInt(3, hpAndArmor[0]);
-            stat.setInt(4, pc.getHeadSp());
-            stat.setInt(5, hpAndArmor[1]);
-            stat.setInt(6, pc.getBodySp());
-            stat.setInt(7, hpAndArmor[2]);
-            stat.setInt(8, pc.getDowntime());
-            stat.setInt(9, newDT);
-            stat.setString(10, (messageArgs.length > 3 ? messageArgs[3] : ""));
-            stat.setInt(11, getBonuses(pc));
-            stat.setInt(12, getArmorBonuses(pc));
-            stat.setString(13, author.getAsTag());
             return stat.executeUpdate() == 1;
         }
     }

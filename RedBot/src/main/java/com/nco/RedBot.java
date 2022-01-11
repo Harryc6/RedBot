@@ -179,11 +179,12 @@ public class RedBot {
                 .addOption(OptionType.STRING, "bonuses", "Bonuses to increase healing", false));
 
         commandDataList.add(new CommandData("select", "See db information on characters")
-                .addOption(OptionType.STRING, "pc-name", "Player characters Name", true));
+                .addOption(OptionType.STRING, "pc-name", "Player characters Name", true)
+                .addOption(OptionType.STRING, "show-all", "Show all of a characters data", false));
 
         commandDataList.add(new CommandData("therapy", "Give a character therapy")
                 .addOption(OptionType.STRING, "therapy-type", "Pro Standard or Pro Extreme", true)
-                .addOption(OptionType.STRING, "pc-name", "Player characters name", false));
+                .addOptions(getTrueOrFalse("pc-name", "Player characters name", false)));
 
         commandDataList.add(new CommandData("trade", "Trade eddies between characters")
                 .addOption(OptionType.STRING, "sender", "Character sending eddies", true)
@@ -211,6 +212,11 @@ public class RedBot {
 
     private static OptionData getHeadOrBodyOptionData(String description) {
         return new OptionData(OptionType.STRING, "head-or-body", description, true)
+                .addChoice("Head", "Head").addChoice("Body", "Body");
+    }
+
+    private static OptionData getTrueOrFalse(String name, String description, boolean isRequired) {
+        return new OptionData(OptionType.STRING, name, description, isRequired)
                 .addChoice("Head", "Head").addChoice("Body", "Body");
     }
 

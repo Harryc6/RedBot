@@ -22,7 +22,7 @@ public abstract class AbstractCommand {
 
     private final boolean isSlash;
     Guild guild;
-    private SlashCommandEvent event;
+    SlashCommandEvent event;
     Logger logger = LoggerFactory.getLogger(this.getClass());
     String[] messageArgs;
     User author;
@@ -158,7 +158,9 @@ public abstract class AbstractCommand {
             processUpdateAndRespond(conn, pc, builder);
         }
         if (event == null) {
-            channel.sendMessageEmbeds(builder.build()).queue();
+            if (!builder.isEmpty()) {
+                channel.sendMessageEmbeds(builder.build()).queue();
+            }
         } else {
             event.replyEmbeds(builder.build()).complete();
         }

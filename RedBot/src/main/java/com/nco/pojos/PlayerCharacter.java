@@ -182,7 +182,7 @@ public class PlayerCharacter {
     }
 
     private void setStatsValues(Connection conn, Map<String, Field> map) {
-        String sql = "Select * From nco_pc_stats where character_name = ?";
+        String sql = "Select * From nco_pc where character_name = ?";
         try(PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, characterName);
             try (ResultSet rs = stat.executeQuery()) {
@@ -198,7 +198,7 @@ public class PlayerCharacter {
     }
 
     private void setSkillsValues(Connection conn, Map<String, Field> map) {
-        String sql = "Select * From nco_pc_skills where character_name = ?";
+        String sql = "Select * From nco_pc where character_name = ?";
         try(PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setString(1, characterName);
             try (ResultSet rs = stat.executeQuery()) {

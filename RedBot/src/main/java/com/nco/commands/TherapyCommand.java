@@ -80,27 +80,10 @@ public class TherapyCommand extends AbstractCommand {
     }
 
     private boolean updateStats(Connection conn, int newHum) throws SQLException {
-        String sql = "UPDATE nco_pc_stats set current_humanity = ? Where character_name = ?";
+        String sql = "UPDATE nco_pc set current_humanity = ? Where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, newHum);
             stat.setString(2, messageArgs[0]);
-            return stat.executeUpdate() == 1;
-        }
-    }
-
-    private boolean insertHum(Connection conn, PlayerCharacter pc, int newHum, int newBank, int newDT) throws SQLException {
-        String sql = "insert into nco_humanity (character_name, therapy_type, old_humanity, new_humanity, old_bank, new_bank, old_downtime, new_downtime, created_by) " +
-                "values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stat = conn.prepareStatement(sql)) {
-            stat.setString(1, messageArgs[0]);
-            stat.setString(2, messageArgs[1]);
-            stat.setInt(3, pc.getCurrentHumanity());
-            stat.setInt(4, newHum);
-            stat.setInt(5, pc.getBank());
-            stat.setInt(6, newBank);
-            stat.setInt(7, pc.getDowntime());
-            stat.setInt(8, newDT);
-            stat.setString(9, author.getAsTag());
             return stat.executeUpdate() == 1;
         }
     }
