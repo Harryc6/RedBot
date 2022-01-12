@@ -6,16 +6,12 @@ import com.nco.utils.DBUtils;
 import com.nco.utils.NumberUtils;
 import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class HealCommand extends AbstractCommand {
-
-    int dtAmount;
 
     public HealCommand(String[] messageArgs, Object event, boolean isSlash) {
         super(messageArgs, event, isSlash);
@@ -41,15 +37,11 @@ public class HealCommand extends AbstractCommand {
             builder.addField("Your current HP :", String.valueOf(pc.getCurrentHp()), true);
             builder.addField("Your max HP:", String.valueOf(pc.getMaxHp()), true);
         } else {
-            int newDT = pc.getDowntime() - NumberUtils.asPositive(messageArgs[1]);
-            dtAmount = NumberUtils.asPositive(messageArgs[1]);
-            int newHP = getNewHP(pc);
-            newDT += dtAmount;
-            logger.info("PC : " + StringUtils.capitalizeWords(messageArgs[0]) + "\nCurrent HP : " + pc.getCurrentHp() +
-                    "\nBody : " + pc.getBody() + "\nBonus : " + getBonuses(pc) +
-                    "\n DT Used : " + dtAmount + "\nCombines to new HP of " + newHP);
+            int dtAmount = NumberUtils.asPositive(messageArgs[1]);
+            int newHP = getNewHP(pc, dtAmount);
+            int newDT = pc.getDowntime() - getTotalDTUsed(pc, dtAmount);
             if (updateHP(conn, newHP, newDT, pc)) {
-                buildEmbed(builder, pc, newHP, newDT);
+                buildEmbed(builder, pc, newHP, newDT, dtAmount);
             } else {
                 builder.setTitle("ERROR: Install Update Or Insert Failure");
                 builder.setDescription("Please contact an administrator to get this resolved");
@@ -57,20 +49,43 @@ public class HealCommand extends AbstractCommand {
         }
     }
 
-    public int getNewHP(PlayerCharacter pc) {
-        int newHP = pc.getCurrentHp();
-        int multiplier = messageArgs.length == 3 && messageArgs[2].toLowerCase().contains("cryotank") ? 2 : 1;
-        while (dtAmount > 0 && newHP < pc.getMaxHp()) {
-            newHP += (pc.getBody() + getBonuses(pc)) * multiplier;
-            if (messageArgs.length == 3 && messageArgs[2].toLowerCase().contains("speedheal")) {
-                newHP += pc.getBody() + pc.getWillpower();
-            }
-            dtAmount--;
-        }
+    public int getNewHP(PlayerCharacter pc, int dtAmount) {
+        int newHP = getHealedHPByDT(pc, dtAmount);
         if (newHP > pc.getMaxHp()) {
             newHP = pc.getMaxHp();
         }
         return newHP;
+    }
+
+    private int getHealedHPByDT(PlayerCharacter pc, int dtAmount) {
+        int newHP = pc.getCurrentHp();
+        while (dtAmount > 0 && newHP < pc.getMaxHp()) {
+            newHP += getDaysHealedHP(pc);
+            dtAmount--;
+        }
+        return newHP;
+    }
+
+    private int getTotalDTUsed(PlayerCharacter pc, int dtAmount) {
+        int newHP = pc.getCurrentHp();
+        int dtRemaining = dtAmount;
+        while (dtRemaining > 0 && newHP < pc.getMaxHp()) {
+            newHP += getDaysHealedHP(pc);
+            dtRemaining--;
+        }
+        return dtAmount - dtRemaining;
+    }
+
+    private int getDaysHealedHP(PlayerCharacter pc) {
+        int healedHP = (pc.getBody() + getBonuses(pc)) * getMultiplier();
+        if (messageArgs.length == 3 && messageArgs[2].toLowerCase().contains("speedheal")) {
+            healedHP += pc.getBody() + pc.getWillpower();
+        }
+        return healedHP;
+    }
+
+    private int getMultiplier() {
+        return messageArgs.length == 3 && messageArgs[2].toLowerCase().contains("cryotank") ? 2 : 1;
     }
 
     private int getBonuses(PlayerCharacter pc) {
@@ -102,7 +117,7 @@ public class HealCommand extends AbstractCommand {
     private boolean updatePc(Connection conn, int newDT, PlayerCharacter pc) throws SQLException {
         String sql = "UPDATE NCO_PC set downtime = ? Where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
-            stat.setInt(1, (newDT* 12) + pc.getDowntimeRemainder());
+            stat.setInt(1, (newDT * 12) + pc.getDowntimeRemainder());
             stat.setString(2, messageArgs[0]);
             return stat.executeUpdate() == 1;
         }
@@ -117,15 +132,29 @@ public class HealCommand extends AbstractCommand {
         }
     }
 
-    private void buildEmbed(EmbedBuilder builder, PlayerCharacter pc, int newHP, int newDT) {
+    private void buildEmbed(EmbedBuilder builder, PlayerCharacter pc, int newHP, int newDT, int dtAmount) {
         builder.setTitle(StringUtils.capitalizeWords(messageArgs[0]) + "'s HP Restored");
-        builder.setDescription("Used " + (NumberUtils.asPositive(messageArgs[1]) - dtAmount) + " DT ");
-        builder.addField("Old HP", String.valueOf(pc.getCurrentHp()), true);
+        builder.setDescription("Used " + getTotalDTUsed(pc, dtAmount) + " DT to heal " +
+                (getDaysHealedHP(pc) * getTotalDTUsed(pc, dtAmount)) + " HP capped by max HP");
+        builder.addField("Old HP", pc.getCurrentHp() + "/" + pc.getMaxHp(), true);
         builder.addBlankField(true);
-        builder.addField("New HP", String.valueOf(newHP), true);
-        builder.addField("Old Downtime", String.valueOf(pc.getDowntime()), true);
+        builder.addField("New HP", newHP + "/" + pc.getMaxHp(), true);
+        builder.addField("Old DT", pc.getDowntimeToDisplay(), true);
         builder.addBlankField(true);
-        builder.addField("New Downtime", String.valueOf(newDT), true);
+        builder.addField("New DT", getNewDowntimeToDisplay(pc, newDT), true);
+
+        if (messageArgs.length == 3 && messageArgs[2].toLowerCase().contains("speedheal")) {
+            builder.addField("Body | Will", pc.getBody() + " | " + pc.getWillpower(), true);
+        } else {
+            builder.addField("Body", String.valueOf(pc.getBody()), true);
+        }
+        builder.addField("Bonus", "+" + getBonuses(pc), true);
+        builder.addField("Multiplier", "x" + getMultiplier(), true);
+    }
+
+    private String getNewDowntimeToDisplay(PlayerCharacter pc, int newDT) {
+        return newDT + ((pc.getDowntimeRemainder() == 0) ? "" :
+                " " + StringUtils.superscript(String.valueOf(pc.getDowntimeRemainder())) + "/" + StringUtils.subscript("12"));
     }
 
     @Override
