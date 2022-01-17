@@ -4,6 +4,7 @@ import com.nco.RedBot;
 import com.nco.pojos.PlayerCharacter;
 import com.nco.utils.DBUtils;
 import com.nco.utils.NumberUtils;
+import com.nco.utils.StringUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -69,10 +70,9 @@ public class NanoHealCommand extends AbstractCommand {
         int newHP = pc.getCurrentHp();
         int newHeadSP = pc.getHeadSp();
         int newBodySP = pc.getBodySp();
-        int multiplier = messageArgs.length == 4 && messageArgs[3].toLowerCase().contains("cryotank") ? 2 : 1;
         while (dtAmount > 0 && (newBodySP < Integer.parseInt(messageArgs[2]) || newHeadSP < Integer.parseInt(messageArgs[2])
                 || newHP < pc.getMaxHp())) {
-            newHP += (pc.getBody() + getBonuses(pc)) * multiplier;
+            newHP += (pc.getBody() + getBonuses(pc)) * getMultiplier();
             if (messageArgs.length == 4 && messageArgs[2].toLowerCase().contains("speedheal")) {
                 newHP += pc.getBody() + pc.getWillpower();
             }
@@ -112,6 +112,10 @@ public class NanoHealCommand extends AbstractCommand {
             bonuses += 4;
         }
         return bonuses;
+    }
+
+    private int getMultiplier() {
+        return messageArgs.length == 4 && messageArgs[3].toLowerCase().contains("cryotank") ? 2 : 1;
     }
 
     private int getArmorBonuses(PlayerCharacter pc) {
@@ -155,17 +159,51 @@ public class NanoHealCommand extends AbstractCommand {
     }
 
     private void buildEmbed(EmbedBuilder builder, PlayerCharacter pc, int newDT, int[] hpAndArmor) {
-        builder.setTitle(pc.getCharacterDisplayName() + "'s HP and Armor Restored");
-        builder.setDescription("Used " + (NumberUtils.asPositive(messageArgs[1]) - dtAmount) + " DT ");
-        builder.addField("Old HP", String.valueOf(pc.getCurrentHp()), true);
+//        builder.setTitle(pc.getCharacterDisplayName() + "'s HP and Armor Restored");
+//        builder.setDescription("Used " + (NumberUtils.asPositive(messageArgs[1]) - dtAmount) + " DT ");
+//        builder.addField("Old HP", String.valueOf(pc.getCurrentHp()), true);
+//        builder.addBlankField(true);
+//        builder.addField("New HP", String.valueOf(hpAndArmor[0]), true);
+//        builder.addField("Old SP H | B", pc.getHeadSp() + " | " + pc.getBodySp(), true);
+//        builder.addBlankField(true);
+//        builder.addField("New SP H | B", hpAndArmor[1] + " | " + hpAndArmor[2], true);
+//        builder.addField("Old Downtime", String.valueOf(pc.getDowntime()), true);
+//        builder.addBlankField(true);
+//        builder.addField("New Downtime", String.valueOf(newDT), true);
+
+        builder.setTitle(StringUtils.capitalizeWords(messageArgs[0]) + "'s HP Restored");
+        builder.setDescription("Used " + (NumberUtils.asPositive(messageArgs[1]) - dtAmount) + " DT to heal " +
+                (getDaysHealedHP(pc) * (NumberUtils.asPositive(messageArgs[1]) - dtAmount)) + " HP capped by max HP");
+        builder.addField("Old HP", pc.getCurrentHp() + "/" + pc.getMaxHp(), true);
         builder.addBlankField(true);
-        builder.addField("New HP", String.valueOf(hpAndArmor[0]), true);
+        builder.addField("New HP", hpAndArmor[0] + "/" + pc.getMaxHp(), true);
         builder.addField("Old SP H | B", pc.getHeadSp() + " | " + pc.getBodySp(), true);
         builder.addBlankField(true);
         builder.addField("New SP H | B", hpAndArmor[1] + " | " + hpAndArmor[2], true);
-        builder.addField("Old Downtime", String.valueOf(pc.getDowntime()), true);
+        builder.addField("Old DT", pc.getDowntimeToDisplay(), true);
         builder.addBlankField(true);
-        builder.addField("New Downtime", String.valueOf(newDT), true);
+        builder.addField("New DT", getNewDowntimeToDisplay(pc, newDT), true);
+
+        if (messageArgs.length == 3 && messageArgs[2].toLowerCase().contains("speedheal")) {
+            builder.addField("Body | Will", pc.getBody() + " | " + pc.getWillpower(), true);
+        } else {
+            builder.addField("Body", String.valueOf(pc.getBody()), true);
+        }
+        builder.addField("Bonus", "+" + getBonuses(pc), true);
+        builder.addField("Multiplier", "x" + getMultiplier(), true);
+    }
+
+    private int getDaysHealedHP(PlayerCharacter pc) {
+        int changeInHP = (pc.getBody() + getBonuses(pc)) * getMultiplier();
+        if (messageArgs.length == 4 && messageArgs[2].toLowerCase().contains("speedheal")) {
+            changeInHP += pc.getBody() + pc.getWillpower();
+        }
+        return changeInHP;
+    }
+
+    private String getNewDowntimeToDisplay(PlayerCharacter pc, int newDT) {
+        return newDT + ((pc.getDowntimeRemainder() == 0) ? "" :
+                " " + StringUtils.superscript(String.valueOf(pc.getDowntimeRemainder())) + "/" + StringUtils.subscript("12"));
     }
 
     @Override
