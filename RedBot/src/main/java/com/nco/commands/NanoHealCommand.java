@@ -159,18 +159,6 @@ public class NanoHealCommand extends AbstractCommand {
     }
 
     private void buildEmbed(EmbedBuilder builder, PlayerCharacter pc, int newDT, int[] hpAndArmor) {
-//        builder.setTitle(pc.getCharacterDisplayName() + "'s HP and Armor Restored");
-//        builder.setDescription("Used " + (NumberUtils.asPositive(messageArgs[1]) - dtAmount) + " DT ");
-//        builder.addField("Old HP", String.valueOf(pc.getCurrentHp()), true);
-//        builder.addBlankField(true);
-//        builder.addField("New HP", String.valueOf(hpAndArmor[0]), true);
-//        builder.addField("Old SP H | B", pc.getHeadSp() + " | " + pc.getBodySp(), true);
-//        builder.addBlankField(true);
-//        builder.addField("New SP H | B", hpAndArmor[1] + " | " + hpAndArmor[2], true);
-//        builder.addField("Old Downtime", String.valueOf(pc.getDowntime()), true);
-//        builder.addBlankField(true);
-//        builder.addField("New Downtime", String.valueOf(newDT), true);
-
         builder.setTitle(StringUtils.capitalizeWords(messageArgs[0]) + "'s HP Restored");
         builder.setDescription("Used " + (NumberUtils.asPositive(messageArgs[1]) - dtAmount) + " DT to heal " +
                 (getDaysHealedHP(pc) * (NumberUtils.asPositive(messageArgs[1]) - dtAmount)) + " HP capped by max HP");
