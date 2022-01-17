@@ -50,13 +50,6 @@ public class NanoHealCommand extends AbstractCommand {
             int[] hpAndArmor = getNewHPAndArmor(pc);
             newDT += dtAmount;
 
-//            logger.info("PC : " + messageArgs[0] + "\nCurrent HP : " + pc.getCurrentHp() +
-//                    "\nBody : " + pc.getBody() + "\nBonus : " + getBonuses(pc) +
-//                    "\nArmorBonus : " + getArmorBonuses(pc) + "\n Current Head Armor : " + pc.getBodySp() +
-//                    "\n Current Body Armor : " + pc.getHeadSp() +
-//                    "\n New HeadSP : " + hpAndArmor[1] + " New BodySP : " + hpAndArmor[2] + " New HP : " + hpAndArmor[0] );
-
-//            if (updateNanoHP(conn, hpAndArmor, newDT) && insertNanoHP(conn, pc, hpAndArmor, newDT)) {
             if (updateNanoHP(conn, hpAndArmor, newDT, pc)) {
                 buildEmbed(builder, pc, newDT, hpAndArmor);
             } else {
