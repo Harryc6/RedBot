@@ -16,6 +16,7 @@ public enum PC {
     FAME,
     VAULT,
     DOWNTIME,
+    DOWNTIME_SPENT,
     LIFESTYLE,
     RENT,
     MONTHLY_DEBT,

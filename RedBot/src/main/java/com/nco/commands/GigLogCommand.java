@@ -165,7 +165,7 @@ public class GigLogCommand extends AbstractCommand {
     }
 
     private boolean updateMonthlyDues(PlayerCharacter pc, Connection conn) throws SQLException {
-        String sql = "UPDATE NCO_PC set monthly_debt = ?, monthly_due = ? Where character_name = ?";
+        String sql = "UPDATE NCO_PC set monthly_debt = ?, monthly_due = ?, downtime_spent = 0 Where character_name = ?";
         try (PreparedStatement stat = conn.prepareStatement(sql)) {
             stat.setInt(1, getDebt(pc));
             stat.setInt(2, pc.getMonthlyDue() + 5);

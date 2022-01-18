@@ -29,6 +29,7 @@ public class PlayerCharacter {
     private int fame;
     private String vault;
     private int downtime;
+    private int downtimeSpent;
     private String lifestyle;
     private String rent;
     private int monthlyDebt;
@@ -277,6 +278,10 @@ public class PlayerCharacter {
         return downtime / 12;
     }
 
+    public int getRawDowntime() {
+        return downtime;
+    }
+
     public int getDowntimeRemainder() {
         return downtime % 12;
     }
@@ -284,6 +289,10 @@ public class PlayerCharacter {
     public String getDowntimeToDisplay() {
         return downtime / 12 + ((downtime % 12 == 0) ? "" :
                 " " + StringUtils.superscript(String.valueOf(downtime % 12)) + "/" + StringUtils.subscript("12"));
+    }
+
+    public int getDowntimeSpent() {
+        return downtimeSpent;
     }
 
     public String getLifestyle() {
